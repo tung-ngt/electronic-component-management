@@ -12,4 +12,7 @@ class Resistor(Component):
     def getResistance(self):
         return self.__resistance
     def setResistance(self, resistance):
-        self.__resistance = resistance
+        if isinstance(resistance, float) and resistance >0:
+            self.__resistance = resistance
+        else:
+            raise Exception("Invalid type of resistance")

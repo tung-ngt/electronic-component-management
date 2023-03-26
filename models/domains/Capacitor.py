@@ -12,4 +12,7 @@ class Capacitor(Component):
     def getCapacitance(self):
         return self.__capacitance
     def setCapacitance(self, capacitance):
-        self.__capacitance = capacitance
+        if isinstance(capacitance, float) and capacitance > 0:
+            self.__capacitance = capacitance
+        else:
+            raise Exception("Invalid type of capacitance")

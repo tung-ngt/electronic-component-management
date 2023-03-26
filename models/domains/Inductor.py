@@ -12,4 +12,7 @@ class Inductor(Component):
     def getInductance(self):
         return self.__inductance
     def setInductance(self, inductance):
-        self.__inductance = inductance
+        if isinstance(inductance, float) and inductance > 0:
+            self.__inductance = inductance
+        else:
+            raise Exception("Invalid type of inductance")

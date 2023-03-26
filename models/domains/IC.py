@@ -12,4 +12,7 @@ class IC(Component):
     def getClock(self):
         return self.__clock
     def setClock(self, clock):
-        self.__clock = clock
+        if isinstance(clock, float) and clock >0:
+            self.__clock = clock
+        else:
+            raise Exception("Invalid type of clock")

@@ -1,4 +1,24 @@
 from datetime import datetime
+def validate_date_time(d):
+    if datetime.strptime(d, '%d-%m-%Y'):
+        return 1
+    else:
+        raise Exception("Invalid type of d-m-Y")
+def validate_status(s):
+    if s == 0 or s == 1:
+        return 1
+    else:
+        raise Exception("Invalid type of status")
+def validate_guarantee(g):
+    if isinstance(g, int) and g>0:
+        return 1
+    else:
+        raise Exception("Invalid type of guarantee")
+def validate_price(p):
+    if isinstance(p, float) and p>0:
+        return 1
+    else:
+        raise Exception("Invalid type of price")
 class Component:
     """This class is the entity of electronic components
 
@@ -33,12 +53,16 @@ class Component:
     def setMnf(self, mnf):
         self.__mnf = mnf
     def setPrice(self, price):
-        self.__price = price
+        if validate_price(price):
+            self.__price = price
     def setInventory_date(self, inventory_date):
-        self.__inventory_date = inventory_date
+        if validate_date_time(inventory_date):
+            self.__inventory_date = inventory_date
     def setStatus(self, status):
-        self.__status = status
+        if validate_status(status):
+            self.__status = status
     def setGuarantee(self, guarantee):
-        self.__guarantee = guarantee
+        if validate_guarantee(guarantee):
+            self.__guarantee = guarantee
     def setPart_number(self, part_number):
         self.__part_number = part_number
