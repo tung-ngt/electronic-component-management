@@ -1,5 +1,5 @@
 from tkinter import Button as tkButton
-from .Typography import Typography
+from tkinter.font import Font
 
 class Button(tkButton):
     """Wrapper around tkButton"""
@@ -11,7 +11,7 @@ class Button(tkButton):
             background="white", foreground="black",
             activebackground="grey", activeforeground="black",
             borderwidth=0, 
-            font=Typography.get_font("paragraph"), 
+            font: Font=None, 
         ):
         """Init the button
         
@@ -26,7 +26,7 @@ class Button(tkButton):
         activebackground
         activeforeground
         borderwidth : default 0
-        font : Font object
+        font : a tk font type default None
         """
         super().__init__(
             master, 

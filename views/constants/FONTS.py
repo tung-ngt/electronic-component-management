@@ -1,18 +1,22 @@
-FONTS = {
+from gui.utils import Typography
+
+FONT_SETTINGS = {
     "paragraph": {
         "family": "Arial",
-        "size": 16
+        "size": 10
     },
     "heading1": {
         "family": "Arial",
-        "size": 48
+        "size": 24
     },
     "heading2": {
         "family": "Arial",
-        "size": 32
+        "size": 18
     },  
     "heading3": {
         "family": "Arial",
-        "size": 22
+        "size": 14
     }, 
 }
+
+FONTS = Typography(FONT_SETTINGS)

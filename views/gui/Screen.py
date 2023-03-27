@@ -12,5 +12,9 @@ class Screen(Frame):
         master : master widget
         background : background color
         """
-        super().__init__(master, width=400, height=400, background=background)
-    
+        super().__init__(master, background=background)
+        self.background = background
+        # Make the screen take up the whole available space
+        # instead of skrinking to children widgets
+        self.grid_propagate(False)
+        self.pack_propagate(False)    

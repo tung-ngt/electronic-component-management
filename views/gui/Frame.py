@@ -1,5 +1,4 @@
 from tkinter import Frame as tkFrame
-from .Widget import Widget
 
 class Frame(tkFrame):
     """Wrapper around tkFrame"""

@@ -1,30 +1,40 @@
-from gui import GUI, Screen, Navbar
+from gui import GUI
 from constants import COLORS, FONTS
-import tkinter as tk
+from screens import MainScreen, ComponentScreen
+from components import Navbar
 
-class EComponentManagementGUI(GUI):
+class EComponentStoreManagementGUI(GUI):
+    """Electronic Componnet Store Infomation Mangament GUI APP"""
     def __init__(self):
         super().__init__(
             "Electronic Component Management", 
             fullscreen=True, 
             icon="./images/circuit-board.png",
-            fonts=FONTS.FONTS
+            on_close_fun=self.on_close
         )
-        self.init_navbar(
-            Navbar(self.root_window, COLORS.NEUTRAL_RED, [("main","Home"), ("info", "Info")], text_color=COLORS.WHITE,
-                redirect_funtion=self.change_screen
-            )
-        )
-        self.add_screen(
-            "main",
-            Screen(self.root_window, COLORS.DARK_CYAN)
-        )
-        self.add_screen(
-            "info",
-            Screen(self.root_window, COLORS.WHITE)
-        )
+        
+        # Init fonts
+        FONTS.init_fonts(self)
+
+        # Initialze navbar and specify links
+        self.init_navbar(Navbar(self,
+            [
+                ("main","Home"),
+                ("components", "Components")
+            ],
+            self.change_screen
+        ))
+
+        self.add_screen("main", MainScreen(self))
+        self.add_screen("components", ComponentScreen(self))
 
         self.show_screen("main")
 
-app = EComponentManagementGUI()
-app.main_loop()
+    def on_close(self):
+        print("Closed")
+        print("Thank you for using the system")
+        self.destroy()
+
+if __name__ == "__main__":
+    app = EComponentStoreManagementGUI()
+    app.mainloop()

@@ -1,14 +1,15 @@
-from tkinter import Label as tkLabel
+from tkinter import Label as tkLabel, PhotoImage
 from tkinter.font import Font
-from .Typography import Typography
+
 class Label(tkLabel):
     """Custom Label"""
     def __init__(self,
             master,
-            text: str,
+            text: str="",
             foreground="black",
             background="white",
-            font: Font = Typography.get_font("paragraph")
+            font: Font=None,
+            image: PhotoImage=None,
         ):
         """Init the label
         
@@ -17,13 +18,24 @@ class Label(tkLabel):
         master : master widget,
         text : str text
         foreground : text color (default black)
-        background : background color (default white)
-        font : a tk font (default Typography paragraph)
+        background : background color (default white) specify transparent for transparent 
+        font : a tk font (default None)
+        image : label image (default None)
         """
-        super().__init__(
-            master,
-            text=text,
-            background=background,
-            foreground=foreground,
-            font=font
-        )
+        # Check if the backgroud is transparent
+        background = master.background if background == "transparent" else background
+
+        if image != None:
+            super().__init__(
+                master,
+                image=image,
+                background=background,
+            )
+        else:
+            super().__init__(
+                master,
+                text=text,
+                background=background,
+                foreground=foreground,
+                font=font
+            )

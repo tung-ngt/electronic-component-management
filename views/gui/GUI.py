@@ -1,11 +1,13 @@
-import tkinter as tk
-from tkinter.font import Font as tkFont
-import os
+from tkinter import Tk, NSEW, PhotoImage
+from tkinter.font import Font
+
 from .Screen import Screen
 from .Navbar import Navbar
-from .Label import Label
-from .Typography import Typography
-class GUI:
+
+import os
+from ctypes import windll
+
+class GUI(Tk):
     """GUI app class"""
     def __init__(self, 
             title, 
@@ -14,7 +16,7 @@ class GUI:
             fullscreen=False,
             min_size=(0,0), 
             icon=None,
-            fonts = {}
+            on_close_fun=None
         ):
         """Init gui
         
@@ -27,31 +29,46 @@ class GUI:
         min_size : (width: int, height: int)
         icon : path to icon default None
         fonts : fonts that is used in the app
+        on_close_fun : function to run when x button is clicked
         """
-        self.root_window = tk.Tk()
-        self.root_window.title(title)
-        if fullscreen:
-            self.root_window.state("zoomed")
-            self.root_window.resizable(True, True)
-        else:
-            self.root_window.geometry(geometry)
-            self.root_window.resizable(resizable[0], resizable[1])
-            self.root_window.minsize(min_size[0], min_size[0])
-        if os.path.isfile(icon):
-            self.root_window.iconphoto(True, tk.PhotoImage(file=icon))
+        # Fix blurry problem 
+        windll.shcore.SetProcessDpiAwareness(1)
+        
+        super().__init__()
 
-        Typography.init_typography(self.root_window)
-        Typography.set_fonts(fonts)
-        self.root_window.grid_rowconfigure(0, weight=1)
-        self.root_window.grid_columnconfigure(0, weight=1, minsize=150)
-        self.root_window.grid_columnconfigure(1, weight=9)
+        # Setup custom function when close
+        self.on_close_fun = on_close_fun
+        if self.on_close_fun != None:
+            self.protocol("WM_DELETE_WINDOW", self.on_close_fun)
+
+        # Set title
+        self.title(title)   
+
+        # Set screen dimensions     
+        if fullscreen:
+            self.state("zoomed")
+        else:
+            self.geometry(geometry)
+        self.resizable(resizable[0], resizable[1])
+        self.minsize(min_size[0], min_size[0])
+        
+        # Set window icon
+        if os.path.isfile(icon):
+            self.iconphoto(True, PhotoImage(file=icon))
+
+        # Setup screen for navigation
         self.screens: dict[str, Screen] = {}
         self.current_screen: str = None
+        
+        # Specify navbar and screen grid layout
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1, minsize=150)
+        self.grid_columnconfigure(1, weight=9)
 
     def init_navbar(self, navbar: Navbar):
         """Add navbar and place it in root window"""    
         self.navbar = navbar
-        self.navbar.grid(row=0,column=0, sticky=tk.NSEW)
+        self.navbar.grid(row=0, column=0, sticky=NSEW)
 
     def add_screen(self, screen_name: str, screen: Screen):
         """Add screen to the app
@@ -74,13 +91,5 @@ class GUI:
     
     def show_screen(self, screen_name: str):
         """Show a screen"""
-        self.screens[screen_name].grid(row=0, column=1, sticky=tk.NSEW)
+        self.screens[screen_name].grid(row=0, column=1, sticky=NSEW)
         self.current_screen = screen_name
-
-    def main_loop(self):
-        """Call main loop of the program"""
-        self.root_window.mainloop()
-
-    def quit(self):
-        """Quit the gui"""
-        self.root_window.quit()
