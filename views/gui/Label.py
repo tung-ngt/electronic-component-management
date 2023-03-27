@@ -9,7 +9,7 @@ class Label(tkLabel):
             foreground="black",
             background="white",
             font: Font=None,
-            image: PhotoImage=None,
+            image: str=None,
         ):
         """Init the label
         
@@ -20,15 +20,15 @@ class Label(tkLabel):
         foreground : text color (default black)
         background : background color (default white) specify transparent for transparent 
         font : a tk font (default None)
-        image : label image (default None)
+        image : label image path (default None)
         """
         # Check if the backgroud is transparent
         background = master.background if background == "transparent" else background
-
         if image != None:
+            self.label_image = PhotoImage(file=image)
             super().__init__(
                 master,
-                image=image,
+                image=self.label_image,
                 background=background,
             )
         else:

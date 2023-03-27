@@ -13,7 +13,6 @@ class Screen(Frame):
         background : background color
         """
         super().__init__(master, background=background)
-        self.background = background
         # Make the screen take up the whole available space
         # instead of skrinking to children widgets
         self.grid_propagate(False)

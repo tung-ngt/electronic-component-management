@@ -43,8 +43,7 @@ class Navbar(Frame):
         """Create and place the logo on top of the navbar"""
         # Create logo image
         if "logo_path" in logo.keys():
-            self.logo_image = PhotoImage(file=logo["logo_path"])
-            self.logo_label = Label(self, background="transparent", image=self.logo_image)
+            self.logo_label = Label(self, background="transparent", image=logo["logo_path"])
             self.logo_label.pack(fill="x")
         
         # Create logo name

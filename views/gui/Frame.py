@@ -17,9 +17,11 @@ class Frame(tkFrame):
         height : int default 400
         background : background color default white
         """
+        # Check if the backgroud is transparent
+        self.background = master.background if background == "transparent" else background
         super().__init__(
             master,
             width=width,
             height=height,
-            background=background
+            background=self.background
         )

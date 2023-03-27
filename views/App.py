@@ -19,7 +19,7 @@ class EComponentStoreManagementGUI(GUI):
         # Initialze navbar and specify links
         self.init_navbar(Navbar(self,
             [
-                ("main","Home"),
+                ("main","Dashboard"),
                 ("components", "Components")
             ],
             self.change_screen,
