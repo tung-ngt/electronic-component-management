@@ -1,68 +1,95 @@
-from datetime import datetime
-def validate_date_time(d):
-    if datetime.strptime(d, '%d-%m-%Y'):
-        return 1
-    else:
-        raise Exception("Invalid type of d-m-Y")
+from datetime import date
+from .Manufacturer import Manufacturer
+
+# def validate_date_time(d: str):
+#     if datetime.strptime(d, '%d-%m-%Y'):
+#         return 1
+#     else:
+#         raise Exception("Invalid type of d-m-Y")
+
 def validate_status(s):
-    if s == 0 or s == 1:
+    if s == True or s == False:
         return 1
     else:
         raise Exception("Invalid type of status")
+
 def validate_guarantee(g):
     if isinstance(g, int) and g>0:
         return 1
     else:
         raise Exception("Invalid type of guarantee")
+
 def validate_price(p):
     if isinstance(p, float) and p>0:
         return 1
     else:
         raise Exception("Invalid type of price")
+
 class Component:
     """This class is the entity of electronic components
 
     Attributes
     ----------
-    mnf: manufacturer
-    price
-    inventory_date
-    status
-    guarantee
-    part_number
+    mnf : manufacturer
+    price : price fo the part must be >= 0
+    inventory_date : the date the part gets into inventory
+    status : True (sold) False (have not sold)
+    guarantee : months of guarantee
+    part_number : part identifier string
     """
-    def __init__(self, mnf, price, inventory_date, status, guarantee, part_number) :
-        self.__mnf = mnf
-        self.__price = price
-        self.__inventory_date = inventory_date
-        self.__status = status
-        self.__guarantee = guarantee
-        self.__part_number = part_number
-    def getMnf(self):
+    def __init__(self,
+            mnf: Manufacturer,
+            price: float,
+            inventory_date: date,
+            status: bool,
+            guarantee: int, 
+            part_number: str
+        ):
+        self.__mnf: Manufacturer = self.set_mnf(mnf)
+        self.__price: float = self.set_price(price)
+        self.__inventory_date: date = self.set_inventory_date(inventory_date)
+        self.__status: bool = self.set_status(status)
+        self.__guarantee: int = self.set_guarantee(guarantee)
+        self.__part_number: str = self.set_part_number(part_number)
+
+    # Getters
+    def get_mnf(self):
         return self.__mnf
-    def getPrice(self):
+    
+    def get_price(self):
         return self.__price
-    def getInventory_date(self):
+    
+    def get_inventory_date(self):
         return self.__inventory_date
-    def getStatus(self):
+    
+    def get_status(self):
         return self.__status
-    def getGuarantee(self):
+    
+    def get_guarantee(self):
         return self.__guarantee
-    def getPart_number(self):
+    
+    def get_part_number(self):
         return self.__part_number
-    def setMnf(self, mnf):
+    
+    # Setters
+    def set_mnf(self, mnf):
         self.__mnf = mnf
-    def setPrice(self, price):
+
+    def set_price(self, price: float):
         if validate_price(price):
             self.__price = price
-    def setInventory_date(self, inventory_date):
-        if validate_date_time(inventory_date):
-            self.__inventory_date = inventory_date
-    def setStatus(self, status):
+
+    def set_inventory_date(self, inventory_date: date):
+        # if validate_date_time(inventory_date):
+        self.__inventory_date = inventory_date
+
+    def set_status(self, status: bool):
         if validate_status(status):
             self.__status = status
-    def setGuarantee(self, guarantee):
+
+    def set_guarantee(self, guarantee: int):
         if validate_guarantee(guarantee):
             self.__guarantee = guarantee
-    def setPart_number(self, part_number):
+
+    def set_part_number(self, part_number: str):
         self.__part_number = part_number
