@@ -1,4 +1,4 @@
-from tkinter import EW
+from tkinter import EW, PhotoImage
 from tkinter.font import Font
 from .Frame import Frame
 from .Label import Label
@@ -13,6 +13,7 @@ class Navbar(Frame):
             text_color="white", 
             redirect_funtion=lambda screen_name: print(screen_name),
             font: Font = None,
+            logo: dict[str, str or Font] = None
         ):
         """Init the Nabar
         
@@ -24,6 +25,7 @@ class Navbar(Frame):
         text_color : default black,
         redirect_funtion : funtion to change screen
         font : a tk Font for link text
+        logo : {logo_path: str, name: str, font: Font}
         """
         super().__init__(master, background=background)
         self.text_font = font
@@ -32,17 +34,25 @@ class Navbar(Frame):
         self.links = links
         self.redirect_function = redirect_funtion
         self.link_widgets: list[Label] = []
+        if logo != None:
+            self.__create_logo(logo)
         self.__create_links()
         self.grid_columnconfigure(0, weight=1)
     
-    def __create_logo(self, logo_path: str, name: str):
-        """Create and place the logo on top of the navbar
+    def __create_logo(self, logo: dict[str, str or Font]):
+        """Create and place the logo on top of the navbar"""
+        # Create logo image
+        if "logo_path" in logo.keys():
+            self.logo_image = PhotoImage(file=logo["logo_path"])
+            self.logo_label = Label(self, background="transparent", image=self.logo_image)
+            self.logo_label.pack(fill="x")
         
-        Parameters
-        ----------
-        logo_path : path to the logo
-        name : name of the app
-        """
+        # Create logo name
+        if "name" in logo.keys():
+            font = logo["font"] if "font" in logo.keys() else None
+            color = logo["color"] if "color" in logo.keys() else "black"
+            self.name_label = Label(self, text=logo["name"], background="transparent", font=font, foreground=color)
+            self.name_label.pack(fill="x")
 
     def __create_links(self):
         """Create links and place them on the navbar"""
@@ -68,5 +78,6 @@ class Navbar(Frame):
                 font=self.text_font,
                 borderwidth=0
             )
-            link_widget.grid(row=i+1, column=0, sticky=EW, padx=10, pady=3)
+            # link_widget.grid(row=i+1, column=0, sticky=EW, padx=10, pady=3)
+            link_widget.pack(fill="x", padx=10, pady=3)
             self.link_widgets.append(link_widget)

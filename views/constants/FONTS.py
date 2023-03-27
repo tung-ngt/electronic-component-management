@@ -3,19 +3,19 @@ from gui.utils import Typography
 FONT_SETTINGS = {
     "paragraph": {
         "family": "Arial",
-        "size": 10
+        "size": 12
     },
     "heading1": {
         "family": "Arial",
-        "size": 24
+        "size": 26
     },
     "heading2": {
         "family": "Arial",
-        "size": 18
+        "size": 22
     },  
     "heading3": {
         "family": "Arial",
-        "size": 14
+        "size": 18
     }, 
 }
 

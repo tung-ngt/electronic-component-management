@@ -8,11 +8,11 @@ class ComponentScreen(Screen):
     """
     def __init__(self, master):
         """Init screen"""
-        super().__init__(master, background=COLORS.DARK_CYAN)
+        super().__init__(master, background=COLORS.BACKGROUND_LIGHT)
 
         self.label = Label(self,
             text="Component Screen",
-            background=COLORS.DARK_CYAN,
-            foreground=COLORS.WHITE
+            background="transparent",
+            foreground="#000000"
         )
         self.label.pack()
