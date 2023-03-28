@@ -14,6 +14,8 @@ class Sensor(Component):
     inventory_date : the date the part gets into inventory
     guarantee : months of guarantee
     part_number : part identifier string
+    sub_category : which subcategory does the component belong in
+    stock : number of that compnent in the inventory
     sensor_type : type of the sensor (temperature, pH, conductivity, ...)
     """
     def __init__(self,
@@ -22,9 +24,11 @@ class Sensor(Component):
             inventory_date: date,
             guarantee: int,
             part_number: str,
+            sub_category: str,
+            stock: int,
             sensor_type: str,
         ):
-        super().__init__(mnf_id, price, inventory_date, guarantee, part_number)
+        super().__init__(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock)
         self.set_sensor_type(sensor_type)
         
     # Getters

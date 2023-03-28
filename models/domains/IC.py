@@ -14,6 +14,8 @@ class IC(Component):
     inventory_date : the date the part gets into inventory
     guarantee : months of guarantee
     part_number : part identifier string
+    sub_category : which subcategory does the component belong in
+    stock : number of that compnent in the inventory
     clock : clock speed in GHz
     """
     def __init__(self,
@@ -22,9 +24,11 @@ class IC(Component):
             inventory_date: date,
             guarantee: int,
             part_number: str,
+            sub_category: str,
+            stock: int,
             clock: float
         ):
-        super().__init__(mnf_id, price, inventory_date, guarantee, part_number)
+        super().__init__(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock)
         self.set_clock(clock)
 
     # Getters

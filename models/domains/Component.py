@@ -29,7 +29,8 @@ class Component:
     inventory_date : the date the part gets into inventory
     guarantee : months of guarantee
     part_number : part identifier string
-    sub_category : which sub category does the component belong in
+    sub_category : which subcategory does the component belong in
+    stock : number of that compnent in the inventory
     """
     def __init__(self,
             mnf_id: str,
@@ -46,6 +47,7 @@ class Component:
         self.set_guarantee(guarantee)
         self.set_part_number(part_number)
         self.set_sub_category(sub_category)
+        self.set_stock(stock)
 
     # Getters
     def get_mnf_id(self):
