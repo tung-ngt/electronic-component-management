@@ -15,6 +15,8 @@ class Capacitor(Component):
     guarantee : months of guarantee
     part_number : part identifier string
     capacitance : float capacitance value
+    sub_category : which subcategory does the component belong in
+    stock : number of that compnent in the inventory
     """
     def __init__(self,
             mnf_id: str,
@@ -22,9 +24,11 @@ class Capacitor(Component):
             inventory_date: date,
             guarantee: int,
             part_number: str,
+            sub_category: str,
+            stock: int,
             capacitance: float
         ):
-        super().__init__(mnf_id, price, inventory_date, guarantee, part_number)
+        super().__init__(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock)
         self.set_capacitance(capacitance)
 
     # Getters
