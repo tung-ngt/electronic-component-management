@@ -12,7 +12,6 @@ class Resistor(Component):
     mnf_id : manufacturer id
     price : price fo the part must be >= 0
     inventory_date : the date the part gets into inventory
-    status : True (sold) False (have not sold)
     guarantee : months of guarantee
     part_number : part identifier string
     resistance : float value of resistance
@@ -26,7 +25,7 @@ class Resistor(Component):
             part_number: str,
             resistance: float
         ):
-        super().__init__(mnf_id, price, inventory_date, status, guarantee, part_number)
+        super().__init__(mnf_id, price, inventory_date, guarantee, part_number)
         self.set_resistance(resistance)
 
     # Getters

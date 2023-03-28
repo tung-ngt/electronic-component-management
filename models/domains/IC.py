@@ -12,7 +12,6 @@ class IC(Component):
     mnf_id : manufacturer id
     price : price fo the part must be >= 0
     inventory_date : the date the part gets into inventory
-    status : True (sold) False (have not sold)
     guarantee : months of guarantee
     part_number : part identifier string
     clock : clock speed in GHz
@@ -21,12 +20,11 @@ class IC(Component):
             mnf_id: str,
             price: float,
             inventory_date: date,
-            status: bool,
             guarantee: int,
             part_number: str,
             clock: float
         ):
-        super().__init__(mnf_id, price, inventory_date, status, guarantee, part_number)
+        super().__init__(mnf_id, price, inventory_date, guarantee, part_number)
         self.set_clock(clock)
 
     # Getters

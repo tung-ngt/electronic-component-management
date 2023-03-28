@@ -7,12 +7,6 @@ from .Manufacturer import Manufacturer
 #     else:
 #         raise Exception("Invalid type of d-m-Y")
 
-def validate_status(s):
-    if s == True or s == False:
-        return 1
-    else:
-        raise Exception("Invalid type of status")
-
 def validate_guarantee(g):
     if isinstance(g, int) and g>0:
         return 1
@@ -33,7 +27,6 @@ class Component:
     mnf_id : manufacturer id str
     price : price fo the part must be >= 0
     inventory_date : the date the part gets into inventory
-    status : True (sold) False (have not sold)
     guarantee : months of guarantee
     part_number : part identifier string
     sub_category : which sub category does the component belong in
@@ -42,7 +35,6 @@ class Component:
             mnf_id: str,
             price: float,
             inventory_date: date,
-            status: bool,
             guarantee: int, 
             part_number: str,
             sub_category: str,
@@ -51,7 +43,6 @@ class Component:
         self.set_mnf_id(mnf_id)
         self.set_price(price)
         self.set_inventory_date(inventory_date)
-        self.set_status(status)
         self.set_guarantee(guarantee)
         self.set_part_number(part_number)
         self.set_sub_category(sub_category)
@@ -65,9 +56,6 @@ class Component:
     
     def get_inventory_date(self):
         return self.__inventory_date
-    
-    def get_status(self):
-        return self.__status
     
     def get_guarantee(self):
         return self.__guarantee
@@ -92,10 +80,6 @@ class Component:
     def set_inventory_date(self, inventory_date: date):
         # if validate_date_time(inventory_date):
         self.__inventory_date = inventory_date
-
-    def set_status(self, status: bool):
-        if validate_status(status):
-            self.__status = status
 
     def set_guarantee(self, guarantee: int):
         if validate_guarantee(guarantee):
