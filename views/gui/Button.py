@@ -1,4 +1,4 @@
-from tkinter import Button as tkButton
+from tkinter import Button as tkButton, PhotoImage
 from tkinter.font import Font
 
 class Button(tkButton):
@@ -11,7 +11,9 @@ class Button(tkButton):
             background="white", foreground="black",
             activebackground="grey", activeforeground="black",
             borderwidth=0, 
-            font: Font=None, 
+            image: PhotoImage or str=None,
+            font: Font=None,
+            compound: str=None
         ):
         """Init the button
         
@@ -26,8 +28,22 @@ class Button(tkButton):
         activebackground
         activeforeground
         borderwidth : default 0
+        image : label image path (default None)
         font : a tk font type default None
+        compound : image and text relative position default None
         """
+        # Check if the backgroud is transparent
+        if background == "transparent":
+            background = master.background
+        
+        # Check if the label have image
+        self.label_image: PhotoImage = None
+        if image != None:
+            if isinstance(image, str):
+                self.label_image = PhotoImage(file=image)
+            else:
+                self.label_image = image
+
         super().__init__(
             master, 
             activebackground=activebackground, 
@@ -40,5 +56,7 @@ class Button(tkButton):
             text=text,
             width=width,
             height=height,
-            cursor="hand2"
+            cursor="hand2",
+            image=self.label_image,
+            compound=compound
         )

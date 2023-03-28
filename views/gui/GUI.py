@@ -3,6 +3,7 @@ from tkinter.font import Font
 
 from .Screen import Screen
 from .Navbar import Navbar
+from .Frame import Frame
 
 import os
 from ctypes import windll
@@ -57,13 +58,17 @@ class GUI(Tk):
             self.iconphoto(True, PhotoImage(file=icon))
 
         # Setup screen for navigation
-        self.screens: dict[str, Screen] = {}
-        self.current_screen: str = None
+        self.__screens: dict[str, Screen] = {}
+        self.__current_screen: str = None
         
         # Specify navbar and screen grid layout
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1, minsize=150)
         self.grid_columnconfigure(1, weight=9)
+
+        self.screens_frame = Frame(self)
+        self.screens_frame.grid(row=0, column=1, sticky="nsew")
+        self.screens_frame.pack_propagate(False)
 
     def init_navbar(self, navbar: Navbar):
         """Add navbar and place it in root window"""    
@@ -78,18 +83,18 @@ class GUI(Tk):
         screen_name : name of the screen,
         screen : the screen
         """
-        self.screens[screen_name] = screen
+        self.__screens[screen_name] = screen
 
     def change_screen(self, screen_name: str):
         """Change screen to a specified screen"""
-        self.hide_screen(self.current_screen)
+        self.hide_screen(self.__current_screen)
         self.show_screen(screen_name)
 
     def hide_screen(self, screen_name: str):
         """Hide a screen"""
-        self.screens[screen_name].grid_forget()
+        self.__screens[screen_name].pack_forget()
     
     def show_screen(self, screen_name: str):
         """Show a screen"""
-        self.screens[screen_name].grid(row=0, column=1, sticky=NSEW)
-        self.current_screen = screen_name
+        self.__screens[screen_name].pack(fill="both", expand=True)
+        self.__current_screen = screen_name

@@ -1,2 +1,3 @@
-from .MainScreen import MainScreen
+from .DashboardScreen import DashboardScreen
 from .ComponentScreen import ComponentScreen
+from .ManufacturerScreen import ManufacturerScreen

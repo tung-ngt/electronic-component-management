@@ -9,7 +9,9 @@ class Label(tkLabel):
             foreground="black",
             background="white",
             font: Font=None,
-            image: str=None,
+            image: PhotoImage or str=None,
+            cursor: str=None,
+            compound: str=None,
         ):
         """Init the label
         
@@ -21,21 +23,26 @@ class Label(tkLabel):
         background : background color (default white) specify transparent for transparent 
         font : a tk font (default None)
         image : label image path (default None)
+        cursor : the pointer cursor when hover default None
+        compound : image and text relative position default None
         """
         # Check if the backgroud is transparent
         background = master.background if background == "transparent" else background
+        
+        # Check if the label have imgage
+        self.label_image: PhotoImage = None
         if image != None:
-            self.label_image = PhotoImage(file=image)
-            super().__init__(
-                master,
-                image=self.label_image,
-                background=background,
-            )
-        else:
-            super().__init__(
-                master,
-                text=text,
-                background=background,
-                foreground=foreground,
-                font=font
-            )
+            if isinstance(image, str):
+                self.label_image = PhotoImage(file=image)
+            else:
+                self.label_image = image
+        
+        super().__init__(master,
+            text=text,
+            background=background,
+            foreground=foreground,
+            font=font,
+            cursor=cursor,
+            image=self.label_image,
+            compound=compound
+        )

@@ -1,6 +1,6 @@
 from gui import GUI
 from constants import COLORS, FONTS
-from screens import MainScreen, ComponentScreen
+from screens import DashboardScreen, ComponentScreen, ManufacturerScreen
 from components import Navbar
 
 class EComponentStoreManagementGUI(GUI):
@@ -19,8 +19,9 @@ class EComponentStoreManagementGUI(GUI):
         # Initialze navbar and specify links
         self.init_navbar(Navbar(self,
             [
-                ("main","Dashboard"),
-                ("components", "Components")
+                ("dashboard","Dashboard"),
+                ("components", "Components"),
+                ("manufacturers", "Manufacturers")
             ],
             self.change_screen,
             logo={
@@ -31,10 +32,11 @@ class EComponentStoreManagementGUI(GUI):
             }
         ))
 
-        self.add_screen("main", MainScreen(self))
-        self.add_screen("components", ComponentScreen(self))
+        self.add_screen("dashboard", DashboardScreen(self.screens_frame))
+        self.add_screen("components", ComponentScreen(self.screens_frame))
+        self.add_screen("manufacturers", ManufacturerScreen(self.screens_frame))
 
-        self.show_screen("main")
+        self.show_screen("dashboard")
 
     def on_close(self):
         print("Closed")

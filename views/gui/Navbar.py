@@ -28,6 +28,7 @@ class Navbar(Frame):
         logo : {logo_path: str, name: str, font: Font}
         """
         super().__init__(master, background=background)
+
         self.text_font = font
         self.text_color = text_color
         self.background = background
@@ -43,15 +44,17 @@ class Navbar(Frame):
         """Create and place the logo on top of the navbar"""
         # Create logo image
         if "logo_path" in logo.keys():
+            padding_bottom =  0 if "name" in logo.keys() else 30
             self.logo_label = Label(self, background="transparent", image=logo["logo_path"])
-            self.logo_label.pack(fill="x")
+            self.logo_label.pack(fill="x", pady=(0, padding_bottom))
         
         # Create logo name
         if "name" in logo.keys():
+            padding_top = 0 if "logo_path" in logo.keys() else 20
             font = logo["font"] if "font" in logo.keys() else None
             color = logo["color"] if "color" in logo.keys() else "black"
             self.name_label = Label(self, text=logo["name"], background="transparent", font=font, foreground=color)
-            self.name_label.pack(fill="x")
+            self.name_label.pack(fill="x", pady=(padding_bottom, 30))
 
     def __create_links(self):
         """Create links and place them on the navbar"""
@@ -77,6 +80,5 @@ class Navbar(Frame):
                 font=self.text_font,
                 borderwidth=0
             )
-            # link_widget.grid(row=i+1, column=0, sticky=EW, padx=10, pady=3)
             link_widget.pack(fill="x", padx=10, pady=3)
             self.link_widgets.append(link_widget)
