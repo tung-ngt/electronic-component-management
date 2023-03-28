@@ -43,7 +43,8 @@ class Component:
             inventory_date: date,
             status: bool,
             guarantee: int, 
-            part_number: str
+            part_number: str,
+            sub_categories: tuple(str)
         ):
         self.__mnf: Manufacturer = self.set_mnf(mnf)
         self.__price: float = self.set_price(price)
@@ -51,6 +52,7 @@ class Component:
         self.__status: bool = self.set_status(status)
         self.__guarantee: int = self.set_guarantee(guarantee)
         self.__part_number: str = self.set_part_number(part_number)
+        self.__sub_categories: tuple[str] = self.set_sub_cateories(sub_categories)
 
     # Getters
     def get_mnf(self):
@@ -70,6 +72,9 @@ class Component:
     
     def get_part_number(self):
         return self.__part_number
+    
+    def get_sub_categories(self):
+        return self.__sub_categories
     
     # Setters
     def set_mnf(self, mnf):
@@ -93,3 +98,7 @@ class Component:
 
     def set_part_number(self, part_number: str):
         self.__part_number = part_number
+
+    def set_sub_categories(self, sub_categories: tuple[str]):
+        self.__sub_categories = sub_categories
+    
