@@ -45,7 +45,8 @@ class Component:
             status: bool,
             guarantee: int, 
             part_number: str,
-            sub_category: str
+            sub_category: str,
+            stock: int,
         ):
         self.set_mnf_id(mnf_id)
         self.set_price(price)
@@ -77,6 +78,9 @@ class Component:
     def get_sub_category(self):
         return self.__sub_category
     
+    def get_stock(self):
+        return self.__stock
+    
     # Setters
     def set_mnf_id(self, mnf_id):
         self.__mnf_id = mnf_id
@@ -103,3 +107,5 @@ class Component:
     def set_sub_category(self, sub_category: str):
         self.__sub_category = sub_category
     
+    def set_stock(self, stock: int):
+        self.__stock = stock
