@@ -20,7 +20,7 @@ class ComponentScreen(Screen):
         
         self.navigate_subscreen("component_main")
 
-    def render_main(self, subscreen, props=None):
+    def render_main(self, subscreen: SubScreen, props=None):
 
         # Create component frame
         subscreen.content_frame = Frame(subscreen, background="transparent")
@@ -69,7 +69,7 @@ class ComponentScreen(Screen):
 
         subscreen.ic_img = Button(
             subscreen.box2,
-            lambda: print("ic"),
+            lambda: self.navigate_subscreen("list_view", {"selected": "ic"}),
             text="IC",
             image="./images/ic.png",
             background="transparent",
@@ -81,7 +81,7 @@ class ComponentScreen(Screen):
 
         subscreen.inductor_img = Button(
             subscreen.box3,
-            lambda: print("inductor"),
+            lambda: self.navigate_subscreen("list_view", {"selected": "inductor"}),
             text="Inductor",
             image="./images/inductor.png",
             background="transparent",
@@ -93,7 +93,7 @@ class ComponentScreen(Screen):
 
         subscreen.resistor_img = Button(
             subscreen.box4,
-            lambda: print("resistor"),
+            lambda: self.navigate_subscreen("list_view", {"selected": "resistor"}),
             text="Resistor",
             image="./images/resistor.png",
             background="transparent",
@@ -105,7 +105,7 @@ class ComponentScreen(Screen):
 
         subscreen.sensor_img = Button(
             subscreen.box5,
-            lambda: print("sensor"),
+            lambda: self.navigate_subscreen("list_view", {"selected": "sensor"}),
             text="Sensor",
             image="./images/sensor.png",
             background="transparent",
@@ -114,3 +114,5 @@ class ComponentScreen(Screen):
             activebackground=COLORS.SECONDARY
         )
         subscreen.sensor_img.pack(fill="both", expand=True, anchor="s")
+
+        subscreen.widgets_to_destroy.append(subscreen.content_frame)

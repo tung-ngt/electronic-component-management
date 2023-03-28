@@ -8,7 +8,7 @@ class ComponentListView(SubScreen):
     # Override render method
     def render(self, props=None):
         super().render()
-        self.title = props["selected"]
+        self.title = props["selected"].capitalize()
         self.label = Label(self, text=props["selected"], background="transparent")
         self.label.pack()
 
