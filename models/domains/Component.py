@@ -30,7 +30,7 @@ class Component:
 
     Attributes
     ----------
-    mnf : manufacturer
+    mnf_id : manufacturer id str
     price : price fo the part must be >= 0
     inventory_date : the date the part gets into inventory
     status : True (sold) False (have not sold)
@@ -39,7 +39,7 @@ class Component:
     sub_category : which sub category does the component belong in
     """
     def __init__(self,
-            mnf: Manufacturer,
+            mnf_id: str,
             price: float,
             inventory_date: date,
             status: bool,
@@ -47,17 +47,17 @@ class Component:
             part_number: str,
             sub_category: str
         ):
-        self.__mnf: Manufacturer = self.set_mnf(mnf)
-        self.__price: float = self.set_price(price)
-        self.__inventory_date: date = self.set_inventory_date(inventory_date)
-        self.__status: bool = self.set_status(status)
-        self.__guarantee: int = self.set_guarantee(guarantee)
-        self.__part_number: str = self.set_part_number(part_number)
-        self.__sub_category: str = self.set_sub_cateories(sub_category)
+        self.set_mnf_id(mnf_id)
+        self.set_price(price)
+        self.set_inventory_date(inventory_date)
+        self.set_status(status)
+        self.set_guarantee(guarantee)
+        self.set_part_number(part_number)
+        self.set_sub_category(sub_category)
 
     # Getters
-    def get_mnf(self):
-        return self.__mnf
+    def get_mnf_id(self):
+        return self.__mnf_id
     
     def get_price(self):
         return self.__price
@@ -78,8 +78,8 @@ class Component:
         return self.__sub_category
     
     # Setters
-    def set_mnf(self, mnf):
-        self.__mnf = mnf
+    def set_mnf_id(self, mnf_id):
+        self.__mnf_id = mnf_id
 
     def set_price(self, price: float):
         if validate_price(price):

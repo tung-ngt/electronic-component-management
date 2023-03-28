@@ -9,7 +9,7 @@ class IC(Component):
 
     Attributes
     ----------
-    mnf : manufacturer
+    mnf_id : manufacturer id
     price : price fo the part must be >= 0
     inventory_date : the date the part gets into inventory
     status : True (sold) False (have not sold)
@@ -18,7 +18,7 @@ class IC(Component):
     clock : clock speed in GHz
     """
     def __init__(self,
-            mnf: Manufacturer,
+            mnf_id: str,
             price: float,
             inventory_date: date,
             status: bool,
@@ -26,8 +26,8 @@ class IC(Component):
             part_number: str,
             clock: float
         ):
-        super().__init__(mnf, price, inventory_date, status, guarantee, part_number)
-        self.__clock: float = self.set_clock(clock)
+        super().__init__(mnf_id, price, inventory_date, status, guarantee, part_number)
+        self.set_clock(clock)
 
     # Getters
     def get_clock(self):

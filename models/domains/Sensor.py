@@ -9,7 +9,7 @@ class Sensor(Component):
 
     Attributes
     ----------
-    mnf : manufacturer
+    mnf_id : manufacturer id
     price : price fo the part must be >= 0
     inventory_date : the date the part gets into inventory
     status : True (sold) False (have not sold)
@@ -18,7 +18,7 @@ class Sensor(Component):
     sensor_type : type of the sensor (temperature, pH, conductivity, ...)
     """
     def __init__(self,
-            mnf: Manufacturer,
+            mnf_id: str,
             price: float,
             inventory_date: date,
             status: bool,
@@ -26,8 +26,8 @@ class Sensor(Component):
             part_number: str,
             sensor_type: str,
         ):
-        super().__init__(mnf, price, inventory_date, status, guarantee, part_number)
-        self.__sensor_type: str = self.set_sensor_type(sensor_type)
+        super().__init__(mnf_id, price, inventory_date, status, guarantee, part_number)
+        self.set_sensor_type(sensor_type)
         
     # Getters
     def get_sensor_type(self):

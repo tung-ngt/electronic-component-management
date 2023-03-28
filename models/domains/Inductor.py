@@ -9,7 +9,7 @@ class Inductor(Component):
     
     Attributes
     ----------
-    mnf : manufacturer
+    mnf_id : manufacturer id
     price : price fo the part must be >= 0
     inventory_date : the date the part gets into inventory
     status : True (sold) False (have not sold)
@@ -18,7 +18,7 @@ class Inductor(Component):
     inductance : inductance value
     """
     def __init__(self,
-            mnf: Manufacturer,
+            mnf_id: str,
             price: float,
             inventory_date: date,
             status: bool,
@@ -26,8 +26,8 @@ class Inductor(Component):
             part_number: str,
             inductance: float
         ):
-        super().__init__(mnf, price, inventory_date, status, guarantee, part_number)
-        self.__inductance: float = inductance
+        super().__init__(mnf_id, price, inventory_date, status, guarantee, part_number)
+        self.set_inductance(inductance)
 
     # Getters
     def get_inductance(self):

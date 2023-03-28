@@ -8,9 +8,9 @@ class Manufacturer:
     country : origin country of the manufacturer
     """
     def __init__(self, id: str, name: str, country: str):
-        self.__id: str = self.set_id(id)
-        self.__name: str = self.set_name(name)
-        self.__country: str = self.set_country(country)
+        self.set_id(id)
+        self.set_name(name)
+        self.set_country(country)
     
     # Getters
     def get_id(self):
