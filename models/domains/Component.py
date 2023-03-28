@@ -46,6 +46,7 @@ class Component:
         self.set_guarantee(guarantee)
         self.set_part_number(part_number)
         self.set_sub_category(sub_category)
+        self.set_stock(stock)
 
     # Getters
     def get_mnf_id(self):
