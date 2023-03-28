@@ -1,20 +1,8 @@
 import sqlite3
 
-category_search = {"mnf_id": "search",
-                    "part_number": "search", 
-                    "inventory_date": "range", 
-                    "price": "range",
-                    "guarantee": "range",
-                    "sub_category": "val",
-                    "stock": "range",
-                    "capacitance": "range",
-                    "clock": "range",
-                    "inductance": "range",
-                    "resistance": "range",
-                    "sensor_type": "val"
-                    }
-
 # Should change base on where the db file is
+
+
 def connection():
     conn = sqlite3.connect('electronic_store.db')
     c = conn.cursor()
@@ -28,13 +16,7 @@ def convert_list(items):
 def convert_condition(items: dict):
     x = ""
     for (column, value) in items.items():
-        if category_search[column] == "search":
-            x += f"REGEXP_LIKE({column}, \'{value}\', 'i') and"
-        elif category_search[column] == 'val':
-            x += f"{column} = \'{value}\' and"
-        else:
-            for sign, condition in value:
-                x += f"{column} {sign} {condition} and"
+        x += f"REGEXP_LIKE({column}, \'{value}\', 'i') and"
     x = x.rsplit(' ', 1)[0] + ";"
     return x
 
