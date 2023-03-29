@@ -1,4 +1,4 @@
-from gui.utils import Typography
+from ..gui.utils import Typography
 
 FONT_SETTINGS = {
     "paragraph": {

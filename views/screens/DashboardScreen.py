@@ -1,5 +1,5 @@
-from gui import Screen, Label, Frame, SubScreen
-from constants import COLORS, FONTS
+from ..gui import Screen, Label, Frame, SubScreen
+from ..constants import COLORS, FONTS
 
 class DashboardScreen(Screen):
     """App's main screen"""

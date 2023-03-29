@@ -1,6 +1,6 @@
-from gui import SubScreen, Label, Frame
+from ...gui import SubScreen, Label, Frame
 from tkinter import PhotoImage
-from constants import COLORS, FONTS
+from ...constants import COLORS, FONTS
 
 class ComponentDetailedView(SubScreen):
     """This class display details of a specific component"""

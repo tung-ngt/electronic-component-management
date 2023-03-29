@@ -1,5 +1,5 @@
-from gui import Screen, SubScreen, Label
-from constants import COLORS, FONTS
+from ..gui import Screen, SubScreen, Label
+from ..constants import COLORS, FONTS
 
 class ManufacturerScreen(Screen):
     """App's main screen"""

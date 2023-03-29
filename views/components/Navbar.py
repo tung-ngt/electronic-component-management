@@ -1,5 +1,5 @@
-from gui import Navbar as guiNav
-from constants import COLORS, FONTS
+from ..gui import Navbar as guiNav
+from ..constants import COLORS, FONTS
 from tkinter.font import Font as tkFont
 
 class Navbar(guiNav):

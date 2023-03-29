@@ -1,5 +1,5 @@
-from gui import Screen, Label, Frame, Button, SubScreen
-from constants import COLORS, FONTS
+from ...gui import Screen, Label, Frame, Button, SubScreen
+from ...constants import COLORS, FONTS
 from .ComponentListView import ComponentListView
 from .ComponentDetailedView import ComponentDetailedView
 

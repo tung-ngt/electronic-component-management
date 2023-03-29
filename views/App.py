@@ -1,7 +1,7 @@
-from gui import GUI
-from constants import COLORS, FONTS
-from screens import DashboardScreen, ComponentScreen, ManufacturerScreen
-from components import Navbar
+from .gui import GUI
+from .constants import COLORS, FONTS
+from .screens import DashboardScreen, ComponentScreen, ManufacturerScreen
+from .components import Navbar
 
 class EComponentStoreManagementGUI(GUI):
     """Electronic Componnet Store Infomation Mangament GUI APP"""

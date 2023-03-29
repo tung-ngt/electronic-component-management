@@ -1,7 +1,7 @@
-from gui import SubScreen, Label, Frame, Button, TreeView
+from ...gui import SubScreen, Label, Frame, Button, TreeView
 from tkinter import Entry
 from tkinter.ttk import Scrollbar, Style
-from constants import COLORS, FONTS
+from ...constants import COLORS, FONTS
 
 class ComponentListView(SubScreen):
     """This class display a table of component within a category"""
