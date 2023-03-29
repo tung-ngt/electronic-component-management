@@ -44,7 +44,7 @@ class Navbar(Frame):
         """Create and place the logo on top of the navbar"""
         # Create logo image
         if "logo_path" in logo.keys():
-            padding_bottom =  0 if "name" in logo.keys() else 30
+            padding_bottom =  0 if "name" in logo.keys() else 40
             self.logo_label = Label(self, background="transparent", image=logo["logo_path"])
             self.logo_label.pack(fill="x", pady=(0, padding_bottom))
         
@@ -54,7 +54,7 @@ class Navbar(Frame):
             font = logo["font"] if "font" in logo.keys() else None
             color = logo["color"] if "color" in logo.keys() else "black"
             self.name_label = Label(self, text=logo["name"], background="transparent", font=font, foreground=color)
-            self.name_label.pack(fill="x", pady=(padding_bottom, 30))
+            self.name_label.pack(fill="x", pady=(padding_bottom, 40))
 
     def __create_links(self):
         """Create links and place them on the navbar"""
