@@ -12,6 +12,7 @@ class Label(tkLabel):
             image: PhotoImage or str=None,
             cursor: str=None,
             compound: str=None,
+            justify: str = "center"
         ):
         """Init the label
         
@@ -25,6 +26,7 @@ class Label(tkLabel):
         image : label image path (default None)
         cursor : the pointer cursor when hover default None
         compound : image and text relative position default None
+        justify : text justify
         """
         # Check if the backgroud is transparent
         background = master.background if background == "transparent" else background
@@ -44,5 +46,6 @@ class Label(tkLabel):
             font=font,
             cursor=cursor,
             image=self.label_image,
-            compound=compound
+            compound=compound,
+            justify=justify
         )

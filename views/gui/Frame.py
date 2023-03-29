@@ -6,7 +6,9 @@ class Frame(tkFrame):
             master,
             width: int = 400,
             height: int = 400,
-            background = "white"
+            background = "white",
+            highlightbackground="white", 
+            highlightthickness=0
         ):
         """Init the frame
         
@@ -23,5 +25,7 @@ class Frame(tkFrame):
             master,
             width=width,
             height=height,
-            background=self.background
+            background=self.background,
+            highlightbackground=highlightbackground,
+            highlightthickness=highlightthickness
         )

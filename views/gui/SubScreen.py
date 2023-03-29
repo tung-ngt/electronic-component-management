@@ -19,15 +19,23 @@ class SubScreen(Frame):
         self.widgets_to_destroy: list[Widget] = []
 
     def clear_render(self):
+        """Destroy all child widget"""
         for widget in self.widgets_to_destroy:
             widget.destroy()
         self.widgets_to_destroy = []
 
     def render(self, props=None):
+        """Render the subscreen
+        
+        Paremeters
+        ----------
+        props : Optional props for rendering,
+        """
         self.clear_render()
         if self.render_function != None:
             self.render_function(self, props)
 
     def add_widgets_to_destroy(self, widgets):
+        """Add widget that need to be destroy when re-render"""
         for widget in widgets:
             self.widgets_to_destroy.append(widget)

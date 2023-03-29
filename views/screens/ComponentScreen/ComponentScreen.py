@@ -1,6 +1,7 @@
 from gui import Screen, Label, Frame, Button, SubScreen
 from constants import COLORS, FONTS
 from .ComponentListView import ComponentListView
+from .ComponentDetailedView import ComponentDetailedView
 
 class ComponentScreen(Screen):
     """Component screen
@@ -16,7 +17,8 @@ class ComponentScreen(Screen):
         )
 
         self.add_subscreen("component_main", SubScreen(self.main_frame, render_function=self.render_main))
-        self.add_subscreen("list_view", ComponentListView(self.main_frame))
+        self.add_subscreen("list_view", ComponentListView(self.main_frame, navigation_function=self.navigate_subscreen))
+        self.add_subscreen("detailed_view", ComponentDetailedView(self.main_frame))
         
         self.navigate_subscreen("component_main")
 

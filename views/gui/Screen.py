@@ -123,9 +123,19 @@ class Screen(Frame):
     def hide_subscreen(self, subscreen_name: str):
         self.__subscreens[subscreen_name].pack_forget()
 
-    def show_subscreen(self, subscreen_name: str, props=None):
-        """Show a subscreen"""
-        self.__subscreens[subscreen_name].render(props)
+    def show_subscreen(self, subscreen_name: str, props=None, back: bool=False):
+        """Show a subscreen
+        
+        Parameters
+        ----------
+        props : infomation pass to render function
+        back : bool if the subscreen is navigated to using back button
+        """
+        # Only re-render the subscreen if push onto the stack to retain state
+        if not back:
+            self.__subscreens[subscreen_name].render(props)
+
+        # Repack the subscreen
         self.__subscreens[subscreen_name].pack(fill="both", expand=True)
 
     def navigate_subscreen(self, subscreen_name: str, props=None):
@@ -150,7 +160,7 @@ class Screen(Frame):
         if len(self.__navigation_stack) == 1:
             return
         self.hide_subscreen(self.__navigation_stack.pop())
-        self.show_subscreen(self.__navigation_stack[-1], props)
+        self.show_subscreen(self.__navigation_stack[-1], props, back=True)
 
         # Update the title bar
         new_screen = self.__subscreens[self.__navigation_stack[-1]]

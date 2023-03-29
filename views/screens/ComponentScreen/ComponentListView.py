@@ -4,8 +4,18 @@ from tkinter.ttk import Scrollbar, Style
 from constants import COLORS, FONTS
 
 class ComponentListView(SubScreen):
-    def __init__(self, master):
+    """This class display a table of component within a category"""
+    def __init__(self, master, navigation_function):
+        """Init the view
+        
+        Parameters
+        ----------
+        master : master widget
+        navigation_function : function use to navigate
+        """
         super().__init__(master, background=COLORS.WHITE)
+        
+        self.navigate = navigation_function
 
     # Override render method
     def render(self, props=None):
@@ -41,8 +51,21 @@ class ComponentListView(SubScreen):
 
         self.filters_frame.label.pack(pady=20)
 
-        # specify which widget to destroy
+        # Specify the widget to destroy
         self.add_widgets_to_destroy([self.tree_view_frame, self.filters_frame])
+
+    def on_double_click(self, event):
+        """Handle double click event"""
+        tree_view: TreeView = self.tree_view_frame.table_frame.tree_view
+        region = tree_view.identify_region(event.x, event.y)
+
+        if region != "cell":
+            return
+
+        selected_iid = tree_view.focus()
+        values = tree_view.item(selected_iid)["values"]
+
+        self.navigate(subscreen_name="detailed_view", props=values)
 
     def build_tree_view(self):
         """Build the component tree view table"""
@@ -55,7 +78,6 @@ class ComponentListView(SubScreen):
  
         # Search bar
         search_bar_frame.entry = Entry(self.tree_view_frame.search_bar_frame, font=FONTS.get_font("paragraph"))
-        search_bar_frame.entry.pack(side="left", fill="y", padx=20, pady=20, ipadx=10, ipady=5)
         search_bar_frame.button = Button(
             self.tree_view_frame.search_bar_frame, 
             lambda: print("search"), 
@@ -68,7 +90,8 @@ class ComponentListView(SubScreen):
             compound="right",
             font=FONTS.get_font("paragraph", bold=True)
         )
-        search_bar_frame.button.pack(side="left", fill="y", pady=20, ipadx=5, ipady=2)
+        search_bar_frame.button.pack(side="right", fill="y", pady=20, ipadx=14, ipady=2, padx=20)
+        search_bar_frame.entry.pack(side="right", fill="y", pady=20, ipadx=10, ipady=5)
         
         # Create scroll bar
         s = Style(table_frame)
@@ -133,6 +156,9 @@ class ComponentListView(SubScreen):
 
         tree_view.pack(side="left", fill="both", expand=True)
         scroll_bar.pack(side="left", fill="y")
+
+        # Bind double click envent
+        tree_view.bind("<Double-1>", self.on_double_click)
+
         for i in range(30):
             tree_view.insert(parent="", index="end", values=("SCD123AB", "0.3", str(i), "Samsung", "20/12/2020", "Controller", "3000"))
-        # tree_view.insert(parent="", index="end", values=("SCD123AB", "0.3", "3", "Samsung", "20/12/2020", "Controller", "3000"))
