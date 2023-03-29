@@ -65,7 +65,8 @@ def deserialize(kind:str, myresult:list):
     '''
         Deserialize thing pulled from database
     '''
-    if kind == 'capacitor':
+    compo_list = ['capacitor', 'resistor', 'inductor', 'ic']
+    if kind in compo_list:
         mnf_id = myresult[index_compo['mnf_id']]
         price = myresult[index_compo['price']]
         inventory_date = myresult[index_compo['inventory_date']]    
@@ -74,27 +75,16 @@ def deserialize(kind:str, myresult:list):
         special_att = float(myresult[index_compo['special_att']])
         sub_category = myresult[index_compo['sub_category']]
         stock = myresult[index_compo['stock']]
-        return Capacitor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att)
-    elif kind == 'resistor':
-        mnf_id = myresult[index_compo['mnf_id']]
-        price = myresult[index_compo['price']]
-        inventory_date = myresult[index_compo['inventory_date']]    
-        guarantee = myresult[index_compo['guarantee']]
-        part_number = myresult[index_compo['part_number']]
-        special_att = float(myresult[index_compo['special_att']])
-        sub_category = myresult[index_compo['sub_category']]
-        stock = myresult[index_compo['stock']]
-        return Resistor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att)
-    elif kind == 'inductor':
-        mnf_id = myresult[index_compo['mnf_id']]
-        price = myresult[index_compo['price']]
-        inventory_date = myresult[index_compo['inventory_date']]    
-        guarantee = myresult[index_compo['guarantee']]
-        part_number = myresult[index_compo['part_number']]
-        special_att = float(myresult[index_compo['special_att']])
-        sub_category = myresult[index_compo['sub_category']]
-        stock = myresult[index_compo['stock']]
-        return Inductor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att)
+
+        if kind == 'capacitor':
+            return Capacitor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att)
+        elif kind == 'resistor':
+            return Resistor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att)
+        elif kind == 'inductor':
+            return Inductor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att)
+        elif kind == 'ic':
+            return IC(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att)
+
     elif kind == 'sensor':
         mnf_id = myresult[index_compo['mnf_id']]
         price = myresult[index_compo['price']]
@@ -105,16 +95,7 @@ def deserialize(kind:str, myresult:list):
         sub_category = myresult[index_compo['sub_category']]
         stock = myresult[index_compo['stock']]
         return Sensor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att)
-    elif kind == 'ic':
-        mnf_id = myresult[index_compo['mnf_id']]
-        price = myresult[index_compo['price']]
-        inventory_date = myresult[index_compo['inventory_date']]    
-        guarantee = myresult[index_compo['guarantee']]
-        part_number = myresult[index_compo['part_number']]
-        special_att = float(myresult[index_compo['special_att']])
-        sub_category = myresult[index_compo['sub_category']]
-        stock = myresult[index_compo['stock']]
-        return IC(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att)
+        
 
     elif kind == 'manufacturer':
         name = myresult[index_manu['name']]
@@ -241,24 +222,34 @@ def main():
 
     # Print out the list
     for item in cap_list:
-        print(item.get_part_number(), item.get_mnf_id())
+        print(item.get_part_number(), item.get_mnf_id(), item.get_price(), item.get_inventory_date(),
+              item.get_guarantee(), item.get_capacitance(), item.get_stock())
     for item in ic_list:
-        print(item.get_part_number(), item.get_mnf_id())
+        print(item.get_part_number(), item.get_mnf_id(), item.get_price(), item.get_inventory_date(),
+              item.get_guarantee(), item.get_clock(), item.get_stock())
     for item in res_list:
-        print(item.get_part_number(), item.get_mnf_id())
+        print(item.get_part_number(), item.get_mnf_id(), item.get_price(), item.get_inventory_date(),
+              item.get_guarantee(), item.get_resistance(), item.get_stock())
     for item in ind_list:
-        print(item.get_part_number(), item.get_mnf_id())
+        print(item.get_part_number(), item.get_mnf_id(), item.get_price(), item.get_inventory_date(),
+              item.get_guarantee(), item.get_inductance(), item.get_stock())
     for item in sen_list:
-        print(item.get_part_number(), item.get_mnf_id())
+        print(item.get_part_number(), item.get_mnf_id(), item.get_price(), item.get_inventory_date(),
+              item.get_guarantee(), item.get_sensor_type(), item.get_stock())
     for item in manu_list:
-        print(item.get_name(), item.get_id())
+        print(item.get_name(), item.get_id(), item.get_country())
     
 
 
 
 if __name__ == '__main__':
     main()
-'''    
+'''
+
+
+'''
+    Import section needs to be changed base on real project
+'''
 
 
 
