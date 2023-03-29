@@ -7,3 +7,5 @@
 [Back icons created by Ilham Fitrotul Hayat - Flaticon](https://www.flaticon.com/free-icons/back)
 
 [Component images are copied from](https://octopart.com/)
+
+<a href="https://www.flaticon.com/free-icons/magnifying-glass" title="magnifying glass icons">Magnifying glass icons created by Ryan Adryawan - Flaticon</a>

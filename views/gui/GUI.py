@@ -46,12 +46,11 @@ class GUI(Tk):
         self.title(title)   
 
         # Set screen dimensions     
+        self.geometry(geometry)
         if fullscreen:
             self.state("zoomed")
-        else:
-            self.geometry(geometry)
         self.resizable(resizable[0], resizable[1])
-        self.minsize(min_size[0], min_size[0])
+        self.minsize(min_size[0], min_size[1])
         
         # Set window icon
         if os.path.isfile(icon):
