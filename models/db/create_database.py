@@ -320,7 +320,7 @@ def delete_tables(con, tables):
         cur.execute(sql)
     cur.close()
 
-conn, cursor = get_connection()
+# conn, cursor = get_connection()
 
-delete_all_tables(conn)
-create_tables()
+# delete_all_tables(conn)
+# create_tables()
