@@ -39,10 +39,13 @@ class ComponentDetailedView(SubScreen):
         )
         self.part_number.pack(anchor="w", padx=20, pady=(0, 16))
 
-        self.inventory_date = Label(self.info_frame, 
-            text=f"Inventory date\n{props[4]}",
+        self.inventory_date_label = Label(self.info_frame, 
+            text="Inventory date",
             font=FONTS.get_font("paragraph", italic=True),
-            justify="right"
+        )
+        self.inventory_date = Label(self.info_frame, 
+            text=props[4],
+            font=FONTS.get_font("paragraph", bold=True),
         )
 
         self.price_label = Label(self.info_frame,
@@ -93,8 +96,9 @@ class ComponentDetailedView(SubScreen):
         # Placing box
         self.info_frame.grid_columnconfigure(0, weight=1)
         self.info_frame.grid_columnconfigure(1, weight=1)
+        self.info_frame.grid_rowconfigure(7, weight=1)
+
         self.part_number_box.grid(row=0, column=0, sticky="w", pady=(0,40))
-        self.inventory_date.grid(row=0, column=1, sticky="e", pady=(0,40))
 
         self.price_label.grid(row=1, column=0, sticky="w", pady=(40,0))
         self.price.grid(row=2, column=0, sticky="w", pady=(0,20))
@@ -106,6 +110,8 @@ class ComponentDetailedView(SubScreen):
         self.guarantee.grid(row=4, column=1, sticky="w", pady=(0,20))
         self.manufacturer_label.grid(row=5, column=0, columnspan=2, sticky="w", pady=(20,0))
         self.manufacturer.grid(row=6, column=0, columnspan=2, sticky="w", pady=(0,20))
+        self.inventory_date_label.grid(row=7, column=0, sticky="sw" )
+        self.inventory_date.grid(row=8, column=0, sticky="w")
         
         # Specify the widgets to destroy
         self.add_widgets_to_destroy([self.info_frame, self.action_frame])

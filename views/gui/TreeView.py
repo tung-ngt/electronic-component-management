@@ -37,7 +37,7 @@ class TreeView(tkTreeView):
     def config_styles(self,
             heading:dict[str, str],
             row: dict[str, str],
-            selecteđ: dict[str, str]
+            selected: dict[str, str]
         ):
         """Config the table styles
         
@@ -75,8 +75,8 @@ class TreeView(tkTreeView):
             rowheight=row.get("rowheight", 20),
         )
         self.style.map(self.style_name,
-            background=[("selected", selecteđ.get("background", "blue"))],
-            foreground=[("selected", selecteđ.get("foreground", "white"))]
+            background=[("selected", selected.get("background", "blue"))],
+            foreground=[("selected", selected.get("foreground", "white"))]
         )
 
     def config_headings(self, configs: dict[str, dict[str, str]]):

@@ -13,15 +13,17 @@ class SubScreen(Frame):
         ):
         super().__init__(master, background=background)
         self.render_function = render_function
-        self.title  = title
+        self.title = title
         self.title_bar_foreground = title_bar_foreground
         self.title_image = title_image
         self.widgets_to_destroy: list[Widget] = []
+        self.states = {}
 
     def clear_render(self):
         """Destroy all child widget"""
         for widget in self.widgets_to_destroy:
             widget.destroy()
+            self.states = {}
         self.widgets_to_destroy = []
 
     def render(self, props=None):

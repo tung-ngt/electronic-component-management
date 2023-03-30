@@ -74,3 +74,5 @@ def deserialize(kind:str, myresult:list):
         ID = myresult[index_manu['ID']]
         country = myresult[index_manu['country']]
         return Manufacturer(name, ID, country)
+    
+

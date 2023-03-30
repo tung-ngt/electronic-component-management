@@ -7,7 +7,7 @@ System for managing electronic components
 ---
 
 ## Member:
-- Nguyễn Thanh Tùng - BI12-473 (views, app-flow design and report)
+- Nguyễn Thanh Tùng - BI12-473 (views, mvc coordination, appflow design)
 - Đoàn Hoài Nhi - BI12-338 (models design)
 - Nguyễn Phan Gia Bảo - BI12-048 (controllers)
 - Chu Bảo Minh - BI12-281 (models serializer and connector)
