@@ -74,52 +74,6 @@ def main():
     delete_all_tables(conn)
     create_tables()
   
-    # Create a new manufacturer
-    manu_id_list = []
-    manu1 = Manufacturer('1111', 'm', 'vn')
-    manu_id_list.append(manu1.get_id())
-    push(manu1)
-    manu2 = Manufacturer('2222', 'm', 'vn')
-    manu_id_list.append(manu2.get_id())
-    push(manu2)
-    manu3 = Manufacturer('3333', 'm', 'vn')
-    manu_id_list.append(manu3.get_id())
-    push(manu3)
-    manu4 = Manufacturer('4444', 'm', 'vn')
-    manu_id_list.append(manu4.get_id())
-    push(manu4)
-    manu5 = Manufacturer('5555', 'm', 'vn')
-    manu_id_list.append(manu5.get_id())
-    push(manu5)
-
-
-    # Create a new components
-    mnf_id = '1111'
-    if mnf_id in manu_id_list:
-        cap = Capacitor(mnf_id, 20.0, '2020-01-01', 1, '1', 'g', 1, 1.0)
-        push(cap)
-
-    mnf_id = '2222'
-    if mnf_id in manu_id_list:
-        ic = IC(mnf_id, 20.0, '2020-01-01', 1, '2', 'h', 2, 2.0)
-        push(ic)
-
-    mnf_id = '3333'
-    if mnf_id in manu_id_list:
-        res = Resistor(mnf_id, 20.0, '2020-01-01', 1, '3', 'i', 3, 3.0)
-        push(res)
-
-    mnf_id = '4444'
-    if mnf_id in manu_id_list:
-        ind = Inductor(mnf_id, 20.0, '2020-01-01', 1, '4', 'j', 4, 4.0)
-        push(ind)
-
-    mnf_id = '5555'
-    if mnf_id in manu_id_list:
-        sen = Sensor(mnf_id, 20.0, '2020-01-01', 1, '5', 'k', 5, 'heat')
-        push(sen)
-
-    
     # Pull from database
     cap_list = pull('capacitor')
     ic_list = pull('ic')
