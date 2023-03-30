@@ -1,5 +1,5 @@
-import sqlite3
 import numbers
+from models.db.Utils_database import get_connection
 
 category_search = {"mnf_id": "search",
                     "part_number": "search", 
@@ -15,16 +15,10 @@ category_search = {"mnf_id": "search",
                     "sensor_type": "val_list"
                     }
 
-# Should change base on where the db file is
-def connection():
-    conn = sqlite3.connect('electronic_store.db')
-    c = conn.cursor()
-    return (conn, c)
 
+def convert_list(items):
 
-def convert_list(table, items):
-
-    x = f"insert into {table} values ("
+    x = "("
     for i in items:
         if isinstance(i, numbers.Number):
             x += str(i) + ","
@@ -45,18 +39,18 @@ def convert_condition(items: dict):
             x+= f" {column} in ({convert_list(value)}) and"
         else:
             for sign, condition in value:
-                x += f"{column} {sign} {condition} and "
+                x += f" {column} {sign} {condition} and"
     x = x.rsplit(' ', 1)[0] + ";"
     return x
 
 
-def filter_component(table: str, condition: dict) -> None:
-    conn, c = connection()
+def filter_component(table: str, condition: dict):
+    conn, c = get_connection('electronic_store_with_classes')
     query = f"""select * from {table}"""
     if len(condition) > 0:
-        query += f"""where {convert_condition(condition)}"""
+        query += f" where {convert_condition(condition)}"
 
-    # print(query)
+    #print(query)
     c.execute(query)
     items = c.fetchall()
     conn.close()
@@ -64,7 +58,7 @@ def filter_component(table: str, condition: dict) -> None:
 
 
 def count_condition(table: str, condition: dict):
-    conn, c = connection()
+    conn, c = get_connection('electronic_store_with_classes')
     query = f"""select count(*) from {table}"""
     if len(condition) > 0:
         query += f""" where {convert_condition(condition)}"""

@@ -1,24 +1,21 @@
-from os import path
-import sys
-path_to_models = path.abspath(r'C:\Users\ciltr\Desktop\USTH\Semester 2\Python\Python project\electronic-component-management\models')
-sys.path.append(path_to_models)
-from db.Utils_database import get_connection
-from domains import Component
-from serializers.Serializer import serialize, deserialize
+from models.db.Utils_database import get_connection
+from models.domains import Component
+from models.serializers.Serializer import serialize, deserialize
+from controllers.component_controller import filter_component, count_condition
 
 '''
     Import section needs to be changed base on real project
 '''
 
-# Connect to database
-conn, mycursor  = get_connection('electronic_store_with_classes')
+
 
 # Push and pull from database
 def push(thing):
     '''
         Push thing to database                 
     '''
-
+    # Connect to database
+    conn, mycursor  = get_connection('electronic_store_with_classes')
     mycursor = conn.cursor()
     if isinstance(thing, Component):
         mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock = serialize(thing)
@@ -51,26 +48,22 @@ def push(thing):
     mycursor.close()
 
 
-def pull(kind : str, option : str = ""):
+def pull(kind : str, option : dict = {}):
     '''
         Pull things from database
     '''
-
+    # Connect to database
+    conn, mycursor  = get_connection('electronic_store_with_classes')
     kind = kind.lower()
     mycursor = conn.cursor()
+    myresult = filter_component(kind, option)
 
-    if option != "":
-        mycursor.execute(f"SELECT * FROM {kind} where {option}")
-    else:
-        mycursor.execute(f"SELECT * FROM {kind}")
-
-    myresult = mycursor.fetchall()
     conn.commit()
     mycursor.close()
     items = []
     for item in myresult:
         items.append(deserialize(kind, item))
-    return items
+    return count_condition(kind, option)[0][0], items
         
   
 

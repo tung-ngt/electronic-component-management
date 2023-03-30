@@ -1,9 +1,4 @@
-from os import path
-import sys
-path_to_models = path.abspath(r'C:\Users\ciltr\Desktop\USTH\Semester 2\Python\Python project\electronic-component-management\models')
-sys.path.append(path_to_models)
-from db.create_database import delete_all_tables, create_tables
-from domains import Component, Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
+from models.domains import Component, Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
 
 '''
     Import section needs to be changed base on real project

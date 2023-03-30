@@ -1,11 +1,7 @@
 import random
-from db.Utils_database import get_connection
-from pushpull.Pushpulltosql import push
-from os import path
-import sys
-path_to_models = path.abspath(r'C:\Users\ciltr\Desktop\USTH\Semester 2\Python\Python project\electronic-component-management\models')
-sys.path.append(path_to_models)
-from domains import Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
+from models.domains import Component, Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
+from models.db.Utils_database import get_connection
+from models.pushpull.Pushpulltosql import push
 
 
 #Manufacturer:
@@ -220,6 +216,7 @@ def create_tables():
     for row in capacitor:
         push(row)
 
+
     # Create table for resistor with same value as component but with resistance
     mycursor.execute(
         """
@@ -283,7 +280,7 @@ def create_tables():
             price REAL NOT NULL,
             inventory_date TEXT NOT NULL,
             guarantee INT NOT NULL,
-            clock VARCHAR(255) NOT NULL,
+            clock REAL NOT NULL,
             sub_category VARCHAR(255) NOT NULL,
             stock BIGINT NOT NULL,
             FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
@@ -293,3 +290,8 @@ def create_tables():
         push(row)
 
     mydb.commit()
+
+
+mydb, mycursor = get_connection('electronic_store_with_classes')
+delete_all_tables(mydb)
+create_tables()
