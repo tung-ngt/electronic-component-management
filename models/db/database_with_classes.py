@@ -1,5 +1,6 @@
 import random
-import sqlite3
+from db.Utils_database import get_connection
+from pushpull.Pushpulltosql import push
 from os import path
 import sys
 path_to_models = path.abspath(r'C:\Users\ciltr\Desktop\USTH\Semester 2\Python\Python project\electronic-component-management\models')
@@ -8,8 +9,6 @@ from domains import Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
 
 
 #Manufacturer:
-
-
 m1 = Manufacturer("M001", "AVX Corporation", "United States")
 m2 = Manufacturer("M002", "KEMET Corporation", "United States")
 m3 = Manufacturer("M003", "Yageo Corporation", "Taiwan")
@@ -44,6 +43,7 @@ c17 = Capacitor(m9.get_id(), 0.18, "2022-08-08", 18, "T491B106K016AT", "Tantalum
 c18 = Capacitor(m9.get_id(), 0.30, "2022-10-20", 18, "T491C226K016AT", "Tantalum", 300, 22.0)
 c19 = Capacitor(m10.get_id(), 0.13, "2022-07-01", 24, "UVR1E102MHA", "Aluminum Electrolytic", 400, 1000.0)
 c20 = Capacitor(m10.get_id(), 0.20, "2022-09-15", 24, "UVR1V102MPD", "Aluminum Electrolytic", 300, 1000.0)
+
 capacitor = [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17, c18, c19, c20]
 
 
@@ -70,6 +70,7 @@ r17 = Resistor(m9.get_id(), 0.10, "2022-09-20", 18, "YAGEO-RC0805FR-074K7L", "Th
 r18 = Resistor(m10.get_id(), 0.15, "2022-08-08", 24, "Yageo-RC0603JR-0710KL", "Thick Film", 500, 10.0)
 r19 = Resistor(m10.get_id(), 0.30, "2022-10-20", 24, "Yageo-RC0603JR-072K2L", "Thick Film", 300, 2.2)
 r20 = Resistor(m2.get_id(), 0.08, "2022-07-20", 36, "CRCW1206150RFKTA", "Thick Film", 500, 100.0)
+
 resistor = [r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20]
 
 
@@ -88,13 +89,13 @@ l10 = Inductor(m5.get_id(), 0.40, "2022-09-05", 36, "TDK-NLCV32T-4R7K-PF", "Mult
 l11 = Inductor(m6.get_id(), 1.50, '2021-07-13', 2, 'IND-11', 'High-frequency', 1500, 1.2)
 l12 = Inductor(m1.get_id(), 0.75, '2022-01-25', 1, 'IND-12', 'Power', 800, 4.7)
 l13 = Inductor(m5.get_id(), 1.20, '2022-04-08', 2, 'IND-13', 'High-frequency', 1000, 2.2)
-l14 = Inductor(mnf_id=m4.get_id(), price=0.95, inventory_date='2022-09-19', guarantee=1, part_number='IND-14', sub_category='Power', stock=1200, inductance=6.8)
-l15 = Inductor(mnf_id=m2.get_id(), price=0.80, inventory_date='2022-11-28', guarantee=1, part_number='IND-15', sub_category='RF', stock=500, inductance=0.47)
-l16 = Inductor(mnf_id=m3.get_id(), price=0.60, inventory_date='2022-12-05', guarantee=1, part_number='IND-16', sub_category='Power', stock=1500, inductance=10.0)
-l17 = Inductor(mnf_id=m10.get_id(), price=1.25, inventory_date='2023-01-14', guarantee=2, part_number='IND-17', sub_category='High-frequency', stock=800, inductance=1.0)
-l18 = Inductor(mnf_id=m8.get_id(), price=1.40, inventory_date='2023-02-23', guarantee=2, part_number='IND-18', sub_category='RF', stock=1000, inductance=0.33)
-l19 = Inductor(mnf_id=m7.get_id(), price=0.90, inventory_date='2023-03-06', guarantee=1, part_number='IND-19', sub_category='Power', stock=1200, inductance=2.7)
-l20 = Inductor(mnf_id=m9.get_id(), price=1.00, inventory_date='2023-03-22', guarantee=1, part_number='IND-20', sub_category='High-frequency', stock=500, inductance=0.68)
+l14 = Inductor(m4.get_id(), 0.95, '2022-09-19', 1, 'IND-14', 'Power', 1200, 6.8)
+l15 = Inductor(m2.get_id(), 0.80, '2022-11-28', 1, 'IND-15', 'RF', 500, 0.47)
+l16 = Inductor(m3.get_id(), 0.60, '2022-12-05', 1, 'IND-16', 'Power', 1500, 10.0)
+l17 = Inductor(m10.get_id(), 1.25, '2023-01-14', 2, 'IND-17', 'High-frequency', 800, 1.0)
+l18 = Inductor(m8.get_id(), 1.40, '2023-02-23', 2, 'IND-18', 'RF', 1000, 0.33)
+l19 = Inductor(m7.get_id(), 0.90, '2023-03-06', 1, 'IND-19', 'Power', 1200, 2.7)
+l20 = Inductor(m9.get_id(), 1.00, '2023-03-22', 1, 'IND-20', 'High-frequency', 500, 0.68)
 
 inductor = [l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19, l20]
 
@@ -118,8 +119,9 @@ ic15 = IC(m5.get_id(), 1.25, "2022-02-05", 2, "NE555N", "Timer", 35, 0.5)
 ic16 = IC(m6.get_id(), 2.65, "2022-03-25", 1, "MAX7219CNG", "LED Display Driver", 15, 8.0)
 ic17 = IC(m7.get_id(), 0.95, "2022-02-15", 2, "2N3904", "Transistor", 65, 0.2)
 ic18 = IC(m7.get_id(), 2.50, "2022-06-18", 3, "BRM4555C-T", "Clock Generators & Support Products", 50, 12.5)
-ic19 = IC(mnf_id=m7.get_id(), price=0.75, inventory_date="2022-11-18", guarantee=3, part_number="BD9123F", sub_category="Motor Control", stock=200, clock=8.0)
-ic20 = IC(mnf_id=m10.get_id(), price=0.35, inventory_date="2022-12-06", guarantee=2, part_number="ST485BN", sub_category="Interface", stock=500, clock=16.0)
+ic19 = IC(m7.get_id(), 0.75, "2022-11-18", 3, "BD9123F", "Motor Control", 200, 8.0)
+ic20 = IC(m10.get_id(), 0.35, "2022-12-06", 2, "ST485BN", "Interface", 500, 16.0)
+
 ic = [ic1, ic2, ic3, ic4, ic5, ic6, ic7, ic8, ic9, ic10, ic11, ic12, ic13, ic14, ic15, ic16, ic17, ic18, ic19, ic20]
 
 
@@ -144,7 +146,8 @@ s16 = Sensor(m4.get_id(), 1.75, "2022-08-22", 1, "BP320", "Barometric Pressure S
 s17 = Sensor(m5.get_id(), 3.99, "2022-09-07", 3, "HTH1", "Humidity and Temperature Sensor", 150, "Humidity and Temperature")
 s18 = Sensor(m6.get_id(), 0.99, "2022-10-02", 2, "LS100", "Light Sensor", 200, "Light")
 s19 = Sensor(m7.get_id(), 2.25, "2022-11-10", 1, "MS200", "Magnetic Sensor", 100, "Magnetic")
-s20 = Sensor(m8.get_id(), 1.50, "2022-12-25", 2, "TS300", "Touch Sensor", 50, "Capacitive Touch")
+s20 = Sensor(m8.get_id(), 1.50, "2022-12-25", 2, "TS300", "Touch Sensor", 50, "Capacitive Touch")   
+
 sensor = [s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20]
 
 # Shuffle the lists
@@ -154,15 +157,35 @@ random.shuffle(inductor)
 random.shuffle(resistor)         
 random.shuffle(capacitor)
 
-def get_connection():
-    conn = sqlite3.connect('models/db/electronic_store_with_classes.db')
-    cursor = conn.cursor()
-    return conn, cursor
 
+TABLE_PARAMETER = "{TABLE_PARAMETER}"
+DROP_TABLE_SQL = f"DROP TABLE {TABLE_PARAMETER};"
+GET_TABLES_SQL = "SELECT name FROM sqlite_schema WHERE type='table';"
+
+
+def delete_all_tables(con):
+    tables = get_tables(con)
+    delete_tables(con, tables)
+
+
+def get_tables(con):
+    cur = con.cursor()
+    cur.execute(GET_TABLES_SQL)
+    tables = cur.fetchall()
+    cur.close()
+    return tables
+
+
+def delete_tables(con, tables):
+    cur = con.cursor()
+    for table, in tables:
+        sql = DROP_TABLE_SQL.replace(TABLE_PARAMETER, table)
+        cur.execute(sql)
+    cur.close()
 
 def create_tables():
     # create a connection to the database
-    mydb, mycursor = get_connection()
+    mydb, mycursor = get_connection('electronic_store_with_classes')
     # create a cursor to execute SQL queries
 
     # create the manufacturer table
@@ -188,7 +211,7 @@ def create_tables():
             price REAL NOT NULL, 
             inventory_date TEXT NOT NULL, 
             guarantee INT NOT NULL,
-            capacitance VARCHAR(255) NOT NULL,
+            capacitance REAL NOT NULL,
             sub_category VARCHAR(255) NOT NULL,
             stock BIGINT NOT NULL,
             FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
@@ -206,7 +229,7 @@ def create_tables():
             price REAL NOT NULL, 
             inventory_date TEXT NOT NULL, 
             guarantee INT NOT NULL, 
-            resistance VARCHAR(255) NOT NULL,
+            resistance REAL NOT NULL,
             sub_category VARCHAR(255) NOT NULL,
             stock BIGINT NOT NULL,
             FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
@@ -224,7 +247,7 @@ def create_tables():
             price REAL NOT NULL, 
             inventory_date TEXT NOT NULL, 
             guarantee INT NOT NULL,
-            inductance VARCHAR(255) NOT NULL,
+            inductance REAL NOT NULL,
             sub_category VARCHAR(255) NOT NULL,
             stock BIGINT NOT NULL,
             FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
@@ -270,32 +293,3 @@ def create_tables():
         push(row)
 
     mydb.commit()
-
-
-TABLE_PARAMETER = "{TABLE_PARAMETER}"
-DROP_TABLE_SQL = f"DROP TABLE {TABLE_PARAMETER};"
-GET_TABLES_SQL = "SELECT name FROM sqlite_schema WHERE type='table';"
-
-
-def delete_all_tables(con):
-    tables = get_tables(con)
-    delete_tables(con, tables)
-
-
-def get_tables(con):
-    cur = con.cursor()
-    cur.execute(GET_TABLES_SQL)
-    tables = cur.fetchall()
-    cur.close()
-    return tables
-
-
-def delete_tables(con, tables):
-    cur = con.cursor()
-    for table, in tables:
-        sql = DROP_TABLE_SQL.replace(TABLE_PARAMETER, table)
-        cur.execute(sql)
-    cur.close()
- 
-
-from pushpull.Pushpulltosql import push
