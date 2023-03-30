@@ -1,12 +1,13 @@
 import random
 from db.Utils_database import get_connection
 from pushpull.Pushpulltosql import push
-from os import path
-import sys
-path_to_models = path.abspath(r'C:\Users\ciltr\Desktop\USTH\Semester 2\Python\Python project\electronic-component-management\models')
-sys.path.append(path_to_models)
-from domains import Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
 
+if __name__ == "__main__":
+    import sys
+    sys.path.append("..")
+    from domains import Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
+else:
+    from ..domains import Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
 
 #Manufacturer:
 m1 = Manufacturer("M001", "AVX Corporation", "United States")

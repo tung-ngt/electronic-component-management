@@ -1,13 +1,12 @@
-from os import path
-import sys
-path_to_models = path.abspath(r'C:\Users\ciltr\Desktop\USTH\Semester 2\Python\Python project\electronic-component-management\models')
-sys.path.append(path_to_models)
-from db.create_database import delete_all_tables, create_tables
-from domains import Component, Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
-
-'''
-    Import section needs to be changed base on real project
-'''
+if __name__ == "__main__":
+    # Import section needs to be changed base on real project
+    import sys
+    sys.path.append("..")
+    from db.create_database import delete_all_tables, create_tables
+    from domains import Component, Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
+else:
+    from ..db.create_database import delete_all_tables, create_tables
+    from ..domains import Component, Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
 
 # Index
 index_compo = {'part_number' : 0, 'mnf_id' : 1, 'price' : 2, 
@@ -79,3 +78,5 @@ def deserialize(kind:str, myresult:list):
         ID = myresult[index_manu['ID']]
         country = myresult[index_manu['country']]
         return Manufacturer(name, ID, country)
+    
+
