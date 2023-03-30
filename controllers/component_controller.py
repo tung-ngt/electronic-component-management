@@ -1,17 +1,18 @@
 import sqlite3
+import numbers
 
 category_search = {"mnf_id": "search",
                     "part_number": "search", 
                     "inventory_date": "range", 
                     "price": "range",
                     "guarantee": "range",
-                    "sub_category": "val",
+                    "sub_category": "val_list",
                     "stock": "range",
                     "capacitance": "range",
                     "clock": "range",
                     "inductance": "range",
                     "resistance": "range",
-                    "sensor_type": "val"
+                    "sensor_type": "val_list"
                     }
 
 # Should change base on where the db file is
@@ -21,20 +22,30 @@ def connection():
     return (conn, c)
 
 
-def convert_list(items):
-    return ",".join(f"{w}" for w in items)
+def convert_list(table, items):
+
+    x = f"insert into {table} values ("
+    for i in items:
+        if isinstance(i, numbers.Number):
+            x += str(i) + ","
+        else:
+            x += i + ","
+    x = x[:-1] + ")"
+    return x
 
 
 def convert_condition(items: dict):
     x = ""
     for (column, value) in items.items():
         if category_search[column] == "search":
-            x += f"REGEXP_LIKE({column}, \'{value}\', 'i') and"
+            x += f" REGEXP_LIKE({column}, \'{value}\', 'i') and"
         elif category_search[column] == 'val':
-            x += f"{column} = \'{value}\' and"
+            x += f" {column} = \'{value}\' and"
+        elif category_search[column] == "val_list":
+            x+= f" {column} in ({convert_list(value)}) and"
         else:
             for sign, condition in value:
-                x += f"{column} {sign} {condition} and"
+                x += f"{column} {sign} {condition} and "
     x = x.rsplit(' ', 1)[0] + ";"
     return x
 
@@ -61,3 +72,5 @@ def count_condition(table: str, condition: dict):
     items = c.fetchall()
     conn.close()
     return items
+
+

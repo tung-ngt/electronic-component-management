@@ -1,6 +1,7 @@
+import random
 import sqlite3
 
-#Sample manufacturers
+# Sample manufacturers
 
 manufacturer = [
     ['1', 'Apple', 'USA'],
@@ -16,7 +17,7 @@ manufacturer = [
 ]
 
 
-#Sample capacitors
+# Sample capacitors
 
 capacitor = [
     ['C1', '1', 1.23, '2022-05-07', 6, 0.001, 'Ceramic', 3000],
@@ -42,7 +43,7 @@ capacitor = [
 ]
 
 
-#Sample resistors
+# Sample resistors
 
 resistor = [
     ['R1', '5', 0.45, '2022-05-07', 6, 1000, 'Carbon Film', 3000],
@@ -67,7 +68,7 @@ resistor = [
     ['R20', '7', 1.11, '2023-12-06', 2, 5600, 'Metal Oxide Film', 4000]
 ]
 
-#Sample inductors
+# Sample inductors
 
 inductor = [
     ['L1', '2', 1.56, '2022-05-07', 6, 0.1, 'Air Core', 3000],
@@ -93,7 +94,7 @@ inductor = [
 ]
 
 
-#Sample ICs
+# Sample ICs
 
 IC = [
     ['IC1', '1', 2.34, '2022-05-08', 6, 50, 'Microcontroller', 3000],
@@ -119,7 +120,7 @@ IC = [
 ]
 
 
-# Sample sensors 
+# Sample sensors
 
 sensor = [
     ['S1', '1', 2.34, '2022-01-01', 6, 'Temperature', 'Thermocouple', 2500],
@@ -144,7 +145,6 @@ sensor = [
     ['S20', '10', 3.45, '2023-08-03', 8, 'Pressure', 'Capacitive', 4000]
 ]
 
-import random
 
 # Shuffle the lists
 random.shuffle(sensor)
@@ -153,12 +153,16 @@ random.shuffle(inductor)
 random.shuffle(resistor)
 random.shuffle(capacitor)
 
+def get_connection():
+    conn = sqlite3.connect('models/db/electronic_store.db')
+    cursor = conn.cursor()
+    return conn, cursor
+
 
 def create_tables():
     # create a connection to the database
-    mydb = sqlite3.connect('electronic_store.db')
+    mydb, mycursor = get_connection()
     # create a cursor to execute SQL queries
-    mycursor = mydb.cursor()
 
     # create the manufacturer table
     mycursor.execute(
@@ -177,7 +181,6 @@ def create_tables():
             INSERT INTO manufacturer (id, name, country) VALUES (?, ?, ?);
             ''', row
         )
-   
 
     # Create table for capacitor with same value as component but with capacitance
     mycursor.execute(
@@ -222,7 +225,6 @@ def create_tables():
             INSERT INTO resistor (part_number, mnf_id, price, inventory_date, guarantee, resistance, sub_category, stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
             ''', row
         )
-
 
     # Create table for inductor with same value as component but with inductance
     mycursor.execute(
@@ -318,3 +320,7 @@ def delete_tables(con, tables):
         cur.execute(sql)
     cur.close()
 
+conn, cursor = get_connection()
+
+delete_all_tables(conn)
+create_tables()
