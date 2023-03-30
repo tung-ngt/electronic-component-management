@@ -292,6 +292,3 @@ def create_tables():
     mydb.commit()
 
 
-mydb, mycursor = get_connection('electronic_store_with_classes')
-delete_all_tables(mydb)
-create_tables()
