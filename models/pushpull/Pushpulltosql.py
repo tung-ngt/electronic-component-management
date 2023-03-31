@@ -15,7 +15,7 @@ def push(thing):
         Push thing to database                 
     '''
     # Connect to database
-    conn, mycursor  = get_connection('electronic_store_with_classes')
+    conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
     mycursor = conn.cursor()
     if isinstance(thing, Component):
         mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock = serialize(thing)
@@ -53,7 +53,7 @@ def pull(kind : str, option : dict = {}):
         Pull things from database
     '''
     # Connect to database
-    conn, mycursor  = get_connection('electronic_store_with_classes')
+    conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
     kind = kind.lower()
     mycursor = conn.cursor()
     myresult = filter_component(kind, option)
