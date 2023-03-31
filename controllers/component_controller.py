@@ -67,5 +67,3 @@ def count_condition(table: str, condition: dict):
     items = c.fetchall()
     conn.close()
     return items
-
-
