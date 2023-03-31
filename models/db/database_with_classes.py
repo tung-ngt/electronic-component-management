@@ -1,13 +1,8 @@
 import random
-from db.Utils_database import get_connection
-from pushpull.Pushpulltosql import push
+from models.domains import Component, Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
+from models.db.Utils_database import get_connection
+from models.pushpull.Pushpulltosql import push
 
-if __name__ == "__main__":
-    import sys
-    sys.path.append("..")
-    from domains import Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
-else:
-    from ..domains import Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
 
 #Manufacturer:
 m1 = Manufacturer("M001", "AVX Corporation", "United States")
@@ -221,6 +216,7 @@ def create_tables():
     for row in capacitor:
         push(row)
 
+
     # Create table for resistor with same value as component but with resistance
     mycursor.execute(
         """
@@ -284,7 +280,7 @@ def create_tables():
             price REAL NOT NULL,
             inventory_date TEXT NOT NULL,
             guarantee INT NOT NULL,
-            clock VARCHAR(255) NOT NULL,
+            clock REAL NOT NULL,
             sub_category VARCHAR(255) NOT NULL,
             stock BIGINT NOT NULL,
             FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
@@ -294,3 +290,5 @@ def create_tables():
         push(row)
 
     mydb.commit()
+
+

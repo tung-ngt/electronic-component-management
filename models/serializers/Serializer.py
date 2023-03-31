@@ -1,12 +1,8 @@
-if __name__ == "__main__":
-    # Import section needs to be changed base on real project
-    import sys
-    sys.path.append("..")
-    from db.create_database import delete_all_tables, create_tables
-    from domains import Component, Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
-else:
-    from ..db.create_database import delete_all_tables, create_tables
-    from ..domains import Component, Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
+from models.domains import Component, Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
+
+'''
+    Import section needs to be changed base on real project
+'''
 
 # Index
 index_compo = {'part_number' : 0, 'mnf_id' : 1, 'price' : 2, 
