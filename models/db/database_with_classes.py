@@ -181,7 +181,7 @@ def delete_tables(con, tables):
 
 def create_tables():
     # create a connection to the database
-    mydb, mycursor = get_connection('electronic_store_with_classes')
+    mydb, mycursor = get_connection('./data/electronic_store_with_classes.db')
     # create a cursor to execute SQL queries
 
     # create the manufacturer table

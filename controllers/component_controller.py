@@ -48,7 +48,7 @@ def convert_condition(items: dict):
 
 
 def filter_component(table: str, condition: dict):
-    conn, c = get_connection('electronic_store_with_classes')
+    conn, c = get_connection('./data/electronic_store_with_classes.db')
     query = f"""select * from {table}"""
     if len(condition) > 0:
         query += f" where {convert_condition(condition)}"
@@ -61,7 +61,7 @@ def filter_component(table: str, condition: dict):
 
 
 def count_condition(table: str, condition: dict):
-    conn, c = get_connection('electronic_store_with_classes')
+    conn, c = get_connection('./data/electronic_store_with_classes.db')
     query = f"""select count(*) from {table}"""
     if len(condition) > 0:
         query += f""" where {convert_condition(condition)}"""
