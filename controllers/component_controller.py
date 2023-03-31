@@ -32,7 +32,7 @@ def convert_condition(items: dict):
     x = ""
     for (column, value) in items.items():
         if category_search[column] == "search":
-            x += f" REGEXP_LIKE({column}, \'{value}\', 'i') and"
+            x += f" lower({column}) REGEXP_LIKE lower(\'{value}\') and"
         elif category_search[column] == 'val':
             x += f" {column} = \'{value}\' and"
         elif category_search[column] == "val_list":

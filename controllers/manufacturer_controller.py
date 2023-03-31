@@ -7,7 +7,7 @@ def convert_list(items):
 def convert_condition(items: dict):
     x = ""
     for (column, value) in items.items():
-        x += f"REGEXP_LIKE({column}, \'{value}\', 'i') and"
+        x += f" lower({column}) REGEXP_LIKE lower(\'{value}\') and"
     x = x.rsplit(' ', 1)[0] + ";"
     return x
 
