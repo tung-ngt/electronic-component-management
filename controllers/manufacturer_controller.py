@@ -12,7 +12,7 @@ def convert_condition(items: dict):
     return x
 
 
-def filter_component(table: str, condition: dict):
+def filter_manu(table: str, condition: dict):
     conn, c = get_connection('./data/electronic_store_with_classes.db')
     query = f"""select * from {table}"""
     print(query)
@@ -25,13 +25,3 @@ def filter_component(table: str, condition: dict):
     conn.close()
     return items
 
-
-def count_condition(table: str, condition: dict):
-    conn, c = get_connection('./data/electronic_store_with_classes.db')
-    query = f"""select count(*) from {table}"""
-    if len(condition) > 0:
-        query += f""" where {convert_condition(condition)}"""
-    c.execute(query)
-    items = c.fetchall()
-    conn.close()
-    return items
