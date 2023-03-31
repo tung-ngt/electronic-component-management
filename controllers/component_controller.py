@@ -2,29 +2,29 @@ import numbers
 from models.db.Utils_database import get_connection
 
 category_search = {"mnf_id": "search",
-                    "part_number": "search", 
-                    "inventory_date": "range", 
-                    "price": "range",
-                    "guarantee": "range",
-                    "sub_category": "val_list",
-                    "stock": "range",
-                    "capacitance": "range",
-                    "clock": "range",
-                    "inductance": "range",
-                    "resistance": "range",
-                    "sensor_type": "val_list"
-                    }
+                   "part_number": "search",
+                   "inventory_date": "range",
+                   "price": "range",
+                   "guarantee": "range",
+                   "sub_category": "val_list",
+                   "stock": "range",
+                   "capacitance": "range",
+                   "clock": "range",
+                   "inductance": "range",
+                   "resistance": "range",
+                   "sensor_type": "val_list"
+                   }
 
 
 def convert_list(items):
 
-    x = "("
+    x = ""
     for i in items:
         if isinstance(i, numbers.Number):
             x += str(i) + ","
         else:
-            x += i + ","
-    x = x[:-1] + ")"
+            x += f"\'{i}\',"
+    x = x[:-1]
     return x
 
 
@@ -32,14 +32,15 @@ def convert_condition(items: dict):
     x = ""
     for (column, value) in items.items():
         if category_search[column] == "search":
-            x += f" lower({column}) REGEXP_LIKE lower(\'{value}\') and"
+            x += f" lower({column}) REGEXP lower(\'{value}\') and"
         elif category_search[column] == 'val':
             x += f" {column} = \'{value}\' and"
         elif category_search[column] == "val_list":
-            x+= f" {column} in ({convert_list(value)}) and"
+            x += f" {column} in ({convert_list(value)}) and"
         else:
             for sign, condition in value:
-                x += f" {column} {sign} {condition} and"
+                if not isinstance(condition, str) or len(condition) != 0:
+                    x += f" {column} {sign} \'{condition}\' and"
     x = x.rsplit(' ', 1)[0] + ";"
     return x
 
@@ -50,7 +51,7 @@ def filter_component(table: str, condition: dict):
     if len(condition) > 0:
         query += f" where {convert_condition(condition)}"
 
-    #print(query)
+    # print(query)
     c.execute(query)
     items = c.fetchall()
     conn.close()
