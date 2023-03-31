@@ -1,6 +1,8 @@
 from ...gui import SubScreen, Label, Frame
 from tkinter import PhotoImage
-from ...constants import COLORS, FONTS
+from ...constants import FONTS
+from .AddManufacturerWindow import AddManufacturerWindow
+from ...components import AccentButton
 
 class ManufacturerDetailedView(SubScreen):
     """This class display details of a specific component"""
@@ -14,13 +16,13 @@ class ManufacturerDetailedView(SubScreen):
 
         # Create layout frame
         self.info_frame = Frame(self)
-        self.action_frame = Frame(self)
+        self.image_frame = Frame(self)
         self.info_frame.pack(side="left", fill="both", padx=20, pady=100, expand=True)
-        self.action_frame.pack(side="left", fill="both", pady=100, expand=True)
+        self.image_frame.pack(side="left", fill="both", pady=100, expand=True)
 
-        # Action part
+        # Image frame
         self.man_img = PhotoImage(file="./images/component_img.png")
-        self.man_img_label = Label(self.action_frame, image=self.man_img)
+        self.man_img_label = Label(self.image_frame, image=self.man_img)
         self.man_img_label.pack()
 
         # Info text
@@ -39,22 +41,14 @@ class ManufacturerDetailedView(SubScreen):
         )
         self.man_id.pack(anchor="w", padx=20, pady=(0, 16))
 
-        self.man_name_label = Label(self.info_frame,
-            text="Name",
-            font=FONTS.get_font("paragraph")
-        )
-        self.name = Label(self.info_frame,
-            text=props[1],
-            font=FONTS.get_font("heading3", bold=True)
-        )
+        self.man_name = self.create_info_box("Name", props[1])
         
-        self.country_label = Label(self.info_frame,
-            text="Country",
-            font=FONTS.get_font("paragraph")
-        )
-        self.country = Label(self.info_frame,
-            text=props[2],
-            font=FONTS.get_font("heading3", bold=True)
+        self.man_country = self.create_info_box("Country", props[2])
+
+        self.update_info_button = AccentButton(
+            self.info_frame, 
+            command=lambda: AddManufacturerWindow(self),
+            text="Update information",
         )
 
         # Placing box
@@ -63,11 +57,26 @@ class ManufacturerDetailedView(SubScreen):
 
         self.man_id_box.grid(row=0, column=0, sticky="w", pady=(0,40))
 
-        self.man_name_label.grid(row=1, column=0, sticky="w", pady=(40,0))
-        self.name.grid(row=2, column=0, sticky="w", pady=(0,20))
-        self.country_label.grid(row=3, column=0, sticky="w", pady=(20,0))
-        self.country.grid(row=4, column=0, sticky="w", pady=(0,20))
+        self.man_name.grid(row=1, column=0, sticky="w")
+        self.man_country.grid(row=2, column=0, sticky="w")
+        self.update_info_button.grid(row=3, column=0, sticky="w", pady=(40,0))
         
         # Specify the widgets to destroy
-        self.add_widgets_to_destroy([self.info_frame, self.action_frame])
+        self.add_widgets_to_destroy([self.info_frame, self.image_frame])
 
+    def create_info_box(self, label:str, value:str, small=False):
+        """Create and return a info_box
+        
+        Parameters
+        ----------
+        label : name of the info box
+        value : value of the box
+        small : small info box
+        """
+        frame = Frame(self.info_frame, background="transparent")
+        l = Label(frame, text=label, font=FONTS.get_font("paragraph", italic=small))
+        i = Label(frame, text=value, font=FONTS.get_font("heading3" if not small else "paragraph", bold=True))
+        l.pack(anchor="w", pady=(40,0))
+        i.pack(anchor="w")
+
+        return frame
