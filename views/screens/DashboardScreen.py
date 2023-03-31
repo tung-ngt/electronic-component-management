@@ -35,5 +35,10 @@ class DashboardScreen(Screen):
         subscreen.box4.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
         
         subscreen.box3.pack_propagate(False)
-        subscreen.items_count_label = Label(subscreen.box3, "1200 items in inventory", background="transparent", font="heading2")
+        subscreen.items_count_label = Label(
+            subscreen.box3,
+            "1200 items in inventory",
+            background="transparent",
+            font=FONTS.get_font("heading3")
+        )
         subscreen.items_count_label.pack(fill="both", expand=True)

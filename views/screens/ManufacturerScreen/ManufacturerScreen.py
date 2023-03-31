@@ -1,15 +1,18 @@
-from ...gui import Screen, SubScreen, Label, Frame, TreeView, Button
+from ...gui import Screen, SubScreen, Frame
 from ...constants import COLORS, FONTS
 from .ManufacturerDetailedView import ManufacturerDetailedView
-from tkinter import Entry, BooleanVar
-from tkinter.ttk import Style, Scrollbar
+from tkinter import Entry
+from .AddManufacturerWindow import AddManufacturerWindow
+from ...components import AccentButton, AccentHorizontalScrollbar, CustomListView
+
 class ManufacturerScreen(Screen):
     """App's main screen"""
     def __init__(self, master):
         """Init screen"""
         super().__init__(master, background=COLORS.SECONDARY,
             title="Manufacturer",
-            title_font=FONTS.get_font("heading1", bold=True)
+            title_font=FONTS.get_font("heading1", bold=True),
+            title_bar_foreground="white"
         )
 
         self.add_subscreen("manufacturer_main", SubScreen(self.main_frame,
@@ -39,8 +42,8 @@ class ManufacturerScreen(Screen):
         subscreen.add_widgets_to_destroy([subscreen.tree_view_frame])
 
     def on_double_click(self, subscreen, event):
-        """Handle double click event"""
-        tree_view: TreeView = subscreen.tree_view_frame.table_frame.tree_view
+        """Handle  click event"""
+        tree_view: CustomListView = subscreen.tree_view_frame.table_frame.tree_view
         region = tree_view.identify_region(event.x, event.y)
 
         if region != "cell":
@@ -62,31 +65,31 @@ class ManufacturerScreen(Screen):
  
         # Search bar
         search_bar_frame.entry = Entry(subscreen.tree_view_frame.search_bar_frame, font=FONTS.get_font("paragraph"))
-        search_bar_frame.button = Button(
+        search_bar_frame.button = AccentButton(
             subscreen.tree_view_frame.search_bar_frame, 
             lambda: print("search"), 
             "Search", 
             image="./images/search.png",
-            background=COLORS.ACCENT,
-            foreground="white",
-            activebackground="white",
-            activeforeground=COLORS.ACCENT,
             compound="right",
-            font=FONTS.get_font("paragraph", bold=True)
+            activebackground="white"
         )
         search_bar_frame.button.pack(side="right", fill="y", pady=20, ipadx=14, ipady=2, padx=20)
         search_bar_frame.entry.pack(side="right", fill="y", pady=20, ipadx=10, ipady=5)
+
+        # Add manufacturer button
+        search_bar_frame.add_manufacturer_button = AccentButton(search_bar_frame,
+            lambda: AddManufacturerWindow(self),
+            "ADD +",
+            activebackground="white"
+        )
+        search_bar_frame.add_manufacturer_button.pack(side="left", pady=20, padx=20, ipadx=14, ipady=2)
+
         
         # Create scroll bar
-        s = Style(table_frame)
-        s.theme_use("alt")
-        s.configure("custom.Vertical.TScrollbar", troughcolor=COLORS.WHITE, background=COLORS.ACCENT, arrowcolor="white", relief="flat")
-        s.map("custom.Vertical.TScrollbar", background=[("active", COLORS.ACCENT)])
-
-        scroll_bar = table_frame.scroll_bar = Scrollbar(table_frame, orient="vertical", style="custom.Vertical.TScrollbar")
+        scroll_bar = table_frame.scroll_bar = AccentHorizontalScrollbar(table_frame)
 
         # Create the tree view
-        tree_view = table_frame.tree_view = TreeView(
+        tree_view = table_frame.tree_view = CustomListView(
             table_frame, 
             columns=(
                 "id", 
@@ -94,29 +97,10 @@ class ManufacturerScreen(Screen):
                 "country", 
             ),
             yscrollcommand=scroll_bar.set,
-            style_name="man.Treeview"
         )
 
-        scroll_bar.config(command=tree_view.yview)
+        scroll_bar.add_command(tree_view.yview)
 
-        # Apply the styles
-        tree_view.config_styles(
-            heading={
-                "background": COLORS.WHITE,
-                "foreground": COLORS.ACCENT,
-                "font": FONTS.get_font("paragraph", bold=True),
-            },
-            row={
-                "background": COLORS.WHITE,
-                "foreground": "black",
-                "font": FONTS.get_font("paragraph"),
-                "rowheight": 34
-            },
-            selected={
-                "background":  COLORS.ACCENT,
-            }
-        )
-        
         tree_view.config_headings({
             "id": {"text": "ID"},
             "name": {"text": "Name"},
@@ -136,4 +120,4 @@ class ManufacturerScreen(Screen):
         tree_view.bind("<Double-1>", lambda e: self.on_double_click(subscreen, e))
 
         for i in range(30):
-            tree_view.insert(parent="", index="end", values=(f"SCD123AB{i}", f"Samsung{i}", f"Korea{i}"))
+            tree_view.add_item((f"SCD123AB{i}", f"Samsung{i}", f"Korea{i}"))

@@ -10,7 +10,7 @@ class EComponentStoreManagementGUI(GUI):
             "Electronic Component Store Infomation Mangament", 
             fullscreen=True, 
             icon="./images/circuit-board.png",
-            min_size=(1100, 800),
+            min_size=(1400, 900),
             on_close_fun=self.on_close
         )
         

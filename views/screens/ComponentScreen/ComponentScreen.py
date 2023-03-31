@@ -1,4 +1,4 @@
-from ...gui import Screen, Label, Frame, Button, SubScreen
+from ...gui import Screen, Frame, Button, SubScreen
 from ...constants import COLORS, FONTS
 from .ComponentListView import ComponentListView
 from .ComponentDetailedView import ComponentDetailedView
@@ -59,7 +59,7 @@ class ComponentScreen(Screen):
         # Add images
         subscreen.capcitor_img = Button(
             subscreen.box1,
-            lambda: self.navigate_subscreen("list_view", {"selected": "capcitor"}),
+            lambda: self.navigate_subscreen("list_view", {"selected": "capacitor"}),
             text="Capacitor",
             image="./images/capacitor.png",
             background="transparent",
