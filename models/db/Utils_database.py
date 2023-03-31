@@ -1,7 +1,7 @@
 import sqlite3
 
-def get_connection(filename : str):
-    conn = sqlite3.connect(f'models/db/{filename}.db')
+def get_connection(filename):
+    conn = sqlite3.connect(filename)
     cursor = conn.cursor()
     return conn, cursor
 

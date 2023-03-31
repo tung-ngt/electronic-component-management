@@ -17,7 +17,6 @@ category_search = {"mnf_id": "search",
 
 
 def convert_list(items):
-
     x = ""
     for i in items:
         if isinstance(i, numbers.Number):
@@ -29,6 +28,9 @@ def convert_list(items):
 
 
 def convert_condition(items: dict):
+    """
+    convert 
+    """
     x = ""
     for (column, value) in items.items():
         if category_search[column] == "search":
