@@ -82,6 +82,9 @@ def get_option(sort_option : list):
     Example : get_option([('price', 'asc'), ('capacitance', 'desc')])
     '''
 
+    if len(sort_option) == 1:
+        print(sort_option[0])
+        return sort_option[0]
     option = ""
     for i in sort_option:
         if i[0] in ['capacitance', 'resistance', 'inductance', 'sensor_type', 'clock']:

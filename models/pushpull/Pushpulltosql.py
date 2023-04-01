@@ -73,26 +73,38 @@ def pull(table : str, condition : dict = {}, sort_option = ""):
     return count, items
 
 
-def update(table : str, change_value : list, change_place : list):
+def update(table : str, change : list, condition : str):
     '''
         Update things in database
-        Example : update('capacitor', [('part_number', '1'), ('price', '100')])
-        * len(change_place) must be equal to len(change_value)
+        Example: update('capacitor', 'price', '1'))
+        Query: update component set price = 1 where part_number(must) = ... 
+        update manager set name = 1 where id(must) = ... 
+
+        change = [(change_at, change_to)]
+        change_at : column name
+        change_to : value
+
+        condition : where part_number of component or where id of manufacturer equals to condition
     '''
     # Connect to database
     conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
-    mycursor = conn.cursor()
 
     try:
-        for i in range(len(change_place)):
-            query = f"""UPDATE {table} SET {change_value[i][0]} = {change_value[i][1]} WHERE {change_place[i][0]} = '{change_place[i][1]}';"""
-            #print(query)
-            mycursor.execute(query)
+        if table == 'manufacturer':
+            for i in range(len(change)):
+                query = f"UPDATE {table} SET {change[i][0]} = {change[i][1]} WHERE id = '{condition};"
+                mycursor.execute(query)
+        else:
+            for i in range(len(change)):
+                query = f"UPDATE {table} SET {change[i][0]} = {change[i][1]} WHERE part_number = '{condition}';"
+                mycursor.execute(query)
+                
     except:
         return False
 
     conn.commit()
     mycursor.close()
+    
 
         
   
