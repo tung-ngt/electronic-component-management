@@ -67,7 +67,7 @@ def filter_component(table: str, condition: dict, sort_option: str):
     elif len(sort_option) > 0:
         query += f" order by {sort_option};"
 
-    print(query)
+    #print(query)
     c.execute(query)
     items = c.fetchall()
     conn.close()
