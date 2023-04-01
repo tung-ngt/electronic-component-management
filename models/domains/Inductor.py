@@ -35,6 +35,11 @@ class Inductor(Component):
     def get_inductance(self):
         return self.__inductance
     
+    def get_all_info(self):
+        info = super().get_all_info()
+        info.append(self.__inductance)
+        return info
+    
     # Setters
     def set_inductance(self, inductance: float):
         if isinstance(inductance, float) and inductance > 0:

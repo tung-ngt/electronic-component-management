@@ -33,7 +33,12 @@ class Capacitor(Component):
 
     # Getters
     def get_capacitance(self):
-        return self.__capacitance    
+        return self.__capacitance
+
+    def get_all_info(self):
+        info = super().get_all_info()
+        info.append(self.__capacitance)
+        return info
 
     # Setters
     def set_capacitance(self, capacitance: float):

@@ -35,6 +35,11 @@ class IC(Component):
     def get_clock(self):
         return self.__clock
     
+    def get_all_info(self):
+        info = super().get_all_info()
+        info.append(self.__clock)
+        return info
+    
     # Setters
     def set_clock(self, clock: float):
         if isinstance(clock, float) and clock >0:

@@ -22,6 +22,9 @@ class Manufacturer:
     def get_country(self):
         return self.__country
     
+    def get_all_info(self):
+        return [self.__id, self.__name, self.__country]
+    
     # Setters
     def set_id(self, id: str):
         if len(id) > 0:

@@ -71,6 +71,17 @@ class Component:
     def get_stock(self):
         return self.__stock
     
+    def get_all_info(self):
+        return [
+            self.__part_number, 
+            self.__price, 
+            self.__guarantee, 
+            self.__mnf_id, 
+            self.__inventory_date,
+            self.__sub_category, 
+            self.__stock
+        ]
+    
     # Setters
     def set_mnf_id(self, mnf_id):
         self.__mnf_id = mnf_id

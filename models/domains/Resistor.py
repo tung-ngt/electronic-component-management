@@ -35,6 +35,11 @@ class Resistor(Component):
     def get_resistance(self):
         return self.__resistance
     
+    def get_all_info(self):
+        info = super().get_all_info()
+        info.append(self.__resistance)
+        return info
+    
     # Setters
     def set_resistance(self, resistance: float):
         if isinstance(resistance, float) and resistance >0:

@@ -35,6 +35,11 @@ class Sensor(Component):
     def get_sensor_type(self):
         return self.__sensor_type
     
+    def get_all_info(self):
+        info = super().get_all_info()
+        info.append(self.__sensor_type)
+        return info
+    
     # Setters
     def set_sensor_type(self, sensor_type: str):
         if len(sensor_type) > 0:
