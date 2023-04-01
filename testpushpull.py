@@ -12,11 +12,11 @@ def main():
     create_tables()
   
     # Pull from database
-    cap_num, cap_list = pull('capacitor', {'price' : [('<', 4)]}, 'guarantee')
+    cap_num, cap_list = pull('capacitor', {'mnf_id' : '05'}, 'guarantee')
     ic_num, ic_list = pull('ic', {'price' : [('<', 4)]}, 'price')
     res_num, res_list = pull('resistor', {'price' : [('<', 4)]}, 'inventory_date')
     ind_num, ind_list = pull('inductor', {'price' : [('<', 4)]}, 'stock')
-    sen_num, sen_list = pull('sensor', {'price' : [('<', 4)]})
+    sen_num, sen_list = pull('sensor', {'price' : [('<', 4)]}, 'price asc')
     manu_num, manu_list = pull('manufacturer', {'name':'M'}, 'name')
     
 

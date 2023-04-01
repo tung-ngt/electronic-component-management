@@ -1,7 +1,7 @@
 from models.db.Utils_database import get_connection
 from models.domains import Component
 from models.serializers.Serializer import serialize, deserialize
-from controllers import component_controller, manufacturer_controller
+from controllers.item_controller import filter_component, filter_manufacturer
 
 '''
     Import section needs to be changed base on real project
@@ -58,11 +58,11 @@ def pull(table : str, condition : dict = {}, sort_option = ""):
     mycursor = conn.cursor()
 
     if table in ['capacitor', 'resistor', 'ic', 'sensor', 'inductor']:
-        myresult = component_controller.filter_component(table, condition, sort_option)
-        count = component_controller.count_condition(table, condition)[0][0]
+        count, myresult = filter_component(table, condition, sort_option)
+       
     elif table == 'manufacturer':
-        myresult = manufacturer_controller.filter_component(table, condition, sort_option)
-        count = manufacturer_controller.count_condition(condition)[0][0]
+        count, myresult = filter_manufacturer(table, condition, sort_option)
+        
 
     conn.commit()
     mycursor.close()
