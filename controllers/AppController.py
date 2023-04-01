@@ -1,10 +1,9 @@
-from models.pushpull.Pushpulltosql import pull
+from models.pushpull.Pushpulltosql import pull, push
 from models.db.Utils_database import get_connection
-
-
+from models.domains import IC, Capacitor, Inductor, Manufacturer, Resistor, Sensor
 
 class AppController:
-    def __init__(self, database_path):
+    def __init__(self):
         self.__ics = []
         self.__capacitors = []
         self.__inductors = []
@@ -12,21 +11,13 @@ class AppController:
         self.__resistors = []
         self.__sensors = []
 
-        self.connect_to_db(database_path)
-
-
-    def connect_to_db(self, database_path):
-        self.db_conn, cursor = get_connection(database_path)
-        print(cursor.execute("SELECT name FROM sqlite_master WHERE type='table';").fetchall())
-    
-
     def load_data_from_db(self):
-        cap_num, self.__capacitors = pull(self.db_conn, 'capacitor')
-        ic_num, self.__ics = pull(self.db_conn, 'ic')
-        res_num, self.__resistors = pull(self.db_conn, 'resistor')
-        ind_num, self.__inductors = pull(self.db_conn, 'inductor')
-        sen_num, self.__sensors = pull(self.db_conn, 'sensor')
-        manu_num, self.__manufacturers = pull(self.db_conn, 'manufacturer')
+        cap_num, self.__capacitors = pull('capacitor')
+        ic_num, self.__ics = pull('ic')
+        res_num, self.__resistors = pull('resistor')
+        ind_num, self.__inductors = pull('inductor')
+        sen_num, self.__sensors = pull('sensor')
+        manu_num, self.__manufacturers = pull('manufacturer')
 
     def get_capacitors(self):
         return self.__capacitors
@@ -46,4 +37,84 @@ class AppController:
     def get_sensors(self):
         return self.__sensors
     
+    def add_ic(self, data):
+        new_ic = IC(
+            data["mnf_id"],
+            data["price"],
+            data["inventory_date"],
+            data["guarantee"],
+            data["part_number"],
+            data["sub_category"],
+            data["stock"],
+            data["clock"]
+        )
+        self.__ics.append(new_ic)
+        push(new_ic)
+    
+    def add_capacitors(self, data):
+        new_capacitors = Capacitor(
+            data["mnf_id"],
+            data["price"],
+            data["inventory_date"],
+            data["guarantee"],
+            data["part_number"],
+            data["sub_category"],
+            data["stock"],
+            data["capacitance"]
+        )
+        self.__capacitors.append(new_capacitors)
+        push(new_capacitors)
+    
+    def add_inductor(self, data):
+        new_inductor = Inductor(
+            data["mnf_id"],
+            data["price"],
+            data["inventory_date"],
+            data["guarantee"],
+            data["part_number"],
+            data["sub_category"],
+            data["stock"],
+            data["inductance"]
+        )
+        self.__inductors.append(new_inductor)
+        push(new_inductor)
+    
+    def add_manufacturer(self, data):
+        new_manufacturer = Manufacturer(
+            data["id"],
+            data["name"],
+            data["country"],
+        )
+        self.__manufacturers.append(new_manufacturer)
+        push(new_manufacturer)
+    
+    def add_resistor(self, data):
+        new_resistor = Resistor(
+            data["mnf_id"],
+            data["price"],
+            data["inventory_date"],
+            data["guarantee"],
+            data["part_number"],
+            data["sub_category"],
+            data["stock"],
+            data["resistance"]
+        )
+        self.__ics.append(new_resistor)
+        push(new_resistor)
+    
+    def add_sensor(self, data):
+        new_sensor = Sensor(
+            data["mnf_id"],
+            data["price"],
+            data["inventory_date"],
+            data["guarantee"],
+            data["part_number"],
+            data["sub_category"],
+            data["stock"],
+            data["sensor_type"]
+        )
+        self.__ics.append(new_sensor)
+        push(new_sensor)
 
+    def get_list_with_filters(self, list_type, filters):
+        return pull(list_type, filters)
