@@ -3,7 +3,7 @@ from models.db.Utils_database import get_connection
 from models.db.database_with_classes import create_tables, delete_all_tables
 
 
-conn, mycursor = get_connection('D:\Downloads\Documents\Python II\Project\electronic_component_management\models\db\electronic_store_with_classes.db')
+conn, mycursor = get_connection('./data/electronic_store_with_classes.db')
 delete_all_tables(conn)
 create_tables()
 cap_num, cap_list = pull('capacitor')
