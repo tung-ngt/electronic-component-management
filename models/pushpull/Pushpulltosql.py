@@ -1,7 +1,7 @@
 from models.db.Utils_database import get_connection
 from models.domains import Component
 from models.serializers.Serializer import serialize, deserialize
-from controllers.component_controller import filter_component, count_condition
+from controllers.item_controller import filter_component, filter_manufacturer
 
 '''
     Import section needs to be changed base on real project
@@ -48,22 +48,29 @@ def push(thing):
     mycursor.close()
 
 
-def pull(kind : str, option : dict = {}):
+def pull(table : str, condition : dict = {}, sort_option = ""):
     '''
         Pull things from database
     '''
     # Connect to database
     conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
-    kind = kind.lower()
+    table = table.lower()
     mycursor = conn.cursor()
-    myresult = filter_component(kind, option)
+
+    if table in ['capacitor', 'resistor', 'ic', 'sensor', 'inductor']:
+        count, myresult = filter_component(table, condition, sort_option)
+       
+    elif table == 'manufacturer':
+        count, myresult = filter_manufacturer(table, condition, sort_option)
+        
 
     conn.commit()
     mycursor.close()
     items = []
     for item in myresult:
-        items.append(deserialize(kind, item))
-    return count_condition(kind, option)[0][0], items
+        items.append(deserialize(table, item))
+
+    return count, items
         
   
 

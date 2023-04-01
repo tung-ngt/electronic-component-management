@@ -121,7 +121,7 @@ ic20 = IC(m10.get_id(), 0.35, "2022-12-06", 2, "ST485BN", "Interface", 500, 16.0
 ic = [ic1, ic2, ic3, ic4, ic5, ic6, ic7, ic8, ic9, ic10, ic11, ic12, ic13, ic14, ic15, ic16, ic17, ic18, ic19, ic20]
 
 
-#Sensor Samples
+#Senses-mplor S
 
 s1 = Sensor(m1.get_id(), 1.99, "2022-01-05", 2, "SNS001", "Temperature Sensor", 50, "Thermistor")
 s2 = Sensor(m2.get_id(), 3.49, "2022-03-10", 1, "SNS002", "Humidity Sensor", 20, "Capacitive")
@@ -205,7 +205,7 @@ def create_tables():
             part_number VARCHAR(255) PRIMARY KEY,
             mnf_id VARCHAR(255) NOT NULL, 
             price REAL NOT NULL, 
-            inventory_date TEXT NOT NULL, 
+            inventory_date DATE NOT NULL, 
             guarantee INT NOT NULL,
             capacitance REAL NOT NULL,
             sub_category VARCHAR(255) NOT NULL,
@@ -224,7 +224,7 @@ def create_tables():
             part_number VARCHAR(255) PRIMARY KEY,
             mnf_id VARCHAR(255) NOT NULL, 
             price REAL NOT NULL, 
-            inventory_date TEXT NOT NULL, 
+            inventory_date DATE NOT NULL, 
             guarantee INT NOT NULL, 
             resistance REAL NOT NULL,
             sub_category VARCHAR(255) NOT NULL,
@@ -242,7 +242,7 @@ def create_tables():
             part_number VARCHAR(255) PRIMARY KEY,
             mnf_id VARCHAR(255) NOT NULL, 
             price REAL NOT NULL, 
-            inventory_date TEXT NOT NULL, 
+            inventory_date DATE NOT NULL, 
             guarantee INT NOT NULL,
             inductance REAL NOT NULL,
             sub_category VARCHAR(255) NOT NULL,
@@ -260,7 +260,7 @@ def create_tables():
             part_number VARCHAR(255) PRIMARY KEY,
             mnf_id VARCHAR(255) NOT NULL, 
             price REAL NOT NULL, 
-            inventory_date TEXT NOT NULL, 
+            inventory_date DATE NOT NULL, 
             guarantee INT NOT NULL,
             sensor_type VARCHAR(255) NOT NULL,
             sub_category VARCHAR(255) NOT NULL,
@@ -278,7 +278,7 @@ def create_tables():
             part_number VARCHAR(255) PRIMARY KEY,
             mnf_id VARCHAR(255) NOT NULL, 
             price REAL NOT NULL,
-            inventory_date TEXT NOT NULL,
+            inventory_date DATE NOT NULL,
             guarantee INT NOT NULL,
             clock REAL NOT NULL,
             sub_category VARCHAR(255) NOT NULL,

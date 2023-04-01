@@ -1,11 +1,11 @@
 from datetime import date
 from .Manufacturer import Manufacturer
 
-# def validate_date_time(d: str):
-#     if datetime.strptime(d, '%d-%m-%Y'):
+#def validate_date_time(d: str):
+#    if date.strptime(d, '%Y-%m-%d'):
 #         return 1
-#     else:
-#         raise Exception("Invalid type of d-m-Y")
+#    else:
+#        raise Exception("Invalid type of Y-m-d")
 
 def validate_guarantee(g):
     if isinstance(g, int) and g>0:
@@ -35,7 +35,7 @@ class Component:
     def __init__(self,
             mnf_id: str,
             price: float,
-            inventory_date: date,
+            inventory_date: str,
             guarantee: int, 
             part_number: str,
             sub_category: str,
@@ -91,7 +91,7 @@ class Component:
             self.__price = price
 
     def set_inventory_date(self, inventory_date: date):
-        # if validate_date_time(inventory_date):
+        #if validate_date_time(inventory_date):
         self.__inventory_date = inventory_date
 
     def set_guarantee(self, guarantee: int):
