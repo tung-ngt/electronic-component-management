@@ -29,7 +29,7 @@ def convert_list(items):
 
 def convert_condition(items: dict):
     """
-    convert 
+    Convert condition to string to execute 
     """
     x = ""
     for (column, value) in items.items():
@@ -43,17 +43,24 @@ def convert_condition(items: dict):
             for sign, condition in value:
                 if not isinstance(condition, str) or len(condition) != 0:
                     x += f" {column} {sign} \'{condition}\' and"
-    x = x.rsplit(' ', 1)[0] + ";"
+    x = x.rsplit(' ', 1)[0] 
     return x
 
 
-def filter_component(table: str, condition: dict):
+def filter_component(table: str, condition: dict, sort_option : str):
+    '''
+    Filter component by condition and sort by sort_option (optional)
+    '''
     conn, c = get_connection('./data/electronic_store_with_classes.db')
     query = f"""select * from {table}"""
-    if len(condition) > 0:
-        query += f" where {convert_condition(condition)}"
+    if len(condition) > 0 and len(sort_option) > 0:
+        query += f" where {convert_condition(condition)} order by {sort_option};"
+    elif len(condition) > 0:
+        query += f" where {convert_condition(condition)};"
+    elif len(sort_option) > 0:
+        query += f" order by {sort_option};"
 
-    # print(query)
+    #print(query)
     c.execute(query)
     items = c.fetchall()
     conn.close()
