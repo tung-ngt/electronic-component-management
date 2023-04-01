@@ -4,8 +4,6 @@ from models.db.database_with_classes import create_tables, delete_all_tables
 
 
 conn, mycursor = get_connection('./data/electronic_store_with_classes.db')
-delete_all_tables(conn)
-create_tables()
 cap_num, cap_list = pull('capacitor')
 ic_num, ic_list = pull('ic')
 res_num, res_list = pull('resistor')

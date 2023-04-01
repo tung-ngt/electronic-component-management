@@ -57,102 +57,71 @@ def convert_mnf_condition(items: dict):
 
 
 # Specific sort function for each column
-def sort_by_price(table : str):
-    conn, c = get_connection('./data/electronic_store_with_classes.db')
-    query = f"""select * from {table} order by price;"""
-    c.execute(query)
-    items = c.fetchall()
-    conn.close()
-    return len(items), items
-
-def sort_by_guarantee(table : str):
-    conn, c = get_connection('./data/electronic_store_with_classes.db')
-    query = f"""select * from {table} order by guarantee;"""
-    c.execute(query)
-    items = c.fetchall()
-    conn.close()
-    return len(items), items
-
-def sort_by_stock(table : str):
-    conn, c = get_connection('./data/electronic_store_with_classes.db')
-    query = f"""select * from {table} order by stock;"""
-    c.execute(query)
-    items = c.fetchall()
-    conn.close()
-    return len(items), items
-
-def sort_by_inventory_date(table : str):
-    conn, c = get_connection('./data/electronic_store_with_classes.db')
-    query = f"""select * from {table} order by inventory_date;"""
-    c.execute(query)
-    items = c.fetchall()
-    conn.close()
-    return len(items), items
-
-def sort_by_mnf_id(table : str):
-    conn, c = get_connection('./data/electronic_store_with_classes.db')
-    query = f"""select * from {table} order by mnf_id;"""
-    c.execute(query)
-    items = c.fetchall()
-    conn.close()
-    return len(items), items
-
-def sort_by_part_number(table : str):
-    conn, c = get_connection('./data/electronic_store_with_classes.db')
-    query = f"""select * from {table} order by part_number;"""
-    c.execute(query)
-    items = c.fetchall()
-    conn.close()
-    return len(items), items
-
-def sort_by_sub_category(table : str):
-    conn, c = get_connection('./data/electronic_store_with_classes.db')
-    query = f"""select * from {table} order by sub_category;"""
-    c.execute(query)
-    items = c.fetchall()
-    conn.close()
-    return len(items), items
 
 def sort_by_special_att(table : str):
-    conn, c = get_connection('./data/electronic_store_with_classes.db')
+    '''
+    Sort by special attribute
+    '''
     if table == 'capacitor':
-        query = f"select * from {table} order by capacitance;"
+        query = "order by capacitance"
     elif table == 'inductor':
-        query = f"select * from {table} order by inductance;"
+        query = "order by inductance"
     elif table == 'resistor':
-        query = f"select * from {table} order by resistance;"
+        query = "order by resistance"
     elif table == 'sensor':
-        query = f"select * from {table} order by sensor_type;"  
+        query = "order by sensor_type"  
     elif table == 'ic':
-        query = f"select * from {table} order by clock;"
+        query = " order by clock"
 
-    c.execute(query)
-    items = c.fetchall()
-    conn.close()
-    return len(items), items
+    return query
 
-def filter_component(table: str, condition: dict, sort_option: str):
+
+def get_option(sort_option : list):
+    '''
+    Get option for sort
+    Example : get_option([('price', 'asc'), ('capacitance', 'desc')])
+    '''
+
+    option = ""
+    for i in sort_option:
+        if i[0] in ['capacitance', 'resistance', 'inductance', 'sensor_type', 'clock']:
+            option += sort_by_special_att() + ' ' + i[1]
+        else:
+            option += i[0] + ' ' + i[1]
+        if i != sort_option[-1]:
+            option += ","
+
+    return option
+        
+
+def filter_component(table: str, condition: dict, sort_option: list):
     '''
     Filter component by condition and sort by sort_option (optional)
 
-    Example: filter_component("capacitor", "table name"
-                             {"price": [(">", 1000), ("<", 2000)], "where condition"
-                             "price", "order condition", default is from low to high)
+    Example: filter_component(
+                                table = "capacitor",
+                                condition = {"price": [(">", 1000), ("<", 2000)], 
+                                sort_option = [("price"), ('mnf_id', 'desc')], default is from low to high, 
+                             )
     '''
     conn, c = get_connection('./data/electronic_store_with_classes.db')
     query = f"""select * from {table}"""
+
+
     if len(condition) > 0 and len(sort_option) > 0:
-        query += f" where {convert_condition(condition)} order by {sort_option};"
+        query += f" where {convert_condition(condition)} order by {get_option(sort_option)};"
     elif len(condition) > 0:
         query += f" where {convert_condition(condition)};"
     elif len(sort_option) > 0:
-        query += f" order by {sort_option};"
+        query += f" order by {get_option(sort_option)};"
 
     #print(query)
     c.execute(query)
     items = c.fetchall()
     conn.close()
     return len(items), items
+
+
 
 def filter_manufacturer(table: str, condition: dict, sort_option : str):
     '''
@@ -161,11 +130,11 @@ def filter_manufacturer(table: str, condition: dict, sort_option : str):
     conn, c = get_connection('./data/electronic_store_with_classes.db')
     query = f"""select * from {table}"""
     if len(condition) > 0 and len(sort_option) > 0:
-        query += f" where {convert_mnf_condition(condition)} order by {sort_option};"
+        query += f" where {convert_mnf_condition(condition)} order by {get_option(sort_option)};"
     elif len(condition) > 0:
         query += f" where {convert_mnf_condition(condition)};"
     elif len(sort_option) > 0:
-        query += f" order by {sort_option};"
+        query += f" order by {get_option(sort_option)};"
 
     #print(query)
     c.execute(query)

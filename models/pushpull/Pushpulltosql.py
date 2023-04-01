@@ -71,9 +71,44 @@ def pull(table : str, condition : dict = {}, sort_option = ""):
         items.append(deserialize(table, item))
 
     return count, items
+
+
+def update(table : str, change_value : list, change_place : list):
+    '''
+        Update things in database
+        Example : update('capacitor', [('part_number', '1'), ('price', '100')])
+        * len(change_place) must be equal to len(change_value)
+    '''
+    # Connect to database
+    conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
+    mycursor = conn.cursor()
+
+    try:
+        for i in range(len(change_place)):
+            query = f"""UPDATE {table} SET {change_value[i][0]} = {change_value[i][1]} WHERE {change_place[i][0]} = '{change_place[i][1]}';"""
+            #print(query)
+            mycursor.execute(query)
+    except:
+        return False
+
+    conn.commit()
+    mycursor.close()
+
         
   
-
+def get_sub_category(table : str):
+    '''
+        Get sub category from database
+    '''
+    # Connect to database
+    conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
+    mycursor = conn.cursor()
+    mycursor.execute(f"SELECT DISTINCT sub_category FROM {table}")
+    result = mycursor.fetchall()
+    sub_category = []
+    for item in result:
+        sub_category.append(item[0])
+    return sub_category
 
 
 
