@@ -8,7 +8,7 @@ class ComponentScreen(Screen):
     
     Display information about the electric components
     """
-    def __init__(self, master):
+    def __init__(self, master, app_controller):
         """Init screen"""
         super().__init__(master,
             title="Components",
@@ -17,8 +17,13 @@ class ComponentScreen(Screen):
         )
 
         self.add_subscreen("component_main", SubScreen(self.main_frame, render_function=self.render_main))
-        self.add_subscreen("list_view", ComponentListView(self.main_frame, navigation_function=self.navigate_subscreen))
-        self.add_subscreen("detailed_view", ComponentDetailedView(self.main_frame))
+        self.add_subscreen("list_view", 
+            ComponentListView(self.main_frame,
+                navigation_function=self.navigate_subscreen,
+                app_controller=app_controller
+            )
+        )
+        self.add_subscreen("detailed_view", ComponentDetailedView(self.main_frame, app_controller))
         
         self.navigate_subscreen("component_main")
 

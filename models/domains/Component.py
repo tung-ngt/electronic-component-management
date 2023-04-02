@@ -1,23 +1,35 @@
-from datetime import date
+from re import match
 from .Manufacturer import Manufacturer
 
-#def validate_date_time(d: str):
-#    if date.strptime(d, '%Y-%m-%d'):
-#         return 1
-#    else:
-#        raise Exception("Invalid type of Y-m-d")
+def validate_date(d: str):
+    if match(r"^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$", d) == None:
+        raise Exception("Invalid date, must be the form yyyy-mm-dd")
+    else:
+        return True
 
 def validate_guarantee(g):
     if isinstance(g, int) and g>0:
-        return 1
+        return True
     else:
         raise Exception("Invalid type of guarantee")
 
 def validate_price(p):
     if isinstance(p, float) and p>0:
-        return 1
+        return True
     else:
         raise Exception("Invalid type of price")
+    
+def validate_part_number(part_number):
+    if len(part_number) == 0:
+        raise Exception("Part number must not be empty")
+    else:
+        return True
+
+def validate_stock(stock):
+    if stock < 0:
+        raise Exception("Stock must not be negative")
+    else:
+        return True
 
 class Component:
     """This class is the entity of electronic components
@@ -90,19 +102,21 @@ class Component:
         if validate_price(price):
             self.__price = price
 
-    def set_inventory_date(self, inventory_date: date):
-        #if validate_date_time(inventory_date):
-        self.__inventory_date = inventory_date
+    def set_inventory_date(self, inventory_date: str):
+        if validate_date(inventory_date):
+            self.__inventory_date = inventory_date
 
     def set_guarantee(self, guarantee: int):
         if validate_guarantee(guarantee):
             self.__guarantee = guarantee
 
     def set_part_number(self, part_number: str):
-        self.__part_number = part_number
+        if validate_part_number(part_number):
+            self.__part_number = part_number
 
     def set_sub_category(self, sub_category: str):
         self.__sub_category = sub_category
     
     def set_stock(self, stock: int):
-        self.__stock = stock
+        if validate_stock(stock):
+            self.__stock = stock

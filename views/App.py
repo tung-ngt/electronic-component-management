@@ -5,7 +5,7 @@ from .components import Navbar
 
 class EComponentStoreManagementGUI(GUI):
     """Electronic Componnet Store Infomation Mangament GUI APP"""
-    def __init__(self):
+    def __init__(self, app_controller):
         super().__init__(
             "Electronic Component Store Infomation Mangament", 
             fullscreen=True, 
@@ -14,6 +14,8 @@ class EComponentStoreManagementGUI(GUI):
             on_close_fun=self.on_close
         )
         
+        self.app_controller = app_controller
+
         # Init fonts
         FONTS.init_fonts(self)
 
@@ -34,7 +36,7 @@ class EComponentStoreManagementGUI(GUI):
         ))
 
         self.add_screen("dashboard", DashboardScreen(self.screens_frame))
-        self.add_screen("components", ComponentScreen(self.screens_frame))
+        self.add_screen("components", ComponentScreen(self.screens_frame, self.app_controller))
         self.add_screen("manufacturers", ManufacturerScreen(self.screens_frame))
 
         self.show_screen("dashboard")

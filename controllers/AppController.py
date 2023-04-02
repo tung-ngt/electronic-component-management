@@ -1,4 +1,4 @@
-from models.pushpull.Pushpulltosql import pull, push
+from models.pushpull.Pushpulltosql import pull, push, update, get_sub_category, get_sensor_types
 from models.db.Utils_database import get_connection
 from models.domains import IC, Capacitor, Inductor, Manufacturer, Resistor, Sensor
 
@@ -20,47 +20,59 @@ class AppController:
         manu_num, self.__manufacturers = pull('manufacturer')
 
     def get_capacitors(self):
-        return self.__capacitors
+        return self.__capacitors.copy()
 
     def get_ics(self):
-        return self.__ics
+        return self.__ics.copy()
 
     def get_inductors(self):
-        return self.__inductors
+        return self.__inductors.copy()
 
     def get_manufacturers(self):
-        return self.__manufacturers
+        return self.__manufacturers.copy()
 
     def get_resistors(self):
-        return self.__resistors
+        return self.__resistors.copy()
 
     def get_sensors(self):
-        return self.__sensors
+        return self.__sensors.copy()
+    
+    def add_component(self, component_type, data):
+        if component_type == "ic":
+            self.add_ic(data)
+        if component_type == "capacitor":
+            self.add_capacitor(data)
+        if component_type == "inductor":
+            self.add_inductor(data)
+        if component_type == "resistor":
+            self.add_resistor(data)
+        if component_type == "sensor":
+            self.add_sensor(data)
     
     def add_ic(self, data):
         new_ic = IC(
             data["mnf_id"],
-            data["price"],
+            float(data["price"]),
             data["inventory_date"],
-            data["guarantee"],
+            int(data["guarantee"]),
             data["part_number"],
             data["sub_category"],
-            data["stock"],
-            data["clock"]
+            int(data["stock"]),
+            float(data["clock"])
         )
         self.__ics.append(new_ic)
         push(new_ic)
     
-    def add_capacitors(self, data):
+    def add_capacitor(self, data):
         new_capacitors = Capacitor(
             data["mnf_id"],
-            data["price"],
+            float(data["price"]),
             data["inventory_date"],
-            data["guarantee"],
+            int(data["guarantee"]),
             data["part_number"],
             data["sub_category"],
-            data["stock"],
-            data["capacitance"]
+            int(data["stock"]),
+            float(data["capacitance"])
         )
         self.__capacitors.append(new_capacitors)
         push(new_capacitors)
@@ -68,13 +80,13 @@ class AppController:
     def add_inductor(self, data):
         new_inductor = Inductor(
             data["mnf_id"],
-            data["price"],
+            float(data["price"]),
             data["inventory_date"],
-            data["guarantee"],
+            int(data["guarantee"]),
             data["part_number"],
             data["sub_category"],
-            data["stock"],
-            data["inductance"]
+            int(data["stock"]),
+            float(data["inductance"])
         )
         self.__inductors.append(new_inductor)
         push(new_inductor)
@@ -91,13 +103,13 @@ class AppController:
     def add_resistor(self, data):
         new_resistor = Resistor(
             data["mnf_id"],
-            data["price"],
+            float(data["price"]),
             data["inventory_date"],
-            data["guarantee"],
+            int(data["guarantee"]),
             data["part_number"],
             data["sub_category"],
-            data["stock"],
-            data["resistance"]
+            int(data["stock"]),
+            float(data["resistance"])
         )
         self.__ics.append(new_resistor)
         push(new_resistor)
@@ -105,12 +117,12 @@ class AppController:
     def add_sensor(self, data):
         new_sensor = Sensor(
             data["mnf_id"],
-            data["price"],
+            float(data["price"]),
             data["inventory_date"],
-            data["guarantee"],
+            int(data["guarantee"]),
             data["part_number"],
             data["sub_category"],
-            data["stock"],
+            int(data["stock"]),
             data["sensor_type"]
         )
         self.__ics.append(new_sensor)
@@ -118,3 +130,12 @@ class AppController:
 
     def get_list_with_filters(self, list_type, filters):
         return pull(list_type, filters)
+    
+    def get_sub_categories(self, component_type):
+        return get_sub_category(component_type)
+    
+    def get_sensor_types(self):
+        return get_sensor_types()
+    
+    def update_component(self, component_type, data, part_number):
+        update(component_type, data, part_number)

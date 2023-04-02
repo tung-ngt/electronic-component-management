@@ -6,7 +6,7 @@ from ...components import AccentButton, AccentHorizontalScrollbar, CustomListVie
 
 class ComponentListView(SubScreen):
     """This class display a table of component within a category"""
-    def __init__(self, master, navigation_function):
+    def __init__(self, master, navigation_function, app_controller):
         """Init the view
         
         Parameters
@@ -15,8 +15,17 @@ class ComponentListView(SubScreen):
         navigation_function : function use to navigate
         """
         super().__init__(master, background=COLORS.WHITE)
+
+        self.app_controller = app_controller
         
         self.navigate = navigation_function
+        self.get_all_manufacturers_ids()
+
+    def get_all_manufacturers_ids(self):
+        manufacturers = self.app_controller.get_manufacturers()
+        self.manufacturers_ids = {}
+        for manufacturer in manufacturers:
+            self.manufacturers_ids[manufacturer.get_id()] = manufacturer.get_name()
 
     # Override render method
     def render(self, props=None):
@@ -60,7 +69,7 @@ class ComponentListView(SubScreen):
         selected_iid = tree_view.focus()
         values = tree_view.item(selected_iid)["values"]
 
-        self.navigate(subscreen_name="detailed_view", props=values)
+        self.navigate(subscreen_name="detailed_view", props={"component_type": self.component_type, "values": values})
 
     def build_tree_view(self):
         """Build the component tree view table"""
@@ -90,7 +99,7 @@ class ComponentListView(SubScreen):
         search_bar_frame.entry = Entry(self.tree_view_frame.search_bar_frame, font=FONTS.get_font("paragraph"))
         search_bar_frame.button = AccentButton(
             self.tree_view_frame.search_bar_frame, 
-            self.get_all_filter, 
+            self.apply_filters, 
             "Search", 
             image="./images/search.png",
             activebackground="white",
@@ -103,7 +112,11 @@ class ComponentListView(SubScreen):
 
         # Add component button
         search_bar_frame.add_component_button = AccentButton(search_bar_frame,
-            lambda: AddComponentWindow(self, self.component_type),
+            lambda: AddComponentWindow(self,
+                self.component_type,
+                self.app_controller,
+                self.get_items,
+            ),
             "ADD +",
             activebackground="white",
         )
@@ -113,24 +126,32 @@ class ComponentListView(SubScreen):
         scroll_bar = table_frame.scroll_bar = AccentHorizontalScrollbar(table_frame)
 
         # Create the tree view
+        columns = [
+            "part_number", 
+            "price", 
+            "guarantee", 
+            "manufacturer", 
+            "inventory_date",
+            "sub_category", 
+            "stock"
+        ]
+        if self.component_type == "ic":
+            columns.append("clock")
+        elif self.component_type == "sensor":
+            columns.append("sensor_type")
+        else:
+            columns.append(self.component_type[:-2] + "ance")
+            
         tree_view = table_frame.tree_view = CustomListView(
             table_frame, 
-            columns=(
-                "part_number", 
-                "price", 
-                "guarantee", 
-                "manufacturer", 
-                "inventory_date",
-                "sub_category", 
-                "stock"
-            ),
+            columns=columns,
             yscrollcommand=scroll_bar.set,
         )
 
         scroll_bar.add_command(tree_view.yview)
 
         # Config the headings
-        tree_view.config_headings({
+        headings = {
             "part_number": {"text": "Part number"},
             "price": {"text": "Price"},
             "guarantee": {"text": "Guarantee"},
@@ -138,10 +159,17 @@ class ComponentListView(SubScreen):
             "inventory_date": {"text": "Inventory date"},
             "sub_category": {"text": "Subcategory"},
             "stock": {"text": "Stock"},
-        })
+        }
+        if self.component_type == "ic":
+            headings["clock"] = {"text": "Clock"}
+        elif self.component_type == "sensor":
+            headings["sensor_type"] = {"text": "Sensor type"}
+        else:
+            headings[self.component_type[:-2] + "ance"] = {"text": (self.component_type[:-2] + "ance").capitalize()}
+        tree_view.config_headings(headings)
 
         # Config the rows
-        tree_view.config_columns({
+        columns_setting = {
             "part_number": {"anchor": "center"},
             "price": {"anchor": "center"},
             "guarantee": {"anchor": "center"},
@@ -149,7 +177,14 @@ class ComponentListView(SubScreen):
             "inventory_date": {"anchor": "center"},
             "sub_category": {"anchor": "center"},
             "stock": {"anchor": "center"},
-        })
+        }
+        if self.component_type == "ic":
+            headings["clock"] = {"anchor": "center"}
+        elif self.component_type == "sensor":
+            headings["sensor_type"] = {"anchor": "center"}
+        else:
+            headings[self.component_type[:-2] + "ance"] = {"anchor": "center"}
+        tree_view.config_columns(columns_setting)
 
         tree_view.pack(side="left", fill="both", expand=True)
         scroll_bar.pack(side="left", fill="y")
@@ -157,8 +192,34 @@ class ComponentListView(SubScreen):
         # Bind double click envent
         tree_view.bind("<Double-1>", self.on_double_click)
 
-        for i in range(30):
-            tree_view.add_item(("SCD123AB", "0.3", str(i), "Samsung", "20/12/2020", "Controller", "3000"))
+        self.get_items()
+
+        # for i in range(30):
+        #     tree_view.add_item(("SCD123AB", "0.3", str(i), "Samsung", "20/12/2020", "Controller", "3000"))
+
+    def get_items(self):
+        """Get the item from controller and display them"""
+        self.clear_all_items()
+        # Get tree_view reference
+        tree_view = self.tree_view_frame.table_frame.tree_view
+        # Fetch component list
+        component_list = []
+        if self.component_type == "ic":
+            component_list = self.app_controller.get_ics()
+        if self.component_type == "capacitor":
+            component_list = self.app_controller.get_capacitors()
+        if self.component_type == "inductor":
+            component_list = self.app_controller.get_inductors()
+        if self.component_type == "resistor":
+            component_list = self.app_controller.get_resistors()
+        if self.component_type == "sensor":
+            component_list = self.app_controller.get_sensors()
+        # Render the componet
+        for component in component_list:
+            component_info = component.get_all_info()
+            component_info[3] = self.manufacturers_ids[component.get_mnf_id()]
+            tree_view.add_item(component_info)
+
 
     def build_filters_frame(self):
         """Create the filters frame"""
@@ -211,12 +272,12 @@ class ComponentListView(SubScreen):
         filters_frame.stock_frame.pack(fill="x")
 
         # Subcategory filter
-        filters_frame.subcategory_menu_frame = self.create_options_menu_filter("Subcategory", ("A", "B", "C"))
+        filters_frame.subcategory_menu_frame = self.create_options_menu_filter("Subcategory", self.app_controller.get_sub_categories(self.component_type))
         filters_frame.subcategory_menu_frame.pack(fill="x")
 
         # Optional filter
         if self.component_type == "sensor":
-            filters_frame.sensor_menu_frame = self.create_options_menu_filter("Sensor type", ("A", "B", "C"))
+            filters_frame.sensor_menu_frame = self.create_options_menu_filter("Sensor type", self.app_controller.get_sensor_types())
             filters_frame.sensor_menu_frame.pack(fill="x")
             self.optional_type = "sensor_type"
         else:
@@ -235,7 +296,7 @@ class ComponentListView(SubScreen):
         # Apply filter button
         filters_frame.apply_button = AccentButton(filters_frame,
             text="Apply",
-            command=self.get_all_filter,
+            command=self.apply_filters,
         )
         filters_frame.apply_button.pack(side="bottom", fill="both", pady=20, padx=14)
 
@@ -404,13 +465,13 @@ class ComponentListView(SubScreen):
         # Get guarantee
         filters_dict["guarantee"] = [
             ("<=", filters_frame.guarantee_to_entry.get()),
-            ("<=", filters_frame.guarantee_from_entry.get())
+            (">=", filters_frame.guarantee_from_entry.get())
         ]
 
         # Get stock
         filters_dict["stock"] = [
             ("<=", filters_frame.stock_to_entry.get()),
-            ("<=", filters_frame.stock_from_entry.get())
+            (">=", filters_frame.stock_from_entry.get())
         ]
         
         # Get subcategory
@@ -422,7 +483,23 @@ class ComponentListView(SubScreen):
         else:
             filters_dict[self.optional_type] = [
                 ("<=", filters_frame.optional_to_entry.get()),
-                ("<=", filters_frame.optional_from_entry.get())
+                (">=", filters_frame.optional_from_entry.get())
             ]
-        print(filters_dict)
+
         return filters_dict
+    
+    def clear_all_items(self):
+        tree_view :CustomListView = self.tree_view_frame.table_frame.tree_view
+        for item in tree_view.get_children():
+            tree_view.delete(item)
+
+    def apply_filters(self):
+        """Applying the filters"""
+        tree_view :CustomListView = self.tree_view_frame.table_frame.tree_view
+        filters = self.get_all_filter()
+        no_result, result = self.app_controller.get_list_with_filters(self.component_type, filters)
+        self.clear_all_items()
+        for component in result:
+            component_info = component.get_all_info()
+            component_info[3] = self.manufacturers_ids[component.get_mnf_id()]
+            tree_view.add_item(component_info)

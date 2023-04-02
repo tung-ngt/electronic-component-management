@@ -4,12 +4,13 @@ from ...gui import Label, Frame
 from ...components import AccentButton
 from re import match
 
-class AddComponentWindow:
+class UpdateComponentWindow:
     """This is a pop up window to add a student"""
     def __init__(self,
             master,
             component_type: str,
             app_controller, 
+            initial_values,
             on_close_fun = None,
         ):
         """Create the window
@@ -19,6 +20,7 @@ class AddComponentWindow:
         master : master widget
         component_type : type of component to add
         app_controller : app controller
+        initial_values : initial values of the component
         on_close_fun : function to run when closing window
         """
         # Window settings
@@ -30,13 +32,12 @@ class AddComponentWindow:
         self.screen.minsize(1000, 700)
         self.screen["background"] = COLORS.WHITE
         self.screen.grab_set()
-        self.on_close_fun = self.get_on_close_fun(on_close_fun)
-        if self.on_close_fun != None:
-            self.screen.protocol("WM_DELETE_WINDOW", self.on_close_fun)
+        self.on_close_fun = on_close_fun
 
         self.app_controller = app_controller
         self.manufacturer_options = self.get_all_manufacturers_ids()
         self.subcategory_options = self.app_controller.get_sub_categories(self.component_type)
+        self.initial_values = initial_values
         self.create_form()
 
     def get_all_manufacturers_ids(self):
@@ -45,13 +46,6 @@ class AddComponentWindow:
         for manufacturer in manufacturers:
             manufacturers_ids[manufacturer.get_id()] = manufacturer.get_name()
         return manufacturers_ids
-
-
-    def get_on_close_fun(self, on_close_fun):
-        def close():
-            self.screen.destroy()
-            on_close_fun()
-        return close
 
     def create_form(self):
         """Create component information form"""
@@ -74,16 +68,17 @@ class AddComponentWindow:
         self.form_frame.columnconfigure(2, weight=1)
         self.form_frame.rowconfigure(3, weight=1)
 
-        part_number_frame, self.part_number_entry = self.create_input_label("Part number")
+        part_number_frame, self.part_number_entry = self.create_input_label("Part number", self.initial_values[0])
         part_number_frame.grid(row=0, column=0, sticky="ew")
+        self.part_number_entry.config(state="disabled")
         
-        price_frame, self.price_entry = self.create_input_label("Price")
+        price_frame, self.price_entry = self.create_input_label("Price", self.initial_values[1])
         price_frame.grid(row=1, column=0, sticky="ew")
         
-        guarantee_frame, self.guarantee_entry = self.create_input_label("Guarantee (months)")
+        guarantee_frame, self.guarantee_entry = self.create_input_label("Guarantee (months)", self.initial_values[2])
         guarantee_frame.grid(row=2, column=0, sticky="ew")
         
-        stock_frame, self.stock_entry = self.create_input_label("Stock")
+        stock_frame, self.stock_entry = self.create_input_label("Stock", self.initial_values[6])
         stock_frame.grid(row=0, column=1, sticky="ew")
 
         # Create manufacturers option menu
@@ -96,9 +91,9 @@ class AddComponentWindow:
             font=FONTS.get_font("paragraph", bold=True)
         )
         self.man_option = StringVar()
-        self.man_option.set("None")
+        self.man_option.set(list(filter(lambda x: self.manufacturer_options[x] == self.initial_values[3], self.manufacturer_options.keys()))[0])
         self.man_label_option = StringVar()
-        self.man_label_option.set("None")
+        self.man_label_option.set(self.initial_values[3])
         man_button = Menubutton(
             manu_frame,
             textvariable=self.man_label_option,
@@ -139,7 +134,7 @@ class AddComponentWindow:
             font=FONTS.get_font("paragraph", bold=True)
         )
         self.subcategory_option = StringVar()
-        self.subcategory_option.set("None")
+        self.subcategory_option.set(self.initial_values[5])
         subcategory_button = Menubutton(
             subcategory_frame,
             textvariable=self.subcategory_option,
@@ -165,20 +160,20 @@ class AddComponentWindow:
         subcategory_button.pack(fill="x", padx=24, ipady=2)
         subcategory_frame.grid(row=2, column=1, sticky="ew")
 
-        date_frame, self.date_entry = self.create_input_label("Inventory date")    
+        date_frame, self.date_entry = self.create_input_label("Inventory date", self.initial_values[4])    
         date_frame.grid(row=0, column=2, sticky="ew")
 
         if self.component_type == "ic":
-            clock_frame, self.clock_entry = self.create_input_label("Clock")
+            clock_frame, self.clock_entry = self.create_input_label("Clock", self.initial_values[7])
             clock_frame.grid(row=1, column=2, sticky="ew")
         if self.component_type == "capacitor":
-            capacitance_frame, self.capacitance_entry = self.create_input_label("Capacitance")
+            capacitance_frame, self.capacitance_entry = self.create_input_label("Capacitance", self.initial_values[7])
             capacitance_frame.grid(row=1, column=2, sticky="ew")
         if self.component_type == "inductor":
-            inductance_frame, self.inductance_entry = self.create_input_label("Inductance")
+            inductance_frame, self.inductance_entry = self.create_input_label("Inductance", self.initial_values[7])
             inductance_frame.grid(row=1, column=2, sticky="ew")
         if self.component_type == "resistor":
-            resitance_frame, self.resitance_entry = self.create_input_label("Resistance")
+            resitance_frame, self.resitance_entry = self.create_input_label("Resistance", self.initial_values[7])
             resitance_frame.grid(row=1, column=2, sticky="ew")
         if self.component_type == "sensor":
             sensor_type_frame = Frame(self.form_frame, background="transparent")
@@ -190,7 +185,7 @@ class AddComponentWindow:
                 font=FONTS.get_font("paragraph", bold=True)
             )
             self.sensor_type = StringVar()
-            self.sensor_type.set("None")
+            self.sensor_type.set(self.initial_values[7])
             sensor_types = self.app_controller.get_sensor_types()
             sensor_type_button = Menubutton(
                 sensor_type_frame,
@@ -225,7 +220,7 @@ class AddComponentWindow:
 
         add_button.grid(row=3, column=0, sticky="w", padx=24, pady=24, ipadx=20)
         
-    def create_input_label(self, label):
+    def create_input_label(self, label, initial_value):
         """Create a input label and entry in a frame and return it
         
         Parameters
@@ -243,6 +238,7 @@ class AddComponentWindow:
             font=FONTS.get_font("paragraph", bold=True)
         )
         e = Entry(input_frame, font=FONTS.get_font("paragraph"))
+        e.insert(0, initial_value)
         l.pack(anchor="w", padx=24, pady=(24,5))
         e.pack(fill="x", padx=24, ipady=4)
         return input_frame, e
@@ -250,11 +246,11 @@ class AddComponentWindow:
     def submit(self):
         """Submit the form"""
         data = {
-            "mnf_id": self.man_option.get(),
-            "price": self.price_entry.get(),
-            "inventory_date": self.date_entry.get(),
-            "guarantee": self.guarantee_entry.get(),
             "part_number": self.part_number_entry.get(),
+            "price": self.price_entry.get(),
+            "guarantee": self.guarantee_entry.get(),
+            "mnf_id": self.man_option.get(),
+            "inventory_date": self.date_entry.get(),
             "sub_category": self.subcategory_option.get(),
             "stock": self.stock_entry.get(),
         }
@@ -270,10 +266,15 @@ class AddComponentWindow:
             data["sensor_type"] = self.sensor_type.get()
         
         try:
-            self.app_controller.add_component(self.component_type, data)
+            self.app_controller.update_component(self.component_type, data, data["part_number"])
         except Exception as e:
             messagebox.showerror("Error", str(e))
         else:
             messagebox.showinfo("Successfull", "Add component was suscessfull")
+            updated_values = list(data.values())
+            self.screen.destroy()
+            self.on_close_fun({"component_type": self.component_type, "values": updated_values})
+            
+
 
         
