@@ -128,8 +128,8 @@ class AppController:
         self.__ics.append(new_sensor)
         push(new_sensor)
 
-    def get_list_with_filters(self, list_type, filters):
-        return pull(list_type, filters)
+    def get_list_with_filters(self, list_type, filters, sort_options = []):
+        return pull(list_type, filters, sort_options)
     
     def get_sub_categories(self, component_type):
         return get_sub_category(component_type)

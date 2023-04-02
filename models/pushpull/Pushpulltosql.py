@@ -48,24 +48,20 @@ def push(thing):
     mycursor.close()
 
 
-def pull(table : str, condition : dict = {}, sort_option = ""):
+def pull(table : str, condition : dict = {}, sort_options = []):
     '''
         Pull things from database
     '''
     # Connect to database
-    conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
     table = table.lower()
-    mycursor = conn.cursor()
 
     if table in ['capacitor', 'resistor', 'ic', 'sensor', 'inductor']:
-        count, myresult = filter_component(table, condition, sort_option)
+        count, myresult = filter_component(table, condition, sort_options)
        
     elif table == 'manufacturer':
-        count, myresult = filter_manufacturer(table, condition, sort_option)
+        count, myresult = filter_manufacturer(table, condition, sort_options)
         
 
-    conn.commit()
-    mycursor.close()
     items = []
     for item in myresult:
         items.append(deserialize(table, item))

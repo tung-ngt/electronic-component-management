@@ -26,7 +26,7 @@ def main():
 
     # Pull from database
     cap_num, cap_list = pull('capacitor', {'mnf_id' : '05'}, [('guarantee')])
-    ic_num, ic_list = pull(table = 'ic', condition = {'part_number' : 'BRM4555C-T'},sort_option = [('mnf_id', 'desc'), ('price', 'asc')])
+    ic_num, ic_list = pull(table = 'ic', sort_option = [('clock', "asc"), ("mnf_id", "desc")])
 
     print("IC list:")
     if len(ic_list) == 0:

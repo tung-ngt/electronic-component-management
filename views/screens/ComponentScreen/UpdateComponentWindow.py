@@ -91,7 +91,7 @@ class UpdateComponentWindow:
             font=FONTS.get_font("paragraph", bold=True)
         )
         self.man_option = StringVar()
-        self.man_option.set(list(filter(lambda x: self.manufacturer_options[x] == self.initial_values[3], self.manufacturer_options.keys()))[0])
+        self.man_option.set(self.initial_values[3].split(")")[1:])
         self.man_label_option = StringVar()
         self.man_label_option.set(self.initial_values[3])
         man_button = Menubutton(

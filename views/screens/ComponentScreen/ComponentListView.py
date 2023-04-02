@@ -1,5 +1,5 @@
 from ...gui import SubScreen, Label, Frame
-from tkinter import Entry, StringVar, Menu, Menubutton, BooleanVar, Radiobutton
+from tkinter import Entry, StringVar, Menu, Menubutton, BooleanVar, Radiobutton, PhotoImage
 from ...constants import COLORS, FONTS
 from .AddComponentWindow import AddComponentWindow
 from ...components import AccentButton, AccentHorizontalScrollbar, CustomListView
@@ -20,6 +20,10 @@ class ComponentListView(SubScreen):
         
         self.navigate = navigation_function
         self.get_all_manufacturers_ids()
+        self.sorts = [0, 0, 0, 0, 0, 0, 0, 0]
+        self.sort_asc_img = PhotoImage(file="./images/arrow-up.png")
+        self.sort_desc_img = PhotoImage(file="./images/arrow-down.png")
+        self.no_sort_img = PhotoImage(file="./images/blank.png")
 
     def get_all_manufacturers_ids(self):
         manufacturers = self.app_controller.get_manufacturers()
@@ -58,6 +62,26 @@ class ComponentListView(SubScreen):
         # Specify the widget to destroy
         self.add_widgets_to_destroy([self.tree_view_frame, self.filters_frame])
 
+    def on_sort(self, event):
+        tree_view: CustomListView = self.tree_view_frame.table_frame.tree_view
+        region = tree_view.identify_region(event.x, event.y)
+
+        if region != "heading":
+            return
+        
+        column_id = tree_view.identify_column(event.x)
+        column_index = int(column_id[1]) -1
+        self.sorts[column_index] = (self.sorts[column_index] + 1) % 3
+        if self.sorts[column_index] == 0:
+            tree_view.heading(column_id, image=self.no_sort_img)
+        elif self.sorts[column_index] == 1:
+            tree_view.heading(column_id, image=self.sort_asc_img)
+        else:
+            tree_view.heading(column_id, image=self.sort_desc_img)
+        self.apply_filters()
+
+
+
     def on_double_click(self, event):
         """Handle double click event"""
         tree_view: CustomListView = self.tree_view_frame.table_frame.tree_view
@@ -90,7 +114,7 @@ class ComponentListView(SubScreen):
             font=FONTS.get_font("paragraph"),
         )
         search_bar_frame.man_search = Radiobutton(search_bar_frame,
-            text="Manufacturer",
+            text="Manufacturer's id",
             value="man_name",
             variable=search_bar_frame.search_option,
             font=FONTS.get_font("paragraph"),
@@ -170,20 +194,20 @@ class ComponentListView(SubScreen):
 
         # Config the rows
         columns_setting = {
-            "part_number": {"anchor": "center"},
-            "price": {"anchor": "center"},
-            "guarantee": {"anchor": "center"},
+            "part_number": {"anchor": "center", "width": 200, "stretch": False},
+            "price": {"anchor": "center", "width": 70, "stretch": False},
+            "guarantee": {"anchor": "center", "width": 120, "stretch": False},
             "manufacturer": {"anchor": "center"},
-            "inventory_date": {"anchor": "center"},
+            "inventory_date": {"anchor": "center", "width": 140, "stretch": False},
             "sub_category": {"anchor": "center"},
-            "stock": {"anchor": "center"},
+            "stock": {"anchor": "center", "width": 70, "stretch": False},
         }
         if self.component_type == "ic":
-            headings["clock"] = {"anchor": "center"}
+            headings["clock"] = {"anchor": "center", "stretch": False}
         elif self.component_type == "sensor":
             headings["sensor_type"] = {"anchor": "center"}
         else:
-            headings[self.component_type[:-2] + "ance"] = {"anchor": "center"}
+            headings[self.component_type[:-2] + "ance"] = {"anchor": "center", "width": 70, "stretch": False}
         tree_view.config_columns(columns_setting)
 
         tree_view.pack(side="left", fill="both", expand=True)
@@ -191,6 +215,7 @@ class ComponentListView(SubScreen):
 
         # Bind double click envent
         tree_view.bind("<Double-1>", self.on_double_click)
+        tree_view.bind("<Button-1>", self.on_sort)
 
         self.get_items()
 
@@ -217,7 +242,7 @@ class ComponentListView(SubScreen):
         # Render the componet
         for component in component_list:
             component_info = component.get_all_info()
-            component_info[3] = self.manufacturers_ids[component.get_mnf_id()]
+            component_info[3] = f"({component_info[3]}) {self.manufacturers_ids[component.get_mnf_id()]}"
             tree_view.add_item(component_info)
 
 
@@ -438,6 +463,7 @@ class ComponentListView(SubScreen):
             "sensor_type" : ["sensor 1", "sensor 2"]
         }
         """
+        
         filters_frame = self.filters_frame
         search_bar_frame = self.tree_view_frame.search_bar_frame
 
@@ -493,13 +519,41 @@ class ComponentListView(SubScreen):
         for item in tree_view.get_children():
             tree_view.delete(item)
 
+    def get_all_sorting(self):
+        sort_column = [
+            "part_number", 
+            "price", 
+            "guarantee", 
+            "mnf_id", 
+            "inventory_date",
+            "sub_category", 
+            "stock"
+        ]
+        if self.component_type == "ic":
+            sort_column.append("clock")
+        elif self.component_type == "sensor":
+            sort_column.append("sensor_type")
+        else:
+           sort_column.append(self.component_type[:-2] + "ance")
+        sort_options = []
+        for index, op in enumerate(self.sorts):
+            if op == 0:
+                continue
+            if op == 1:
+                sort_options.append((sort_column[index], "asc")) 
+            if op == 2:
+                sort_options.append((sort_column[index], "desc")) 
+
+        return sort_options
+
     def apply_filters(self):
         """Applying the filters"""
         tree_view :CustomListView = self.tree_view_frame.table_frame.tree_view
         filters = self.get_all_filter()
-        no_result, result = self.app_controller.get_list_with_filters(self.component_type, filters)
+        sort_options = self.get_all_sorting()
+        no_result, result = self.app_controller.get_list_with_filters(self.component_type, filters, sort_options)
         self.clear_all_items()
         for component in result:
             component_info = component.get_all_info()
-            component_info[3] = self.manufacturers_ids[component.get_mnf_id()]
+            component_info[3] = f"({component_info[3]}) {self.manufacturers_ids[component.get_mnf_id()]}"
             tree_view.add_item(component_info)

@@ -76,28 +76,16 @@ def sort_by_special_att(table : str):
     return query
 
 
-def get_option(sort_option : list):
+def get_options(sort_options : list):
     '''
     Get option for sort
     Example : get_option([('price', 'asc'), ('capacitance', 'desc')])
     '''
-
-    if len(sort_option) == 1:
-        print(sort_option[0])
-        return sort_option[0]
-    option = ""
-    for i in sort_option:
-        if i[0] in ['capacitance', 'resistance', 'inductance', 'sensor_type', 'clock']:
-            option += sort_by_special_att() + ' ' + i[1]
-        else:
-            option += i[0] + ' ' + i[1]
-        if i != sort_option[-1]:
-            option += ","
-
-    return option
+    options = ", ".join([" ".join(op) for op in sort_options])
+    return options
         
 
-def filter_component(table: str, condition: dict, sort_option: list):
+def filter_component(table: str, condition: dict = {}, sort_options: list = []):
     '''
     Filter component by condition and sort by sort_option (optional)
 
@@ -111,14 +99,14 @@ def filter_component(table: str, condition: dict, sort_option: list):
     query = f"""select * from {table}"""
 
 
-    if len(condition) > 0 and len(sort_option) > 0:
-        query += f" where {convert_condition(condition)} order by {get_option(sort_option)};"
-    elif len(condition) > 0:
-        query += f" where {convert_condition(condition)};"
-    elif len(sort_option) > 0:
-        query += f" order by {get_option(sort_option)};"
 
-    #print(query)
+    if len(condition) > 0:
+        query += f" where {convert_condition(condition)}"
+    
+    if len(sort_options) > 0:
+        query += f" order by {get_options(sort_options)}"
+
+    query += ";"
     c.execute(query)
     items = c.fetchall()
     conn.close()
@@ -133,11 +121,11 @@ def filter_manufacturer(table: str, condition: dict, sort_option : str):
     conn, c = get_connection('./data/electronic_store_with_classes.db')
     query = f"""select * from {table}"""
     if len(condition) > 0 and len(sort_option) > 0:
-        query += f" where {convert_mnf_condition(condition)} order by {get_option(sort_option)};"
+        query += f" where {convert_mnf_condition(condition)} order by {get_options(sort_option)};"
     elif len(condition) > 0:
         query += f" where {convert_mnf_condition(condition)};"
     elif len(sort_option) > 0:
-        query += f" order by {get_option(sort_option)};"
+        query += f" order by {get_options(sort_option)};"
 
     #print(query)
     c.execute(query)
