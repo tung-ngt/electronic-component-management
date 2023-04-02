@@ -60,12 +60,11 @@ def pull(table : str, condition : dict = {}, sort_options = []):
        
     elif table == 'manufacturer':
         count, myresult = filter_manufacturer(table, condition, sort_options)
-        
+    
 
     items = []
     for item in myresult:
         items.append(deserialize(table, item))
-
     return count, items
 
 
@@ -93,17 +92,13 @@ def update(table : str, change : dict, condition : str):
             query += f" WHERE id = '{condition}';"
         else:
             query += f" WHERE part_number = '{condition}';"
-        print(query)
         mycursor.execute(query)
     except:
         return False
 
     conn.commit()
     mycursor.close()
-    
 
-        
-  
 def get_sub_category(table : str):
     '''
         Get sub category from database
@@ -128,11 +123,24 @@ def get_sensor_types():
     mycursor = conn.cursor()
     mycursor.execute("SELECT DISTINCT sensor_type FROM sensor")
     result = mycursor.fetchall()
-    sub_category = []
+    sensor_types = []
     for item in result:
-        sub_category.append(item[0])
-    return sub_category
+        sensor_types.append(item[0])
+    return sensor_types
 
+def get_mnf_countries():
+    '''
+        Get sensor types from database
+    '''
+    # Connect to database
+    conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
+    mycursor = conn.cursor()
+    mycursor.execute("SELECT DISTINCT country FROM manufacturer")
+    result = mycursor.fetchall()
+    countries = []
+    for item in result:
+        countries.append(item[0])
+    return countries
 
 
 

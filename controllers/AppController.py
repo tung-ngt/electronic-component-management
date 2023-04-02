@@ -1,4 +1,4 @@
-from models.pushpull.Pushpulltosql import pull, push, update, get_sub_category, get_sensor_types
+from models.pushpull.Pushpulltosql import pull, push, update, get_sub_category, get_sensor_types, get_mnf_countries
 from models.db.Utils_database import get_connection
 from models.domains import IC, Capacitor, Inductor, Manufacturer, Resistor, Sensor
 
@@ -137,5 +137,27 @@ class AppController:
     def get_sensor_types(self):
         return get_sensor_types()
     
+    def get_mnf_countries(self):
+        return get_mnf_countries()
+    
     def update_component(self, component_type, data, part_number):
         update(component_type, data, part_number)
+
+    def add_manufacturer(self, data):
+        new_manufacturer = Manufacturer(
+            data["id"],
+            data["name"],
+            data["country"]
+        )
+        self.__manufacturers.append(new_manufacturer)
+        push(new_manufacturer)
+
+    def update_manufacturer(self, data, id):
+        update("manufacturer", data, id)
+
+    def get_no_of_components(self):
+        return len(self.__capacitors) \
+             + len(self.__ics) \
+             + len(self.__inductors) \
+             + len(self.__resistors) \
+             + len(self.__sensors)

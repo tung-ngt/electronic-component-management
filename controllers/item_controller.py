@@ -49,11 +49,16 @@ def convert_condition(items: dict):
     return x
 
 def convert_mnf_condition(items: dict):
-    x = ""
-    for (column, value) in items.items():
-        x += f" lower({column}) like lower(\'%{value}%\') and"
-    x = x.rsplit(' ', 1)[0]
-    return x
+    conditions = []
+    for column, value in list(items.items()):
+        if column == "country":
+            if len(value) == 0:
+                continue
+            countries_list = ', '.join([f"'{v.lower()}'" for v in value])
+            conditions.append(f"lower({column}) in ({countries_list})")
+        else:
+            conditions.append(f"lower({column}) like lower(\'%{value}%\')")
+    return " and ".join(conditions)
 
 
 # Specific sort function for each column
@@ -120,14 +125,12 @@ def filter_manufacturer(table: str, condition: dict, sort_option : str):
     '''
     conn, c = get_connection('./data/electronic_store_with_classes.db')
     query = f"""select * from {table}"""
-    if len(condition) > 0 and len(sort_option) > 0:
-        query += f" where {convert_mnf_condition(condition)} order by {get_options(sort_option)};"
-    elif len(condition) > 0:
-        query += f" where {convert_mnf_condition(condition)};"
-    elif len(sort_option) > 0:
-        query += f" order by {get_options(sort_option)};"
-
-    #print(query)
+   
+    if len(condition) > 0:
+        query += f" where {convert_mnf_condition(condition)}"
+    if len(sort_option) > 0:
+        query += f" order by {get_options(sort_option)}"
+    query += ";"
     c.execute(query)
     items = c.fetchall()
     conn.close()

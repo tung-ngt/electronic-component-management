@@ -53,11 +53,11 @@ class ComponentListView(SubScreen):
         self.tree_view_frame.grid(row=0, column=0, sticky="nsew")
         self.filters_frame.grid(row=0, column=1, sticky="nsew")
 
-        # Build the tree view
-        self.build_tree_view()
-
         # Build the filter frame
         self.build_filters_frame()
+        
+        # Build the tree view
+        self.build_tree_view()
 
         # Specify the widget to destroy
         self.add_widgets_to_destroy([self.tree_view_frame, self.filters_frame])
@@ -79,7 +79,6 @@ class ComponentListView(SubScreen):
         else:
             tree_view.heading(column_id, image=self.sort_desc_img)
         self.apply_filters()
-
 
 
     def on_double_click(self, event):
@@ -224,27 +223,7 @@ class ComponentListView(SubScreen):
 
     def get_items(self):
         """Get the item from controller and display them"""
-        self.clear_all_items()
-        # Get tree_view reference
-        tree_view = self.tree_view_frame.table_frame.tree_view
-        # Fetch component list
-        component_list = []
-        if self.component_type == "ic":
-            component_list = self.app_controller.get_ics()
-        if self.component_type == "capacitor":
-            component_list = self.app_controller.get_capacitors()
-        if self.component_type == "inductor":
-            component_list = self.app_controller.get_inductors()
-        if self.component_type == "resistor":
-            component_list = self.app_controller.get_resistors()
-        if self.component_type == "sensor":
-            component_list = self.app_controller.get_sensors()
-        # Render the componet
-        for component in component_list:
-            component_info = component.get_all_info()
-            component_info[3] = f"({component_info[3]}) {self.manufacturers_ids[component.get_mnf_id()]}"
-            tree_view.add_item(component_info)
-
+        self.apply_filters()
 
     def build_filters_frame(self):
         """Create the filters frame"""

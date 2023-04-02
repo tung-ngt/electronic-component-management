@@ -3,8 +3,9 @@ from ..constants import COLORS, FONTS
 
 class DashboardScreen(Screen):
     """App's main screen"""
-    def __init__(self, master):
+    def __init__(self, master, app_controller):
         """Init screen"""
+        self.app_controller = app_controller
         super().__init__(master,
             background=COLORS.WHITE,
             title="Dashboard",
@@ -35,10 +36,20 @@ class DashboardScreen(Screen):
         subscreen.box4.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
         
         subscreen.box3.pack_propagate(False)
-        subscreen.items_count_label = Label(
+        subscreen.box3.items_count_label = Label(
             subscreen.box3,
-            "1200 items in inventory",
+            f"{self.app_controller.get_no_of_components()} items in inventory",
             background="transparent",
             font=FONTS.get_font("heading3")
         )
-        subscreen.items_count_label.pack(fill="both", expand=True)
+        subscreen.box3.items_count_label.pack(fill="both", expand=True)
+        
+        subscreen.box4.pack_propagate(False)
+        subscreen.box4.manufacturer_count_label = Label(
+            subscreen.box4,
+            f"{self.app_controller.get_no_of_components()} manufacturers",
+            background="transparent",
+            foreground=COLORS.PRIMARY,
+            font=FONTS.get_font("heading3", bold=True)
+        )
+        subscreen.box4.manufacturer_count_label.pack(fill="both", expand=True)

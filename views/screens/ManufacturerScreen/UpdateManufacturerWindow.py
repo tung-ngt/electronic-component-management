@@ -3,16 +3,21 @@ from ...constants import COLORS, FONTS
 from ...gui import Label, Frame
 from ...components import AccentButton
 
-class AddManufacturerWindow:
+class UpdateManufacturerWindow:
     """This is a pop up window to add a student"""
-    def __init__(self, master, 
-        app_controller, 
-        on_close_fun = None,):
+    def __init__(self,
+            master, 
+            app_controller, 
+            initial_values,
+            on_close_fun = None,
+        ):
         """Create the window
         
         Parameters
         ----------
         master : master widget
+        app_controller : app controller
+        initial_values : initial values of the component
         on_close_fun : function to run when closing window
         """
         # Window settings
@@ -24,17 +29,10 @@ class AddManufacturerWindow:
         self.screen.minsize(1000, 700)
         self.screen["background"] = COLORS.WHITE
         self.app_controller = app_controller
-        self.on_close_fun = self.get_on_close_fun(on_close_fun)
-        if self.on_close_fun != None:
-            self.screen.protocol("WM_DELETE_WINDOW", self.on_close_fun)
+        self.initial_values = initial_values
+        self.on_close_fun = on_close_fun
 
         self.create_form()
-
-    def get_on_close_fun(self, on_close_fun):
-        def close():
-            self.screen.destroy()
-            on_close_fun()
-        return close
 
     def create_form(self):
         """Create component information form"""
@@ -61,6 +59,8 @@ class AddManufacturerWindow:
             font=FONTS.get_font("paragraph", bold=True)
         )
         self.man_id_entry = Entry(form_frame, font=FONTS.get_font("paragraph"))
+        self.man_id_entry.insert(0, self.initial_values[0])
+        self.man_id_entry.config(state="disabled")
         man_id_label.grid(row=0, column=0, sticky="w", padx=(34,14), pady=(34,5))
         self.man_id_entry.grid(row=1, column=0, sticky="ew", padx=(34,14), ipady=4)
         
@@ -72,6 +72,7 @@ class AddManufacturerWindow:
             font=FONTS.get_font("paragraph", bold=True)
         )
         self.name_entry = Entry(form_frame, font=FONTS.get_font("paragraph"))
+        self.name_entry.insert(0, self.initial_values[1])
         name_label.grid(row=2, column=0, columnspan=2, sticky="w", padx=(34,14), pady=(14,5))
         self.name_entry.grid(row=3, column=0, columnspan=2, sticky="ew", padx=(34,14), ipady=4)
         
@@ -84,7 +85,7 @@ class AddManufacturerWindow:
             font=FONTS.get_font("paragraph", bold=True)
         )
         self.country = StringVar()
-        self.country.set("None")
+        self.country.set(self.initial_values[2])
         country_options = self.app_controller.get_mnf_countries()
         country_button = Menubutton(
             country_frame,
@@ -115,7 +116,7 @@ class AddManufacturerWindow:
         add_button = AccentButton(
             form_frame, 
             command=self.submit, 
-            text="Add",
+            text="Update",
         )
 
         add_button.grid(row=5, column=0, sticky="w",padx=34, pady=34, ipadx=20)
@@ -128,8 +129,11 @@ class AddManufacturerWindow:
             "country": self.country.get()
         }
         try:
-            self.app_controller.add_manufacturer(data)
+            self.app_controller.update_manufacturer(data, data["id"])
         except Exception as e:
             messagebox.showerror("Error", str(e))
         else:
             messagebox.showinfo("Successfull", "Add component was suscessfull")
+            updated_values = list(data.values())
+            self.screen.destroy()
+            self.on_close_fun(updated_values)

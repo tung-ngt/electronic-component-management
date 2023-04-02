@@ -25,11 +25,11 @@ class AddComponentWindow:
         self.component_type = component_type
         self.screen = Toplevel(master)
         self.screen.title("Add a component")
-        # self.screen.grab_set()
+        self.screen.grab_set()
         self.screen.geometry("1200x800+0+0")
         self.screen.minsize(1000, 700)
         self.screen["background"] = COLORS.WHITE
-        self.screen.grab_set()
+
         self.on_close_fun = self.get_on_close_fun(on_close_fun)
         if self.on_close_fun != None:
             self.screen.protocol("WM_DELETE_WINDOW", self.on_close_fun)
