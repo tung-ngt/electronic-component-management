@@ -62,7 +62,7 @@ def create_tables():
             name VARCHAR(255) NOT NULL,
             country VARCHAR(255) NOT NULL, 
             image_path VARCHAR(255) NOT NULL
-            )
+            );
         """
     )
 
@@ -82,7 +82,7 @@ def create_tables():
             sub_category VARCHAR(255) NOT NULL,
             stock BIGINT NOT NULL,
             image_path VARCHAR(255) NOT NULL,
-            FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
+            FOREIGN KEY (mnf_id) REFERENCES manufacturer(id));
         """
     )
     for row in capacitors:
@@ -102,7 +102,7 @@ def create_tables():
             sub_category VARCHAR(255) NOT NULL,
             stock BIGINT NOT NULL,
             image_path VARCHAR(255) NOT NULL,
-            FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
+            FOREIGN KEY (mnf_id) REFERENCES manufacturer(id));
         """
     )
     for row in resistors:
@@ -121,7 +121,7 @@ def create_tables():
             sub_category VARCHAR(255) NOT NULL,
             stock BIGINT NOT NULL,
             image_path VARCHAR(255) NOT NULL,
-            FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
+            FOREIGN KEY (mnf_id) REFERENCES manufacturer(id));
         """
     )
     for row in inductors:
@@ -140,7 +140,7 @@ def create_tables():
             sub_category VARCHAR(255) NOT NULL,
             stock BIGINT NOT NULL,
             image_path VARCHAR(255) NOT NULL,
-            FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
+            FOREIGN KEY (mnf_id) REFERENCES manufacturer(id));
         """
     )
     for row in sensors:
@@ -159,7 +159,7 @@ def create_tables():
             sub_category VARCHAR(255) NOT NULL,
             stock BIGINT NOT NULL,
             image_path VARCHAR(255) NOT NULL,
-            FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
+            FOREIGN KEY (mnf_id) REFERENCES manufacturer(id));
         """
     )
     for row in ics:
@@ -168,20 +168,30 @@ def create_tables():
     # Create customer table
     mycursor.execute(
         """
-        CREATE TABLE IF NOT EXISTS IC(
-            part_number VARCHAR(255) PRIMARY KEY,
-            mnf_id VARCHAR(255) NOT NULL, 
-            price REAL NOT NULL,
-            inventory_date DATE NOT NULL,
-            guarantee INT NOT NULL,
-            clock REAL NOT NULL,
-            sub_category VARCHAR(255) NOT NULL,
-            stock BIGINT NOT NULL,
-            image_path VARCHAR(255) NOT NULL,
-            FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
+        CREATE TABLE IF NOT EXISTS customer(
+            id VARCHAR(255) PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            phone_number VARCHAR(255) NOT NULL
+        );
         """
     )
+    for row in customers:
+        push(row)
 
+    # Create order table
+    mycursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS orders(
+            order_id VARCHAR(255) PRIMARY KEY,
+            customer_id VARCHAR(255) NOT NULL,
+            items JSON NOT NULL,
+            date DATE NOT NULL,
+            FOREIGN KEY (customer_id) REFERENCES customer(id)
+        );
+        """
+    )
+    for row in orders:
+        push(row)
 
     mydb.commit()
 

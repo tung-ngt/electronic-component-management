@@ -48,10 +48,10 @@ Order("O004", "C003", {'Microchip Technology ATmega328P-PU': 5, 'Analog Devices 
 Order("O006", "C005", {'Sumida CDRH6D28NP-220NC': 10}, "2022-04-14"),
 Order("O008", "C006", {'Murata NCP15WB473D03RC': 6}, "2022-03-05"),
 Order("O005", "C004", {'TE Connectivity 3-1393812-3': 4, 'Bosch BMI088': 5}, "2023-02-01"),
-Order("O010", "C010", {'KEMET LQH32CN2R2M23L': 3}, "2022-01-31"),
+Order("O012", "C010", {'KEMET LQH32CN2R2M23L': 3}, "2022-01-31"),
 Order("O009", "C009", {'Bourns SDE0805A-2R2M': 3}, "2022-03-18"),
 Order("O010", "C008", {'Panasonic ELLATV2R2N': 2}, "2022-03-05"),
-Order("O010", "C007", {'Vishay Dale IHD1EBR2R2L': 1}, "2021-10-22"),
+Order("O011", "C007", {'Vishay Dale IHD1EBR2R2L': 1}, "2021-10-22"),
 ]
 
 capacitors_list = ['MLCC', 'Thin Film', 'Tantalum', 'Aluminum Electrolytic', 'Polymer']

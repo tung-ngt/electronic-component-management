@@ -42,6 +42,14 @@ def push(thing):
         name, ID, country, image_path = serialize(thing)
         mycursor.execute(f"INSERT INTO {type(thing).__name__} (id, name, country, image_path) VALUES {ID, name, country, image_path}")
 
+    elif type(thing).__name__ == 'Customer':
+        id, name, phone_number= serialize(thing)
+        mycursor.execute(f"INSERT INTO {type(thing).__name__} (id, name, phone_number) VALUES {id, name, phone_number}")
+    
+    elif type(thing).__name__ == 'Order':
+        order_id, customer_id, items, date = serialize(thing)
+        mycursor.execute(f"INSERT INTO {type(thing).__name__.lower() + 's'} (order_id, customer_id, items, date) VALUES {order_id, customer_id, items, date}")
+    
     conn.commit()
     mycursor.close()
 
@@ -58,8 +66,24 @@ def pull(table : str, condition : dict = {}, sort_options = []):
        
     elif table == 'manufacturer':
         count, myresult = filter_manufacturer(table, condition, sort_options)
-    
 
+    elif table == "orders":
+        conn, c = get_connection('./data/database.db')
+        query = f"""select * from orders"""
+        result = c.execute(query)
+        myresult = result.fetchall()
+        conn.close()
+        count = 0
+
+    
+    elif table == "customer":
+        conn, c = get_connection('./data/database.db')
+        query = f"""select * from customer"""
+        result = c.execute(query)
+        myresult = result.fetchall()
+        conn.close()
+        count = 0
+    
     items = []
     for item in myresult:
         items.append(deserialize(table, item))

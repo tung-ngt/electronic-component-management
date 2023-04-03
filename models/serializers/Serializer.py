@@ -1,4 +1,5 @@
-from ..domains import Component, Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
+from ..domains import Component, Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer, Order, Customer
+import json
 
 '''
     Import section needs to be changed base on real project
@@ -34,6 +35,20 @@ def serialize(thing):
         country = thing.get_country()
         image_path = thing.get_image_path()
         return name, ID, country, image_path
+    
+    elif type(thing).__name__ == "Order":
+        order_id = thing.get_order_id()
+        customer_id = thing.get_customer_id()
+        items = thing.get_items()
+        items = json.dumps(items)
+        date = thing.get_date()
+        return order_id, customer_id, items, date
+
+    elif type(thing).__name__ == "Customer":
+        id = thing.get_id()
+        name = thing.get_name()
+        phone_number = thing.get_phone_number()
+        return id, name, phone_number
 
 def deserialize(kind:str, myresult:list):
     '''
@@ -80,4 +95,16 @@ def deserialize(kind:str, myresult:list):
         image_path = myresult[index_manu['image_path']]
         return Manufacturer(name, ID, country, image_path)
     
+    elif kind == 'orders':
+        order_id = myresult[0]
+        customer_id = myresult[1]
+        items_json = myresult[2]
+        items = json.loads(items_json)
+        date = myresult[3]
+        return Order(order_id, customer_id, items, date)
 
+    elif kind == 'customer':
+        id = myresult[0]
+        name = myresult[1]
+        phone_number = myresult[2]
+        return Customer(id, name, phone_number)
