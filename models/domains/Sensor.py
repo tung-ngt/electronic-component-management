@@ -27,8 +27,9 @@ class Sensor(Component):
             sub_category: str,
             stock: int,
             sensor_type: str,
+            image_path: str = None
         ):
-        super().__init__(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock)
+        super().__init__(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, image_path)
         self.set_sensor_type(sensor_type)
         
     # Getters

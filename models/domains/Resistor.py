@@ -26,9 +26,10 @@ class Resistor(Component):
             part_number: str,
             sub_category: str,
             stock: int,
-            resistance: float
+            resistance: float,
+            image_path: str = None,
         ):
-        super().__init__(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock)
+        super().__init__(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, image_path)
         self.set_resistance(resistance)
 
     # Getters
