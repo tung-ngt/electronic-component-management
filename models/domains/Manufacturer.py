@@ -52,7 +52,7 @@ class Manufacturer:
             self.__image_path = image_path
             return
         
-        if os.path.isfile(image_path):
+        if os.path.isfile(f"./images/manufacturers/{image_path}"):
             self.__image_path = image_path
         else:
             raise Exception("Image path not found")
