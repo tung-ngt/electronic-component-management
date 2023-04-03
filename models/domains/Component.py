@@ -92,7 +92,6 @@ class Component:
     
     def get_all_info(self):
         return [
-            self.__image_path,
             self.__part_number, 
             self.__price, 
             self.__guarantee, 
