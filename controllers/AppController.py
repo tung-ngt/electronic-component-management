@@ -1,6 +1,9 @@
-from models.pushpull.Pushpulltosql import pull, push, update, get_sub_category, get_sensor_types
+from models.pushpull.Pushpulltosql import pull, push, update, get_sub_category, get_sensor_types, get_mnf_countries
 from models.db.Utils_database import get_connection
 from models.domains import IC, Capacitor, Inductor, Manufacturer, Resistor, Sensor
+from .utils import file_utils
+import os
+import threading
 
 class AppController:
     def __init__(self):
@@ -128,8 +131,8 @@ class AppController:
         self.__ics.append(new_sensor)
         push(new_sensor)
 
-    def get_list_with_filters(self, list_type, filters):
-        return pull(list_type, filters)
+    def get_list_with_filters(self, list_type, filters, sort_options = []):
+        return pull(list_type, filters, sort_options)
     
     def get_sub_categories(self, component_type):
         return get_sub_category(component_type)
@@ -137,5 +140,54 @@ class AppController:
     def get_sensor_types(self):
         return get_sensor_types()
     
+    def get_mnf_countries(self):
+        return get_mnf_countries()
+    
     def update_component(self, component_type, data, part_number):
         update(component_type, data, part_number)
+
+    def add_manufacturer(self, data):
+        new_manufacturer = Manufacturer(
+            data["id"],
+            data["name"],
+            data["country"]
+        )
+        self.__manufacturers.append(new_manufacturer)
+        push(new_manufacturer)
+
+    def update_manufacturer(self, data, id):
+        update("manufacturer", data, id)
+
+    def get_no_of_components(self):
+        return len(self.__capacitors) \
+             + len(self.__ics) \
+             + len(self.__inductors) \
+             + len(self.__resistors) \
+             + len(self.__sensors)
+    
+    def compress_and_remove_image(self, img):
+        file_utils.compress_file(img)
+        os.remove(img) 
+
+    def compress_all_images(self):
+        manufacturer_imgs = file_utils.get_files_of_type("./images/manufacturers/", ".png")
+        for manufacturer_img in manufacturer_imgs:
+            thread = threading.Thread(
+                target=self.compress_and_remove_image,
+                args=(f"./images/manufacturers/{manufacturer_img}",)
+            )
+            thread.start()
+    
+    def decompress_image(self, img):
+        file = img.replace(".dat", "")
+        file_utils.write_bytes_to_file(file, file_utils.decompress_file_bytes(img))
+        
+
+    def decompress_all_images(self):
+        manufacturer_imgs = file_utils.get_files_of_type("./images/manufacturers/", ".png.dat")
+        for manufacturer_img in manufacturer_imgs:
+            thread = threading.Thread(
+                target=self.decompress_image,
+                args=(f"./images/manufacturers/{manufacturer_img}",)
+            )
+            thread.start()

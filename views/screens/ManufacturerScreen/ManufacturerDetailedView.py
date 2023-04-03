@@ -1,12 +1,13 @@
 from ...gui import SubScreen, Label, Frame
 from tkinter import PhotoImage
 from ...constants import FONTS
-from .AddManufacturerWindow import AddManufacturerWindow
+from .UpdateManufacturerWindow import UpdateManufacturerWindow
 from ...components import AccentButton
 
 class ManufacturerDetailedView(SubScreen):
     """This class display details of a specific component"""
-    def __init__(self, master):
+    def __init__(self, master, app_controller):
+        self.app_controller = app_controller
         super().__init__(master, background="white")
 
     # Overriding render method
@@ -47,7 +48,11 @@ class ManufacturerDetailedView(SubScreen):
 
         self.update_info_button = AccentButton(
             self.info_frame, 
-            command=lambda: AddManufacturerWindow(self),
+            command=lambda: UpdateManufacturerWindow(self,
+                self.app_controller,
+                props,
+                self.render
+            ),
             text="Update information",
         )
 

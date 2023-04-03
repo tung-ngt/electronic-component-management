@@ -1,5 +1,6 @@
 from re import match
 from .Manufacturer import Manufacturer
+import os
 
 def validate_date(d: str):
     if match(r"^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$", d) == None:
@@ -52,6 +53,7 @@ class Component:
             part_number: str,
             sub_category: str,
             stock: int,
+            image_path: str = None,
         ):
         self.set_image_path(image_path)
         self.set_mnf_id(mnf_id)
@@ -61,10 +63,14 @@ class Component:
         self.set_part_number(part_number)
         self.set_sub_category(sub_category)
         self.set_stock(stock)
+        self.set_image_path(image_path)
 
     # Getters
     def get_mnf_id(self):
         return self.__mnf_id
+    
+    def get_image_path(self):
+        return self.__image_path
     
     def get_price(self):
         return self.__price
@@ -99,6 +105,16 @@ class Component:
     # Setters
     def set_mnf_id(self, mnf_id):
         self.__mnf_id = mnf_id
+
+    def set_image_path(self, image_path):
+        if image_path == None:
+            self.__image_path = image_path
+            return
+        
+        if os.path.isfile(image_path):
+            self.__image_path = image_path
+        else:
+            raise Exception("Image path not found")
 
     def set_price(self, price: float):
         if validate_price(price):

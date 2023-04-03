@@ -114,10 +114,18 @@ class TreeView(tkTreeView):
         """
 
         for columnid, config in list(configs.items()):
-            self.column(
-                columnid,
-                width=config.get("width", 60),
-                minwidth=config.get("width", 30),
-                stretch=config.get("stretch", True),
-                anchor=config.get("anchor", "w"),
-            )
+            if "width" in config.keys():
+                self.column(
+                    columnid,
+                    width=config.get("width"),
+                    minwidth=config.get("width", 30),
+                    stretch=config.get("stretch", True),
+                    anchor=config.get("anchor", "w"),
+                )
+            else:
+                self.column(
+                    columnid,
+                    minwidth=config.get("width", 30),
+                    stretch=config.get("stretch", True),
+                    anchor=config.get("anchor", "w"),
+                )
