@@ -100,7 +100,7 @@ def filter_component(table: str, condition: dict = {}, sort_options: list = []):
                                 sort_option = [("price"), ('mnf_id', 'desc')], default is from low to high, 
                              )
     '''
-    conn, c = get_connection('./data/electronic_store_with_classes.db')
+    conn, c = get_connection('./data/database.db')
     query = f"""select * from {table}"""
 
 
@@ -123,7 +123,7 @@ def filter_manufacturer(table: str, condition: dict, sort_option : str):
     '''
     Filter component by condition and sort by sort_option (optional)
     '''
-    conn, c = get_connection('./data/electronic_store_with_classes.db')
+    conn, c = get_connection('./data/database.db')
     query = f"""select * from {table}"""
    
     if len(condition) > 0:

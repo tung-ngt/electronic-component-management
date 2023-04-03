@@ -14,7 +14,7 @@ def push(thing):
         Push thing to database                 
     '''
     # Connect to database
-    conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
+    conn, mycursor  = get_connection('./data/database.db')
     if isinstance(thing, Component):
         mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, image_path = serialize(thing)
 
@@ -80,7 +80,7 @@ def update(table : str, change : dict, condition : str):
         condition : where part_number of component or where id of manufacturer equals to condition
     '''
     # Connect to database
-    conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
+    conn, mycursor  = get_connection('./data/database.db')
 
     try:
         query = f"UPDATE {table} SET "
@@ -103,7 +103,7 @@ def get_sub_category(table : str):
         Get sub category from database
     '''
     # Connect to database
-    conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
+    conn, mycursor  = get_connection('./data/database.db')
     mycursor.execute(f"SELECT DISTINCT sub_category FROM {table}")
     result = mycursor.fetchall()
     sub_category = []
@@ -117,7 +117,7 @@ def get_sensor_types():
         Get sensor types from database
     '''
     # Connect to database
-    conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
+    conn, mycursor  = get_connection('./data/database.db')
     mycursor.execute("SELECT DISTINCT sensor_type FROM sensor")
     result = mycursor.fetchall()
     sensor_types = []
@@ -130,7 +130,7 @@ def get_mnf_countries():
         Get sensor types from database
     '''
     # Connect to database
-    conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
+    conn, mycursor  = get_connection('./data/database.db')
     mycursor.execute("SELECT DISTINCT country FROM manufacturer")
     result = mycursor.fetchall()
     countries = []

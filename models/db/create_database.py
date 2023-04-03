@@ -33,24 +33,24 @@ def delete_tables(con, tables):
 
 def create_tables():
     # create a connection to the database
-    mydb, mycursor = get_connection('./data/electronic_store_with_classes.db')
+    mydb, mycursor = get_connection('./data/database.db')
     
     # Load the data from pickle
-    with open('./generate_data/manufacturers.pickle', 'rb') as f:
+    with open('./generated_data/manufacturers.pickle', 'rb') as f:
         manufacturers = pickle.load(f)
-    with open('./generate_data/sensors.pickle', 'rb') as f:
+    with open('./generated_data/sensors.pickle', 'rb') as f:
         sensors = pickle.load(f)
-    with open('./generate_data/ics.pickle', 'rb') as f:
+    with open('./generated_data/ics.pickle', 'rb') as f:
         ics = pickle.load(f)
-    with open('./generate_data/inductors.pickle', 'rb') as f:
+    with open('./generated_data/inductors.pickle', 'rb') as f:
         inductors = pickle.load(f)
-    with open('./generate_data/resistors.pickle', 'rb') as f:
+    with open('./generated_data/resistors.pickle', 'rb') as f:
         resistors = pickle.load(f)
-    with open('./generate_data/capacitors.pickle', 'rb') as f:
+    with open('./generated_data/capacitors.pickle', 'rb') as f:
         capacitors = pickle.load(f)
-    with open('./generate_data/customers.pickle', 'rb') as f:
+    with open('./generated_data/customers.pickle', 'rb') as f:
         customers = pickle.load(f)
-    with open('./generate_data/orders.pickle', 'rb') as f:
+    with open('./generated_data/orders.pickle', 'rb') as f:
         orders = pickle.load(f)
 
 
@@ -164,6 +164,24 @@ def create_tables():
     )
     for row in ics:
         push(row)
+
+    # Create customer table
+    mycursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS IC(
+            part_number VARCHAR(255) PRIMARY KEY,
+            mnf_id VARCHAR(255) NOT NULL, 
+            price REAL NOT NULL,
+            inventory_date DATE NOT NULL,
+            guarantee INT NOT NULL,
+            clock REAL NOT NULL,
+            sub_category VARCHAR(255) NOT NULL,
+            stock BIGINT NOT NULL,
+            image_path VARCHAR(255) NOT NULL,
+            FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
+        """
+    )
+
 
     mydb.commit()
 
