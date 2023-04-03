@@ -26,7 +26,7 @@ class Manufacturer:
         return self.__country
     
     def get_all_info(self):
-        return [self.__id, self.__name, self.__country]
+        return [self.__id, self.__name, self.__country, self.__image_path]
     
     def get_image_path(self):
         return self.__image_path

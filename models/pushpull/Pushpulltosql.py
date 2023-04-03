@@ -18,31 +18,31 @@ def push(thing):
     conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
     mycursor = conn.cursor()
     if isinstance(thing, Component):
-        mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock = serialize(thing)
+        mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, image_path = serialize(thing)
 
         if type(thing).__name__ == 'Capacitor':
             special_att = thing.get_capacitance()
-            mycursor.execute(f"INSERT INTO {type(thing).__name__} (part_number, mnf_id , price, inventory_date, guarantee, capacitance, sub_category, stock) VALUES {part_number, mnf_id, price, inventory_date, guarantee,  special_att, sub_category, stock};")
+            mycursor.execute(f"INSERT INTO {type(thing).__name__} (part_number, mnf_id , price, inventory_date, guarantee, capacitance, sub_category, stock, image_path) VALUES {part_number, mnf_id, price, inventory_date, guarantee,  special_att, sub_category, stock, image_path};")
 
         elif type(thing).__name__ == 'Resistor':  
             special_att = thing.get_resistance()
-            mycursor.execute(f"INSERT INTO {type(thing).__name__} (part_number, mnf_id , price, inventory_date, guarantee, resistance, sub_category, stock) VALUES {part_number, mnf_id, price, inventory_date, guarantee,  special_att, sub_category, stock};")
+            mycursor.execute(f"INSERT INTO {type(thing).__name__} (part_number, mnf_id , price, inventory_date, guarantee, resistance, sub_category, stock, image_path) VALUES {part_number, mnf_id, price, inventory_date, guarantee,  special_att, sub_category, stock, image_path};")
 
         elif type(thing).__name__ == 'Inductor':
             special_att = thing.get_inductance()
-            mycursor.execute(f"INSERT INTO {type(thing).__name__} (part_number, mnf_id , price, inventory_date, guarantee, inductance, sub_category, stock) VALUES {part_number, mnf_id, price, inventory_date, guarantee,  special_att, sub_category, stock};")
+            mycursor.execute(f"INSERT INTO {type(thing).__name__} (part_number, mnf_id , price, inventory_date, guarantee, inductance, sub_category, stock, image_path) VALUES {part_number, mnf_id, price, inventory_date, guarantee,  special_att, sub_category, stock, image_path};")
 
         elif type(thing).__name__ == 'Sensor':
             special_att = thing.get_sensor_type()
-            mycursor.execute(f"INSERT INTO {type(thing).__name__} (part_number, mnf_id , price, inventory_date, guarantee, sensor_type, sub_category, stock) VALUES {part_number, mnf_id, price, inventory_date, guarantee,  special_att, sub_category, stock};")
+            mycursor.execute(f"INSERT INTO {type(thing).__name__} (part_number, mnf_id , price, inventory_date, guarantee, sensor_type, sub_category, stock, image_path) VALUES {part_number, mnf_id, price, inventory_date, guarantee,  special_att, sub_category, stock, image_path};")
 
         elif type(thing).__name__ == 'IC':
             special_att = thing.get_clock()
-            mycursor.execute(f"INSERT INTO {type(thing).__name__} (part_number, mnf_id , price, inventory_date, guarantee, clock, sub_category, stock) VALUES {part_number, mnf_id, price, inventory_date, guarantee,  special_att, sub_category, stock};")
+            mycursor.execute(f"INSERT INTO {type(thing).__name__} (part_number, mnf_id , price, inventory_date, guarantee, clock, sub_category, stock, image_path) VALUES {part_number, mnf_id, price, inventory_date, guarantee,  special_att, sub_category, stock, image_path};")
   
     elif type(thing).__name__ == 'Manufacturer':
-        name, ID, country = serialize(thing)
-        mycursor.execute(f"INSERT INTO {type(thing).__name__} (id, name, country) VALUES {ID, name, country}")
+        name, ID, country, image_path = serialize(thing)
+        mycursor.execute(f"INSERT INTO {type(thing).__name__} (id, name, country, image_path) VALUES {ID, name, country, image_path}")
 
     conn.commit()
     mycursor.close()

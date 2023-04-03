@@ -1,12 +1,8 @@
 import random
 import pickle
-# abspath to models
-import os, sys
-sys.path.append(os.path.abspath(os.path.join('..', 'models')))
 
-from models.domains import Component, Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
 from models.db.Utils_database import get_connection
-from models.pushpull.Pushpulltosql import push, pull
+from models.pushpull.Pushpulltosql import push
 
 
 
@@ -44,6 +40,8 @@ def create_tables():
     mydb, mycursor = get_connection('./data/electronic_store_with_classes.db')
     
     # Load the data from pickle
+    with open('./data/manufacturer.pickle', 'rb') as f:
+        manufacturer = pickle.load(f)
     with open('./data/sensor.pickle', 'rb') as f:
         sensor = pickle.load(f)
     with open('./data/ic.pickle', 'rb') as f:
@@ -54,19 +52,16 @@ def create_tables():
         resistor = pickle.load(f)
     with open('./data/capacitor.pickle', 'rb') as f:
         capacitor = pickle.load(f)
-    with open('./data/manufacturer.pickle', 'rb') as f:
-        manufacturer = pickle.load(f)
-
 
 
     # create the manufacturer table
     mycursor.execute(
         """
         CREATE TABLE IF NOT EXISTS manufacturer (
-            image_path VARCHAR(255) NOT NULL,
             id VARCHAR(255) PRIMARY KEY, 
             name VARCHAR(255) NOT NULL,
-            country VARCHAR(255) NOT NULL
+            country VARCHAR(255) NOT NULL, 
+            image_path VARCHAR(255) NOT NULL
             )
         """
     )
@@ -78,7 +73,6 @@ def create_tables():
     mycursor.execute(
         """
         CREATE TABLE IF NOT EXISTS capacitor (
-            image_path VARCHAR(255) NOT NULL,
             part_number VARCHAR(255) PRIMARY KEY,
             mnf_id VARCHAR(255) NOT NULL, 
             price REAL NOT NULL, 
@@ -87,6 +81,7 @@ def create_tables():
             capacitance REAL NOT NULL,
             sub_category VARCHAR(255) NOT NULL,
             stock BIGINT NOT NULL,
+            image_path VARCHAR(255) NOT NULL,
             FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
         """
     )
@@ -98,7 +93,6 @@ def create_tables():
     mycursor.execute(
         """
         CREATE TABLE IF NOT EXISTS resistor(
-            image_path VARCHAR(255) NOT NULL,
             part_number VARCHAR(255) PRIMARY KEY,
             mnf_id VARCHAR(255) NOT NULL, 
             price REAL NOT NULL, 
@@ -107,6 +101,7 @@ def create_tables():
             resistance REAL NOT NULL,
             sub_category VARCHAR(255) NOT NULL,
             stock BIGINT NOT NULL,
+            image_path VARCHAR(255) NOT NULL,
             FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
         """
     )
@@ -117,7 +112,6 @@ def create_tables():
     mycursor.execute(
         """
         CREATE TABLE IF NOT EXISTS inductor(
-            image_path VARCHAR(255) NOT NULL,
             part_number VARCHAR(255) PRIMARY KEY,
             mnf_id VARCHAR(255) NOT NULL, 
             price REAL NOT NULL, 
@@ -126,6 +120,7 @@ def create_tables():
             inductance REAL NOT NULL,
             sub_category VARCHAR(255) NOT NULL,
             stock BIGINT NOT NULL,
+            image_path VARCHAR(255) NOT NULL,
             FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
         """
     )
@@ -136,7 +131,6 @@ def create_tables():
     mycursor.execute(
         """
         CREATE TABLE IF NOT EXISTS sensor(
-            image_path VARCHAR(255) NOT NULL,
             part_number VARCHAR(255) PRIMARY KEY,
             mnf_id VARCHAR(255) NOT NULL, 
             price REAL NOT NULL, 
@@ -145,6 +139,7 @@ def create_tables():
             sensor_type VARCHAR(255) NOT NULL,
             sub_category VARCHAR(255) NOT NULL,
             stock BIGINT NOT NULL,
+            image_path VARCHAR(255) NOT NULL,
             FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
         """
     )
@@ -155,7 +150,6 @@ def create_tables():
     mycursor.execute(
         """
         CREATE TABLE IF NOT EXISTS IC(
-            image_path VARCHAR(255) NOT NULL,
             part_number VARCHAR(255) PRIMARY KEY,
             mnf_id VARCHAR(255) NOT NULL, 
             price REAL NOT NULL,
@@ -164,6 +158,7 @@ def create_tables():
             clock REAL NOT NULL,
             sub_category VARCHAR(255) NOT NULL,
             stock BIGINT NOT NULL,
+            image_path VARCHAR(255) NOT NULL,
             FOREIGN KEY (mnf_id) REFERENCES manufacturer(id))
         """
     )
@@ -171,9 +166,5 @@ def create_tables():
         push(row)
 
     mydb.commit()
-
-
-
-
 
 

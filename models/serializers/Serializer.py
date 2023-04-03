@@ -25,13 +25,15 @@ def serialize(thing):
         part_number = thing.get_part_number()
         sub_category = thing.get_sub_category()
         stock = thing.get_stock()
-        return mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock
+        image_path = thing.get_image_path()
+        return mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, image_path
 
     elif type(thing).__name__ == 'Manufacturer':
         name = thing.get_name()
         ID = thing.get_id()
         country = thing.get_country()
-        return name, ID, country
+        image_path = thing.get_image_path()
+        return name, ID, country, image_path
 
 def deserialize(kind:str, myresult:list):
     '''
