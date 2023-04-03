@@ -1,7 +1,7 @@
-import sqlite3
+from sqlite3 import connect
 
 def get_connection(filepath : str):
-    conn = sqlite3.connect(filepath)
+    conn = connect(filepath)
     cursor = conn.cursor()
     return conn, cursor
 

@@ -1,4 +1,4 @@
-from models.domains import Component, Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
+from ..domains import Component, Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
 
 '''
     Import section needs to be changed base on real project

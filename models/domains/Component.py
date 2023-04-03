@@ -106,10 +106,10 @@ class Component:
         self.__mnf_id = mnf_id
 
     def set_image_path(self, image_path):
-        if image_path == None:
-            self.__image_path = image_path
+        if image_path == None or image_path == "None":
+            self.__image_path = "None"
             return
-        
+
         if os.path.isfile(f"./images/components/{image_path}"):
             self.__image_path = image_path
         else:

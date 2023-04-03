@@ -1,11 +1,10 @@
 from ...gui import SubScreen, Label, Frame, Button
 from ...constants import FONTS, COLORS
 from ...components import AccentButton
-from .UpdateComponentWindow import UpdateComponentWindow
+from .UpdateOrderWindow import UpdateOrderWindow
 from PIL import Image, ImageTk
-from tkinter import filedialog
 
-class ComponentDetailedView(SubScreen):
+class OrderDetailedView(SubScreen):
     """This class display details of a specific component"""
     def __init__(self, master, app_controller):
         """Init the component detailed view
@@ -25,16 +24,6 @@ class ComponentDetailedView(SubScreen):
         for manufacturer in manufacturers:
             self.manufacturers_ids[manufacturer.get_id()] = manufacturer.get_name()
 
-    def add_image(self, props):
-        filename = filedialog.askopenfilename(
-            title="Pick a image",
-            initialdir="./images/components",
-            filetypes=(("PNG files", "*.png"),)
-        )
-        filename = filename.split("/images/components/")[1]
-        self.app_controller.update_component_image(filename, props["component_type"], props["values"][0])
-        props["values"][8] = filename
-        self.render(props)
 
     # Overriding render method
     def render(self, props=None):
@@ -53,14 +42,14 @@ class ComponentDetailedView(SubScreen):
         if values[8] == "None" or values[8] == None:
             self.image_button = Button(
                 self.image_frame,
-                lambda: self.add_image(props),
+                lambda:print("hi"),
                 "Add image",
                 background=COLORS.BACKGROUND_LIGHT,
                 font=FONTS.get_font("heading3", bold=True)
             )
             self.image_button.pack(ipady=50, ipadx=50)
         else:
-            self.man_pill_img = Image.open(f"./images/components/{values[8]}")
+            self.man_pill_img = Image.open(f"./images/components/{values[8]}.png")
             size = self.man_pill_img.size
             scale = 300/size[0]
             new_size = [int(size[0]*scale), int(size[1]*scale)]
@@ -106,7 +95,7 @@ class ComponentDetailedView(SubScreen):
 
         self.update_info_button = AccentButton(
             self.info_frame, 
-            command=lambda: UpdateComponentWindow(self,
+            command=lambda: UpdateOrderWindow(self,
                 self.component_type,
                 self.app_controller,
                 values,

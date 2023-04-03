@@ -78,7 +78,7 @@ class AddManufacturerWindow:
         country_frame = Frame(form_frame, background="transparent")
         country_label = Label(
             country_frame,
-            "Sensor type",
+            "Country",
             background="transparent",
             foreground="white",
             font=FONTS.get_font("paragraph", bold=True)
@@ -132,4 +132,4 @@ class AddManufacturerWindow:
         except Exception as e:
             messagebox.showerror("Error", str(e))
         else:
-            messagebox.showinfo("Successfull", "Add component was suscessfull")
+            messagebox.showinfo("Successfull", "Add manufacturer was suscessfull")

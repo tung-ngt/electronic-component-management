@@ -7,9 +7,9 @@ from os.path import isfile, join
 import os, sys
 sys.path.append(os.path.abspath(r'C:\Users\ciltr\Desktop\USTH\Semester 2\Python\Python project\electronic-store'))
 
-from models.domains import Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer
-from models.db.Utils_database import get_connection
-from models.pushpull.Pushpulltosql import push, pull
+from models.domains import Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer, Customer, Order
+from models.db.utils.connect_to_db import get_connection
+from models.db.functions import push, pull
 
 
 
@@ -25,20 +25,43 @@ m8 = Manufacturer("M008", "Vishay Intertechnology, Inc.", "United States", 'vish
 m9 = Manufacturer("M009", "Infineon Technologies AG", "Germany", 'infineon.png')
 m10 = Manufacturer("M010", "STMicroelectronics", "Switzerland", 'st.png')
 
-manufacturer = [m1, m2, m3, m4, m5, m6, m7, m8, m9, m10]
+manufacturers = [m1, m2, m3, m4, m5, m6, m7, m8, m9, m10]
 
 
+customers = [Customer("C001", "Steven Johnston", "505-261-9544"),
+Customer("C002", "Emmett Rogers", "+1 202-918-2132"),
+Customer("C003", "Ethan Bright", "+84 394 568 234"),
+Customer("C004", "Darian Vargas", "361-760-7352"),
+Customer("C005", "Ally Cooper", "413-283-3474"),
+Customer("C006", "Sloane Carlson", "973-797-1294"),
+Customer("C007", "Katelyn Ramsey", "919-430-0596"),
+Customer("C008", "Kaylynn Pierce", "484-651-6061"),
+Customer("C009", "Gisselle Carrillo", "817-250-8146"),
+Customer("C010", "Abraham Benson", "615-656-5114"),]
 
+orders = [
+Order("O001", "C001", {"KOA Speer RK73H1JTTD1003F": 3, "Yageo RC0805FR-071K5L": 4, "Bourns CR1206-FX-1000ELF": 2}, "2022-03-05"),
+Order("O003", "C002", {"KEMET T520B476M006ATE070" : 5, 'TE Connectivity 3-1393812-3': 6, "Texas Instruments SN74LS08N": 1}, "2023-01-15"),
+Order("O007", "C006", {"Texas Instruments SN": 1}, "2021-12-30"),
+Order("O002", "C001", {"TDK Corporation VLF3010AT-2R2N1R0" : 2}, "2022-06-19"),
+Order("O004", "C003", {'Microchip Technology ATmega328P-PU': 5, 'Analog Devices ADXL375BCPZ': 4}, "2022-08-25"),
+Order("O006", "C005", {'Sumida CDRH6D28NP-220NC': 10}, "2022-04-14"),
+Order("O008", "C006", {'Murata NCP15WB473D03RC': 6}, "2022-03-05"),
+Order("O005", "C004", {'TE Connectivity 3-1393812-3': 4, 'Bosch BMI088': 5}, "2023-02-01"),
+Order("O010", "C010", {'KEMET LQH32CN2R2M23L': 3}, "2022-01-31"),
+Order("O009", "C009", {'Bourns SDE0805A-2R2M': 3}, "2022-03-18"),
+Order("O010", "C008", {'Panasonic ELLATV2R2N': 2}, "2022-03-05"),
+Order("O010", "C007", {'Vishay Dale IHD1EBR2R2L': 1}, "2021-10-22"),
+]
 
+capacitors_list = ['MLCC', 'Thin Film', 'Tantalum', 'Aluminum Electrolytic', 'Polymer']
+resistors_list = ['Thick Film', 'Fusible', 'Thin Film']
+inductors_list = ['Power', 'Multilayer Ceramic', 'Wirewound', 'High-frequency', 'Ferrite Bead', 'RF']
+sensors_list = ['Humidity and Temperature Sensor', 'Light Sensor', 'Temperature Sensor', 'Proximity Sensor', 'Pressure Sensor', 'Accelerometer', 'Gas Sensor', 'Motion Sensor', 'Touch Sensor', 'Magnetic Sensor', 'Humidity Sensor', 'Barometric Pressure Sensor', 'Gyroscope', 'Ultrasonic Sensor']
 
-Capacitor_list = ['MLCC', 'Thin Film', 'Tantalum', 'Aluminum Electrolytic', 'Polymer']
-Resistor_list = ['Thick Film', 'Fusible', 'Thin Film']
-Inductor_list = ['Power', 'Multilayer Ceramic', 'Wirewound', 'High-frequency', 'Ferrite Bead', 'RF']
-Sensor_list = ['Humidity and Temperature Sensor', 'Light Sensor', 'Temperature Sensor', 'Proximity Sensor', 'Pressure Sensor', 'Accelerometer', 'Gas Sensor', 'Motion Sensor', 'Touch Sensor', 'Magnetic Sensor', 'Humidity Sensor', 'Barometric Pressure Sensor', 'Gyroscope', 'Ultrasonic Sensor']
+ics_list = ['Audio Amplifier', 'Op-Amp', 'Shift Register', 'Timer', 'Amplifier', 'LED Display Driver', 'Interface', 'Counter', 'Flip-Flop', 'Motor Control', 'Microcontroller', 'Voltage Regulator', 'Transistor', 'RS232 Transceiver', 'Clock Generators & Support Products']
 
-IC_list = ['Audio Amplifier', 'Op-Amp', 'Shift Register', 'Timer', 'Amplifier', 'LED Display Driver', 'Interface', 'Counter', 'Flip-Flop', 'Motor Control', 'Microcontroller', 'Voltage Regulator', 'Transistor', 'RS232 Transceiver', 'Clock Generators & Support Products']
-
-sensor_type_list = ["Thermistor", "Capacitive", "Photodiode", "Piezoresistive", "Hall Effect", "Electrochemical",
+sensor_types_list = ["Thermistor", "Capacitive", "Photodiode", "Piezoresistive", "Hall Effect", "Electrochemical",
                     "Inductive", "Piezoelectric", "MEMS", "Transmitter-Receiver", "Thermocouple", "Resistive", 
                     "Photoresistor", "Accelerometer", "Pressure", "Humidity and Temperature", "Light",
                     "Capacitive Touch"]
@@ -299,92 +322,82 @@ inductor_part_numbers = list(set(inductor_part_numbers))
 resistor_part_numbers = list(set(resistor_part_numbers))
 capacitor_part_numbers = list(set(capacitor_part_numbers))
 
-capacitor_image_path = './images/components/Capacitor'
-capacitor_images = [f for f in listdir(capacitor_image_path) if isfile(join(capacitor_image_path, f))]
-
-resistor_image_path = './images/components/Resistor'
-resistor_images = [f for f in listdir(resistor_image_path) if isfile(join(resistor_image_path, f))]
-
-inductor_image_path = './images/components/Inductor'
-inductor_images = [f for f in listdir(inductor_image_path) if isfile(join(inductor_image_path, f))]
-
-sensor_image_path = './images/components/Sensor'
-sensor_images = [f for f in listdir(sensor_image_path) if isfile(join(sensor_image_path, f))]
-
-ic_image_path = './images/components/IC'
-ic_images = [f for f in listdir(ic_image_path) if isfile(join(ic_image_path, f))]
-
+capacitor_images = [f"C{n}.png" for n in range(1, 11)]
+resistor_images = [f"R{n}.png" for n in range(1, 11)]
+inductor_images = [f"I{n}.png" for n in range(1, 11)]
+sensor_images = [f"S{n}.png" for n in range(1, 11)]
+ic_images = [f"IC{n}.png" for n in range(1, 11)]
 
 capacitor_samples = []
 for i in range(100):
-    mnf_id = random.choice(manufacturer).get_id()
+    mnf_id = random.choice(manufacturers).get_id()
     price = round(random.uniform(0.1, 10), 2)
     inventory_date = f"{random.randint(2020, 2023)}-{random.randint(1, 12):02d}-{random.randint(1, 28):02d}"
     guarantee = random.randint(6, 24)
     part_number = random.choice(capacitor_part_numbers) + str(i)
-    sub_category = random.choice(Capacitor_list)
+    sub_category = random.choice(capacitors_list)
     stock = random.randint(100, 1000)
     capacitance = round(random.uniform(0.1, 100), 2)
-    image_path = 'Capacitor' + '/' + random.choice(capacitor_images) 
+    image_path = random.choice(capacitor_images) 
     
     capacitor_samples.append(Capacitor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, capacitance, image_path))
 
 
 resistor_samples = []
 for i in range(120):
-    mnf_id = random.choice(manufacturer).get_id()
+    mnf_id = random.choice(manufacturers).get_id()
     price = round(random.uniform(0.1, 10), 2)
     inventory_date = f"{random.randint(2020, 2023)}-{random.randint(1, 12):02d}-{random.randint(1, 28):02d}"
     guarantee = random.randint(6, 24)
     part_number = random.choice(resistor_part_numbers) + str(i)
-    sub_category = random.choice(Resistor_list)
+    sub_category = random.choice(resistors_list)
     stock = random.randint(100, 1000)
     resistance = round(random.uniform(0.1, 100), 2)
-    image_path = 'Resistor' + '/' +random.choice(resistor_images)
+    image_path = random.choice(resistor_images)
     
     resistor_samples.append(Resistor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, resistance, image_path))
 
 inductor_samples = []
 for i in range(120):
-    mnf_id = random.choice(manufacturer).get_id()
+    mnf_id = random.choice(manufacturers).get_id()
     price = round(random.uniform(0.1, 10), 2)
     inventory_date = f"{random.randint(2020, 2023)}-{random.randint(1, 12):02d}-{random.randint(1, 28):02d}"
     guarantee = random.randint(6, 24)
     part_number = random.choice(inductor_part_numbers) + str(i)
-    sub_category = random.choice(Inductor_list)
+    sub_category = random.choice(inductors_list)
     stock = random.randint(100, 1000)
     inductance = round(random.uniform(0.1, 100), 2)
-    image_path = 'Inductor' + '/' +random.choice(inductor_images)
+    image_path = random.choice(inductor_images)
     
     inductor_samples.append(Inductor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, inductance, image_path))
 
 
 sensor_samples = []
 for i in range(120):
-    mnf_id = random.choice(manufacturer).get_id()
+    mnf_id = random.choice(manufacturers).get_id()
     price = round(random.uniform(0.1, 10), 2)
     inventory_date = f"{random.randint(2020, 2023)}-{random.randint(1, 12):02d}-{random.randint(1, 28):02d}"
     guarantee = random.randint(6, 24)
     part_number = random.choice(sensor_part_numbers) + str(i)
-    sub_category = random.choice(Sensor_list)
+    sub_category = random.choice(sensors_list)
     stock = random.randint(100, 1000)
-    sensor_type = random.choice(sensor_type_list)
-    image_path = 'Sensor' + '/' +random.choice(sensor_images)
+    sensor_type = random.choice(sensor_types_list)
+    image_path = random.choice(sensor_images)
     
     sensor_samples.append(Sensor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, sensor_type, image_path))
 
 
 ic_samples = []
 for i in range(120):
-    mnf_id = random.choice(manufacturer).get_id()
+    mnf_id = random.choice(manufacturers).get_id()
     price = round(random.uniform(0.1, 10), 2)
     inventory_date = f"{random.randint(2020, 2023)}-{random.randint(1, 12):02d}-{random.randint(1, 28):02d}"
     guarantee = random.randint(6, 24)
     part_number = random.choice(ic_part_numbers) + str(i)
-    sub_category = random.choice(IC_list)
+    sub_category = random.choice(ics_list)
     stock = random.randint(100, 1000)
     clock = round(random.uniform(0.1, 100), 2)
-    image_path = 'IC' + '/' + random.choice(ic_images)
+    image_path = random.choice(ic_images)
     
     ic_samples.append(IC(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, clock, image_path))
 
@@ -401,38 +414,47 @@ for i in range(120):
 
 
 # Pickle all lists
-with open('./data/sensor.pickle', 'wb') as f:
+with open('./generate_data/sensors.pickle', 'wb') as f:
     pickle.dump(sensor_samples, f)
 
-with open('./data/ic.pickle', 'wb') as f:
+with open('./generate_data/ics.pickle', 'wb') as f:
     pickle.dump(ic_samples, f)
 
-with open('./data/inductor.pickle', 'wb') as f:
+with open('./generate_data/inductors.pickle', 'wb') as f:
     pickle.dump(inductor_samples, f)
 
-with open('./data/resistor.pickle', 'wb') as f:
+with open('./generate_data/resistors.pickle', 'wb') as f:
     pickle.dump(resistor_samples, f)
 
-with open('./data/capacitor.pickle', 'wb') as f:
+with open('./generate_data/capacitors.pickle', 'wb') as f:
     pickle.dump(capacitor_samples, f)
 
-with open('./data/manufacturer.pickle', 'wb') as f:
-    pickle.dump(manufacturer, f)
+with open('./generate_data/manufacturers.pickle', 'wb') as f:
+    pickle.dump(manufacturers, f)
 
+with open('./generate_data/customers.pickle', 'wb') as f:
+    pickle.dump(customers, f)
+
+with open('./generate_data/orders.pickle', 'wb') as f:
+    pickle.dump(orders, f)
 
 
 # Load the data from pickle
-with open('./data/sensor.pickle', 'rb') as f:
-    sensor = pickle.load(f)
-with open('./data/ic.pickle', 'rb') as f:
-    ic = pickle.load(f)
-with open('./data/inductor.pickle', 'rb') as f:
-    inductor = pickle.load(f)
-with open('./data/resistor.pickle', 'rb') as f:
-    resistor = pickle.load(f)
-with open('./data/capacitor.pickle', 'rb') as f:
-    capacitor = pickle.load(f)
-with open('./data/manufacturer.pickle', 'rb') as f:
-    manufacturer = pickle.load(f)
-
-print(len(ic))
+with open('./generate_data/sensors.pickle', 'rb') as f:
+    sensors = pickle.load(f)
+with open('./generate_data/ics.pickle', 'rb') as f:
+    ics = pickle.load(f)
+with open('./generate_data/inductors.pickle', 'rb') as f:
+    inductors = pickle.load(f)
+with open('./generate_data/resistors.pickle', 'rb') as f:
+    resistors = pickle.load(f)
+with open('./generate_data/capacitors.pickle', 'rb') as f:
+    capacitors = pickle.load(f)
+with open('./generate_data/manufacturers.pickle', 'rb') as f:
+    manufacturers = pickle.load(f)
+with open('./generate_data/customers.pickle', 'rb') as f:
+    customers = pickle.load(f)
+    print(len(customers))
+with open('./generate_data/orders.pickle', 'rb') as f:
+    orders = pickle.load(f)
+    print(len(orders))

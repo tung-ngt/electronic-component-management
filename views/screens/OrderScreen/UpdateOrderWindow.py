@@ -4,7 +4,7 @@ from ...gui import Label, Frame
 from ...components import AccentButton
 from re import match
 
-class UpdateComponentWindow:
+class UpdateOrderWindow:
     """This is a pop up window to add a student"""
     def __init__(self,
             master,
@@ -26,7 +26,7 @@ class UpdateComponentWindow:
         # Window settings
         self.component_type = component_type
         self.screen = Toplevel(master)
-        self.screen.title("Update a component")
+        self.screen.title("Add a component")
         # self.screen.grab_set()
         self.screen.geometry("1200x800+0+0")
         self.screen.minsize(1000, 700)
@@ -91,7 +91,7 @@ class UpdateComponentWindow:
             font=FONTS.get_font("paragraph", bold=True)
         )
         self.man_option = StringVar()
-        self.man_option.set(self.initial_values[3].split(")")[0][1:])
+        self.man_option.set(self.initial_values[3].split(")")[1:])
         self.man_label_option = StringVar()
         self.man_label_option.set(self.initial_values[3])
         man_button = Menubutton(
@@ -117,9 +117,9 @@ class UpdateComponentWindow:
                 local_name = name
                 def callback():
                     self.man_option.set(local_id)
-                    self.man_label_option.set(f"({local_id}) {local_name}")
+                    self.man_label_option.set(local_name)
                 return callback
-            man_menu.add_command(label=f"({man_id}) {man_name}", command=get_option(man_id, man_name))
+            man_menu.add_command(label=man_name, command=get_option(man_id, man_name))
         manu_label.pack(anchor="w", padx=24, pady=(24,5))
         man_button.pack(fill="x", padx=24, ipady=2)
         manu_frame.grid(row=1, column=1, sticky="ew")
@@ -215,7 +215,7 @@ class UpdateComponentWindow:
         add_button = AccentButton(
             self.form_frame, 
             command=self.submit, 
-            text="Update",
+            text="Add",
         )
 
         add_button.grid(row=3, column=0, sticky="w", padx=24, pady=24, ipadx=20)
@@ -267,14 +267,11 @@ class UpdateComponentWindow:
         
         try:
             self.app_controller.update_component(self.component_type, data, data["part_number"])
-
         except Exception as e:
             messagebox.showerror("Error", str(e))
         else:
-            messagebox.showinfo("Successfull", "Update component was suscessfull")
-            data["mnf_id"] = self.man_label_option.get()
+            messagebox.showinfo("Successfull", "Add component was suscessfull")
             updated_values = list(data.values())
-            updated_values.append(self.initial_values[8])
             self.screen.destroy()
             self.on_close_fun({"component_type": self.component_type, "values": updated_values})
             

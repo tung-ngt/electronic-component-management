@@ -1,12 +1,11 @@
-from models.db.Utils_database import get_connection
-from models.domains import Component
-from models.serializers.Serializer import serialize, deserialize
+from .utils import get_connection
+from ..domains import Component
+from ..serializers.serializer import serialize, deserialize
 from controllers.item_controller import filter_component, filter_manufacturer
 
 '''
     Import section needs to be changed base on real project
 '''
-
 
 
 # Push and pull from database
@@ -16,7 +15,6 @@ def push(thing):
     '''
     # Connect to database
     conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
-    mycursor = conn.cursor()
     if isinstance(thing, Component):
         mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, image_path = serialize(thing)
 
@@ -93,7 +91,8 @@ def update(table : str, change : dict, condition : str):
         else:
             query += f" WHERE part_number = '{condition}';"
         mycursor.execute(query)
-    except:
+    except Exception as e:
+        print(e)
         return False
 
     conn.commit()
@@ -105,7 +104,6 @@ def get_sub_category(table : str):
     '''
     # Connect to database
     conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
-    mycursor = conn.cursor()
     mycursor.execute(f"SELECT DISTINCT sub_category FROM {table}")
     result = mycursor.fetchall()
     sub_category = []
@@ -120,7 +118,6 @@ def get_sensor_types():
     '''
     # Connect to database
     conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
-    mycursor = conn.cursor()
     mycursor.execute("SELECT DISTINCT sensor_type FROM sensor")
     result = mycursor.fetchall()
     sensor_types = []
@@ -134,7 +131,6 @@ def get_mnf_countries():
     '''
     # Connect to database
     conn, mycursor  = get_connection('./data/electronic_store_with_classes.db')
-    mycursor = conn.cursor()
     mycursor.execute("SELECT DISTINCT country FROM manufacturer")
     result = mycursor.fetchall()
     countries = []

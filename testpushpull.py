@@ -1,5 +1,5 @@
 import random
-from models.pushpull.Pushpulltosql import pull, update, get_sub_category
+from models.db.functions import pull, update, get_sub_category
 
 
 

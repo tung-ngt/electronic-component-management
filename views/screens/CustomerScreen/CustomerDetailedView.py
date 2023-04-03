@@ -1,63 +1,27 @@
 from ...gui import SubScreen, Label, Frame, Button
 from ...constants import FONTS, COLORS
-from .UpdateManufacturerWindow import UpdateManufacturerWindow
+from .UpdateCustomerWindow import UpdateCustomerWindow
 from ...components import AccentButton
 from PIL import Image, ImageTk
-from tkinter import filedialog
 
-class ManufacturerDetailedView(SubScreen):
+class CustomerDetailedView(SubScreen):
     """This class display details of a specific component"""
     def __init__(self, master, app_controller):
         self.app_controller = app_controller
         super().__init__(master, background="white")
 
-    def add_image(self, props):
-        filename = filedialog.askopenfilename(
-            title="Pick a image",
-            initialdir="./images/manufacturers",
-            filetypes=(("PNG files", "*.png"),)
-        )
-        filename = filename.split("/images/manufacturers/")[1]
-        self.app_controller.update_mnf_image(filename, props[0])
-        a = props.copy()
-        a[3] = filename
-        self.render(a)
-
     # Overriding render method
     def render(self, props=None):
         super().render()
-        self.title = "Component Information"
+        self.title = "Customers"
 
         # Create layout frame
         self.info_frame = Frame(self)
-        self.image_frame = Frame(self)
-        self.info_frame.pack(side="left", fill="both", padx=20, pady=100, expand=True)
-        self.image_frame.pack(side="left", fill="both", pady=100, expand=True)
-
-        # Image frame
-        if props[3] == "None" or props[3] == None:
-            self.image_button = Button(
-                self.image_frame,
-                lambda: self.add_image(props),
-                "Add image",
-                background=COLORS.BACKGROUND_LIGHT,
-                font=FONTS.get_font("heading3", bold=True)
-            )
-            self.image_button.pack(ipady=50, ipadx=50)
-        else:
-            self.man_pill_img = Image.open(f"./images/manufacturers/{props[3]}")
-            size = self.man_pill_img.size
-            scale = 300/size[0]
-            new_size = [int(size[0]*scale), int(size[1]*scale)]
-            self.man_pill_img = self.man_pill_img.resize(new_size, Image.ANTIALIAS)
-            self.man_img = ImageTk.PhotoImage(self.man_pill_img)
-            self.man_img_label = Label(self.image_frame, image=self.man_img)
-            self.man_img_label.pack()
-
+        self.info_frame.pack(fill="both", padx=20, pady=100, expand=True)
         # Info text
         self.man_id_box = Frame(self.info_frame, highlightbackground="black", highlightthickness=2)
         self.man_id_label = Label(self.man_id_box,
-            text="MANUFACTURER ID", 
+            text="CUSTOMER'S ID", 
             font=FONTS.get_font("paragraph"),
             background="transparent"
         )
@@ -72,11 +36,11 @@ class ManufacturerDetailedView(SubScreen):
 
         self.man_name = self.create_info_box("Name", props[1])
         
-        self.man_country = self.create_info_box("Country", props[2])
+        self.man_country = self.create_info_box("Phone number", props[2])
 
         self.update_info_button = AccentButton(
             self.info_frame, 
-            command=lambda: UpdateManufacturerWindow(self,
+            command=lambda: UpdateCustomerWindow(self,
                 self.app_controller,
                 props,
                 self.render
@@ -95,7 +59,7 @@ class ManufacturerDetailedView(SubScreen):
         self.update_info_button.grid(row=3, column=0, sticky="w", pady=(40,0))
         
         # Specify the widgets to destroy
-        self.add_widgets_to_destroy([self.info_frame, self.image_frame])
+        self.add_widgets_to_destroy([self.info_frame])
 
     def create_info_box(self, label:str, value:str, small=False):
         """Create and return a info_box

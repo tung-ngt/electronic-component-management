@@ -1,6 +1,6 @@
-from models.pushpull.Pushpulltosql import pull
-from models.db.Utils_database import get_connection
-from models.db.database_with_classes import create_tables, delete_all_tables
+from models.db.functions import pull
+from models.db.utils.connect_to_db import get_connection
+from models.db.create_database import create_tables, delete_all_tables
 
 
 conn, mycursor = get_connection('./data/electronic_store_with_classes.db')

@@ -1,5 +1,5 @@
 import numbers
-from models.db.Utils_database import get_connection
+from models.db.utils.connect_to_db import get_connection
 
 category_search = {"mnf_id": "search",
                    "part_number": "search",

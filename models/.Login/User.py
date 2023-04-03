@@ -1,6 +1,6 @@
 import UserSignIn
 from tkinter import messagebox
-from models.db.Utils_database import get_connection
+from models.db.utils.connect_to_db import get_connection
 def signup(self):
         username = self.entry_username.get()
         user_password = self.entry_password.get()

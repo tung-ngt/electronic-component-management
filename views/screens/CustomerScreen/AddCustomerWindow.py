@@ -3,42 +3,44 @@ from ...constants import COLORS, FONTS
 from ...gui import Label, Frame
 from ...components import AccentButton
 
-class UpdateManufacturerWindow:
+class AddCustomerWindow:
     """This is a pop up window to add a student"""
-    def __init__(self,
-            master, 
-            app_controller, 
-            initial_values,
-            on_close_fun = None,
-        ):
+    def __init__(self, master, 
+        app_controller, 
+        on_close_fun = None,):
         """Create the window
         
         Parameters
         ----------
         master : master widget
-        app_controller : app controller
-        initial_values : initial values of the component
         on_close_fun : function to run when closing window
         """
         # Window settings
         self.screen = Toplevel(master)
-        self.screen.title("Update a manufacturer")
+        self.screen.title("Add a customer")
         self.screen.grab_set()
 
         self.screen.geometry("1200x800+0+0")
         self.screen.minsize(1000, 700)
         self.screen["background"] = COLORS.WHITE
         self.app_controller = app_controller
-        self.initial_values = initial_values
-        self.on_close_fun = on_close_fun
+        self.on_close_fun = self.get_on_close_fun(on_close_fun)
+        if self.on_close_fun != None:
+            self.screen.protocol("WM_DELETE_WINDOW", self.on_close_fun)
 
         self.create_form()
+
+    def get_on_close_fun(self, on_close_fun):
+        def close():
+            self.screen.destroy()
+            on_close_fun()
+        return close
 
     def create_form(self):
         """Create component information form"""
         man_label = Label(
             self.screen,
-            "Update a manufacturer",
+            "Add a customer",
             background=COLORS.WHITE,
             font=FONTS.get_font("heading1", bold=True),
         )
@@ -49,18 +51,16 @@ class UpdateManufacturerWindow:
 
         # Config the grid
         form_frame.columnconfigure(0, weight=1)
-        form_frame.rowconfigure(5, weight=1)
+        form_frame.rowconfigure(6, weight=1)
 
         man_id_label = Label(
             form_frame,
-            "Mannufacturer's ID",
+            "Customer's ID",
             background="transparent",
             foreground="white",
             font=FONTS.get_font("paragraph", bold=True)
         )
         self.man_id_entry = Entry(form_frame, font=FONTS.get_font("paragraph"))
-        self.man_id_entry.insert(0, self.initial_values[0])
-        self.man_id_entry.config(state="disabled")
         man_id_label.grid(row=0, column=0, sticky="w", padx=(34,14), pady=(34,5))
         self.man_id_entry.grid(row=1, column=0, sticky="ew", padx=(34,14), ipady=4)
         
@@ -72,69 +72,38 @@ class UpdateManufacturerWindow:
             font=FONTS.get_font("paragraph", bold=True)
         )
         self.name_entry = Entry(form_frame, font=FONTS.get_font("paragraph"))
-        self.name_entry.insert(0, self.initial_values[1])
         name_label.grid(row=2, column=0, columnspan=2, sticky="w", padx=(34,14), pady=(14,5))
         self.name_entry.grid(row=3, column=0, columnspan=2, sticky="ew", padx=(34,14), ipady=4)
         
-        country_frame = Frame(form_frame, background="transparent")
-        country_label = Label(
-            country_frame,
-            "Country",
+        phone_number_label = Label(
+            form_frame,
+            "Phone number",
             background="transparent",
             foreground="white",
             font=FONTS.get_font("paragraph", bold=True)
         )
-        self.country = StringVar()
-        self.country.set(self.initial_values[2])
-        country_options = self.app_controller.get_mnf_countries()
-        country_button = Menubutton(
-            country_frame,
-            textvariable=self.country,
-            background="white", 
-            relief="flat", 
-            borderwidth=0, 
-            highlightthickness=0,
-            font=FONTS.get_font("paragraph"),
-        )
-        country_menu = Menu(
-            country_button,
-            tearoff=False,
-            background=COLORS.ACCENT,
-            foreground="white",
-            font=FONTS.get_font("paragraph")
-        )
-        country_button.config(menu=country_menu)
-        for option in country_options:
-            def get_option(op):
-                return lambda: self.country.set(op)
-            country_menu.add_command(label=option, command=get_option(option))
+        self.phone_number_entry = Entry(form_frame, font=FONTS.get_font("paragraph"))
+        phone_number_label.grid(row=4, column=0, columnspan=2, sticky="w", padx=(34,14), pady=(14,5))
+        self.phone_number_entry.grid(row=5, column=0, columnspan=2, sticky="ew", padx=(34,14), ipady=4)
         
-        country_label.pack(anchor="w", padx=34, pady=(34,5))
-        country_button.pack(fill="x", padx=34, ipady=2)
-        country_frame.grid(row=4, column=0, sticky="ew")
-
         add_button = AccentButton(
             form_frame, 
             command=self.submit, 
-            text="Update",
+            text="Add",
         )
 
-        add_button.grid(row=5, column=0, sticky="w",padx=34, pady=34, ipadx=20)
+        add_button.grid(row=6, column=0, sticky="w",padx=34, pady=34, ipadx=20)
 
     def submit(self):
         """Submit the form"""
         data = {
             "id": self.man_id_entry.get(),
             "name": self.name_entry.get(),
-            "country": self.country.get()
+            "phone_number": self.phone_number_entry.get()
         }
         try:
-            self.app_controller.update_manufacturer(data, data["id"])
+            self.app_controller.add_manufacturer(data)
         except Exception as e:
             messagebox.showerror("Error", str(e))
         else:
-            messagebox.showinfo("Successfull", "Update Manufacturer was suscessfull")
-            updated_values = list(data.values())
-            updated_values.append(self.initial_values[3])
-            self.screen.destroy()
-            self.on_close_fun(updated_values)
+            messagebox.showinfo("Successfull", "Add customer was suscessfull")

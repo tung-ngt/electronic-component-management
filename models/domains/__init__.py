@@ -5,3 +5,5 @@ from .Inductor import Inductor
 from .Manufacturer import Manufacturer
 from .Resistor import Resistor
 from .Sensor import Sensor
+from .Customer import Customer
+from .Order import Order

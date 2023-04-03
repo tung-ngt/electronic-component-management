@@ -1,10 +1,10 @@
 from ...gui import SubScreen, Label, Frame
 from tkinter import Entry, StringVar, Menu, Menubutton, BooleanVar, Radiobutton, PhotoImage
 from ...constants import COLORS, FONTS
-from .AddComponentWindow import AddComponentWindow
+from .AddOrderWindow import AddOrderWindow
 from ...components import AccentButton, AccentHorizontalScrollbar, CustomListView
 
-class ComponentListView(SubScreen):
+class OrderListView(SubScreen):
     """This class display a table of component within a category"""
     def __init__(self, master, navigation_function, app_controller):
         """Init the view
@@ -14,28 +14,19 @@ class ComponentListView(SubScreen):
         master : master widget
         navigation_function : function use to navigate
         """
-        super().__init__(master, background=COLORS.WHITE)
+        super().__init__(master, background=COLORS.WHITE, title="Orders")
 
         self.app_controller = app_controller
         
         self.navigate = navigation_function
-        self.get_all_manufacturers_ids()
-        self.sorts = [0, 0, 0, 0, 0, 0, 0, 0]
+        self.sorts = [0, 0, 0, 0]
         self.sort_asc_img = PhotoImage(file="./images/arrow-up.png")
         self.sort_desc_img = PhotoImage(file="./images/arrow-down.png")
         self.no_sort_img = PhotoImage(file="./images/blank.png")
 
-    def get_all_manufacturers_ids(self):
-        manufacturers = self.app_controller.get_manufacturers()
-        self.manufacturers_ids = {}
-        for manufacturer in manufacturers:
-            self.manufacturers_ids[manufacturer.get_id()] = manufacturer.get_name()
-
     # Override render method
     def render(self, props=None):
         super().render()
-        self.component_type: str = props["selected"]
-        self.title = self.component_type.capitalize()
 
         # Initialize tree view frame and filter frame
         self.tree_view_frame = Frame(self, background=COLORS.WHITE)
@@ -92,7 +83,7 @@ class ComponentListView(SubScreen):
         selected_iid = tree_view.focus()
         values = tree_view.item(selected_iid)["values"]
 
-        self.navigate(subscreen_name="detailed_view", props={"component_type": self.component_type, "values": values})
+        self.navigate(subscreen_name="detailed_view", props=values)
 
     def build_tree_view(self):
         """Build the component tree view table"""
@@ -104,24 +95,10 @@ class ComponentListView(SubScreen):
         table_frame.pack(fill="both", expand=True)
  
         # Search bar
-        search_bar_frame.search_option = StringVar()
-        search_bar_frame.search_option.set("part_number")
-        search_bar_frame.part_number_search = Radiobutton(search_bar_frame,
-            text="Part number",
-            value="part_number",
-            variable=search_bar_frame.search_option,
-            font=FONTS.get_font("paragraph"),
-        )
-        search_bar_frame.man_search = Radiobutton(search_bar_frame,
-            text="Manufacturer's id",
-            value="man_name",
-            variable=search_bar_frame.search_option,
-            font=FONTS.get_font("paragraph"),
-        )
-
-        search_bar_frame.entry = Entry(self.tree_view_frame.search_bar_frame, font=FONTS.get_font("paragraph"))
+        search_bar_frame.label = Label(search_bar_frame, text="Order ID", background="transparent", font=FONTS.get_font("paragraph"))
+        search_bar_frame.entry = Entry(search_bar_frame, font=FONTS.get_font("paragraph"))
         search_bar_frame.button = AccentButton(
-            self.tree_view_frame.search_bar_frame, 
+            search_bar_frame, 
             self.apply_filters, 
             "Search", 
             image="./images/search.png",
@@ -130,41 +107,30 @@ class ComponentListView(SubScreen):
         )
         search_bar_frame.button.pack(side="right", fill="y", pady=20, ipadx=14, ipady=2, padx=20)
         search_bar_frame.entry.pack(side="right", fill="y", pady=20, ipadx=10, ipady=5)
-        search_bar_frame.part_number_search.pack(side="right", fill="y", pady=20, padx=20)
-        search_bar_frame.man_search.pack(side="right", fill="y", pady=20)
+        search_bar_frame.label.pack(side="right", fill="y", pady=20, ipadx=10, ipady=5)
 
         # Add component button
-        search_bar_frame.add_component_button = AccentButton(search_bar_frame,
-            lambda: AddComponentWindow(self,
-                self.component_type,
+        search_bar_frame.add_order_button = AccentButton(search_bar_frame,
+            lambda: AddOrderWindow(self,
                 self.app_controller,
                 self.apply_filters,
             ),
             "ADD +",
             activebackground="white",
         )
-        search_bar_frame.add_component_button.pack(side="left", pady=20, padx=20, ipadx=14, ipady=2)
+        search_bar_frame.add_order_button.pack(side="left", pady=20, padx=20, ipadx=14, ipady=2)
         
         # Create scroll bar
         scroll_bar = table_frame.scroll_bar = AccentHorizontalScrollbar(table_frame)
 
         # Create the tree view
         columns = [
-            "part_number", 
-            "price", 
-            "guarantee", 
-            "manufacturer", 
-            "inventory_date",
-            "sub_category", 
-            "stock"
+            "order_id", 
+            "customer", 
+            "date", 
+            "items",
+            "total_price", 
         ]
-        if self.component_type == "ic":
-            columns.append("clock")
-        elif self.component_type == "sensor":
-            columns.append("sensor_type")
-        else:
-            columns.append(self.component_type[:-2] + "ance")
-            
         tree_view = table_frame.tree_view = CustomListView(
             table_frame, 
             columns=columns,
@@ -175,38 +141,22 @@ class ComponentListView(SubScreen):
 
         # Config the headings
         headings = {
-            "part_number": {"text": "Part number"},
-            "price": {"text": "Price"},
-            "guarantee": {"text": "Guarantee"},
-            "manufacturer": {"text": "Manufacturer"},
-            "inventory_date": {"text": "Inventory date"},
-            "sub_category": {"text": "Subcategory"},
-            "stock": {"text": "Stock"},
+            "order_id": {"text": "Order ID"},
+            "customer": {"text": "Customer"},
+            "date": {"text": "Purchase date"},
+            "items": {"text": "items"},
+            "total_price": {"text": "Total price"},
         }
-        if self.component_type == "ic":
-            headings["clock"] = {"text": "Clock"}
-        elif self.component_type == "sensor":
-            headings["sensor_type"] = {"text": "Sensor type"}
-        else:
-            headings[self.component_type[:-2] + "ance"] = {"text": (self.component_type[:-2] + "ance").capitalize()}
         tree_view.config_headings(headings)
 
         # Config the rows
         columns_setting = {
-            "part_number": {"anchor": "center", "width": 200, "stretch": False},
-            "price": {"anchor": "center", "width": 70, "stretch": False},
-            "guarantee": {"anchor": "center", "width": 120, "stretch": False},
-            "manufacturer": {"anchor": "center"},
-            "inventory_date": {"anchor": "center", "width": 140, "stretch": False},
-            "sub_category": {"anchor": "center"},
-            "stock": {"anchor": "center", "width": 70, "stretch": False},
+            "order_id": {"anchor": "center", "width": 100, "stretch": False},
+            "customer": {"anchor": "center", "width": 100, "stretch": False},
+            "date": {"anchor": "center", "width": 140, "stretch": False},
+            "items": {"anchor": "center", "width": 250, "stretch": False},
+            "total_price": {"anchor": "center",},
         }
-        if self.component_type == "ic":
-            headings["clock"] = {"anchor": "center", "stretch": False}
-        elif self.component_type == "sensor":
-            headings["sensor_type"] = {"anchor": "center"}
-        else:
-            headings[self.component_type[:-2] + "ance"] = {"anchor": "center", "width": 70, "stretch": False}
         tree_view.config_columns(columns_setting)
 
         tree_view.pack(side="left", fill="both", expand=True)
@@ -232,63 +182,25 @@ class ComponentListView(SubScreen):
         )
         self.filters_frame.label.pack(pady=(10, 0))
 
-        # Inventory date filter
-        filters_frame.inventory_date_label = self.create_filter_label("Inventory date")
-        filters_frame.inventory_date_label.pack(anchor="w", pady=5, padx=14)
+        # date filter
+        filters_frame.date_label = self.create_filter_label("Purchase date")
+        filters_frame.date_label.pack(anchor="w", pady=5, padx=14)
 
         filters_frame.date_frame, \
         filters_frame.date_from_entry, \
         filters_frame.date_to_entry = self.create_from_to_input()
         filters_frame.date_frame.pack(fill="x")
 
-        # Price filter
-        filters_frame.price_label = self.create_filter_label("Price")
-        filters_frame.price_label.pack(anchor="w", pady=5, padx=14)
+        # total price filter
+        filters_frame.total_price_label = self.create_filter_label("Price")
+        filters_frame.total_price_label.pack(anchor="w", pady=5, padx=14)
 
-        filters_frame.price_frame, \
+        filters_frame.total_price_frame, \
         filters_frame.price_from_entry, \
         filters_frame.price_to_entry = self.create_from_to_input()
-        filters_frame.price_frame.pack(fill="x")
+        filters_frame.total_price_frame.pack(fill="x")
         
-        # Guarantee filter
-        filters_frame.guarantee_label = self.create_filter_label("Guarantee")
-        filters_frame.guarantee_label.pack(anchor="w", pady=5, padx=14)
-
-        filters_frame.guarantee_frame, \
-        filters_frame.guarantee_from_entry, \
-        filters_frame.guarantee_to_entry = self.create_from_to_input()
-        filters_frame.guarantee_frame.pack(fill="x")
-
-        # Stock filter
-        filters_frame.stock_label = self.create_filter_label("Stock")
-        filters_frame.stock_label.pack(anchor="w", pady=5, padx=14)
-
-        filters_frame.stock_frame, \
-        filters_frame.stock_from_entry, \
-        filters_frame.stock_to_entry = self.create_from_to_input()
-        filters_frame.stock_frame.pack(fill="x")
-
-        # Subcategory filter
-        filters_frame.subcategory_menu_frame = self.create_options_menu_filter("Subcategory", self.app_controller.get_sub_categories(self.component_type))
-        filters_frame.subcategory_menu_frame.pack(fill="x")
-
-        # Optional filter
-        if self.component_type == "sensor":
-            filters_frame.sensor_menu_frame = self.create_options_menu_filter("Sensor type", self.app_controller.get_sensor_types())
-            filters_frame.sensor_menu_frame.pack(fill="x")
-            self.optional_type = "sensor_type"
-        else:
-            optional_label: str = self.component_type[:-2] + "ance" \
-                if self.component_type in ["capacitor", "inductor", "resistor"] \
-                else "clock"
-            self.optional_type = optional_label
-            filters_frame.optional_label = self.create_filter_label(optional_label.capitalize())
-            filters_frame.optional_label.pack(anchor="w", pady=5, padx=14)
-
-            filters_frame.optional_frame, \
-            filters_frame.optional_from_entry, \
-            filters_frame.optional_to_entry = self.create_from_to_input()
-            filters_frame.optional_frame.pack(fill="x")
+        # items filter
 
         # Apply filter button
         filters_frame.apply_button = AccentButton(filters_frame,

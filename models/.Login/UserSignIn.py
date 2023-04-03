@@ -1,4 +1,4 @@
-from models.db.Utils_database import get_connection
+from models.db.utils.connect_to_db import get_connection
 class UserSignIn:
     def __init__(self):
         self.conn, self.cursor = get_connection ('electronic_store_with_classes')

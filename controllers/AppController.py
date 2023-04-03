@@ -1,5 +1,5 @@
-from models.pushpull.Pushpulltosql import pull, push, update, get_sub_category, get_sensor_types, get_mnf_countries
-from models.db.Utils_database import get_connection
+from models.db.functions import pull, push, update, get_sub_category, get_sensor_types, get_mnf_countries
+from models.db.utils.connect_to_db import get_connection
 from models.domains import IC, Capacitor, Inductor, Manufacturer, Resistor, Sensor
 from .utils import file_utils
 import os
@@ -133,6 +133,12 @@ class AppController:
 
     def get_list_with_filters(self, list_type, filters, sort_options = []):
         return pull(list_type, filters, sort_options)
+    
+    def update_mnf_image(self, image, man_id):
+        update("manufacturer", {"image_path" : image}, man_id)
+    
+    def update_component_image(self, image, component_type, part_number):
+        update(component_type, {"image_path" : image}, part_number)
     
     def get_sub_categories(self, component_type):
         return get_sub_category(component_type)
