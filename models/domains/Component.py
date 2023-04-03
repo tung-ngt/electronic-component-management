@@ -55,6 +55,7 @@ class Component:
             stock: int,
             image_path: str = None,
         ):
+        self.set_image_path(image_path)
         self.set_mnf_id(mnf_id)
         self.set_price(price)
         self.set_inventory_date(inventory_date)
@@ -91,6 +92,7 @@ class Component:
     
     def get_all_info(self):
         return [
+            self.__image_path,
             self.__part_number, 
             self.__price, 
             self.__guarantee, 

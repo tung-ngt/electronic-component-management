@@ -63,6 +63,7 @@ def create_tables():
     mycursor.execute(
         """
         CREATE TABLE IF NOT EXISTS manufacturer (
+            image_path VARCHAR(255) NOT NULL,
             id VARCHAR(255) PRIMARY KEY, 
             name VARCHAR(255) NOT NULL,
             country VARCHAR(255) NOT NULL
@@ -77,6 +78,7 @@ def create_tables():
     mycursor.execute(
         """
         CREATE TABLE IF NOT EXISTS capacitor (
+            image_path VARCHAR(255) NOT NULL,
             part_number VARCHAR(255) PRIMARY KEY,
             mnf_id VARCHAR(255) NOT NULL, 
             price REAL NOT NULL, 
@@ -96,6 +98,7 @@ def create_tables():
     mycursor.execute(
         """
         CREATE TABLE IF NOT EXISTS resistor(
+            image_path VARCHAR(255) NOT NULL,
             part_number VARCHAR(255) PRIMARY KEY,
             mnf_id VARCHAR(255) NOT NULL, 
             price REAL NOT NULL, 
@@ -114,6 +117,7 @@ def create_tables():
     mycursor.execute(
         """
         CREATE TABLE IF NOT EXISTS inductor(
+            image_path VARCHAR(255) NOT NULL,
             part_number VARCHAR(255) PRIMARY KEY,
             mnf_id VARCHAR(255) NOT NULL, 
             price REAL NOT NULL, 
@@ -132,6 +136,7 @@ def create_tables():
     mycursor.execute(
         """
         CREATE TABLE IF NOT EXISTS sensor(
+            image_path VARCHAR(255) NOT NULL,
             part_number VARCHAR(255) PRIMARY KEY,
             mnf_id VARCHAR(255) NOT NULL, 
             price REAL NOT NULL, 
@@ -150,6 +155,7 @@ def create_tables():
     mycursor.execute(
         """
         CREATE TABLE IF NOT EXISTS IC(
+            image_path VARCHAR(255) NOT NULL,
             part_number VARCHAR(255) PRIMARY KEY,
             mnf_id VARCHAR(255) NOT NULL, 
             price REAL NOT NULL,
