@@ -7,9 +7,9 @@ from models.domains import Component, Capacitor, Resistor, Inductor, Sensor, IC,
 # Index
 index_compo = {'part_number' : 0, 'mnf_id' : 1, 'price' : 2, 
          'inventory_date' : 3, 'guarantee' : 4, 'special_att' : 5,
-         'sub_category' : 6, 'stock' : 7}
+         'sub_category' : 6, 'stock' : 7, 'image_path' : 8}
 
-index_manu = {'name' : 0, 'ID' : 1, 'country' : 2}
+index_manu = {'name' : 0, 'ID' : 1, 'country' : 2, 'image_path' : 3}
 
 
 # Serialize and deserialize
@@ -49,15 +49,16 @@ def deserialize(kind:str, myresult:list):
         special_att = float(myresult[index_compo['special_att']])
         sub_category = myresult[index_compo['sub_category']]
         stock = myresult[index_compo['stock']]
+        image_path = myresult[index_compo['image_path']]
 
         if kind == 'capacitor':
-            return Capacitor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att)
+            return Capacitor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att, image_path)
         elif kind == 'resistor':
-            return Resistor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att)
+            return Resistor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att, image_path)
         elif kind == 'inductor':
-            return Inductor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att)
+            return Inductor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att, image_path)
         elif kind == 'ic':
-            return IC(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att)
+            return IC(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att, image_path)
 
     elif kind == 'sensor':
         mnf_id = myresult[index_compo['mnf_id']]
@@ -68,13 +69,15 @@ def deserialize(kind:str, myresult:list):
         special_att = myresult[index_compo['special_att']]
         sub_category = myresult[index_compo['sub_category']]
         stock = myresult[index_compo['stock']]
-        return Sensor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att)
+        image_path = myresult[index_compo['image_path']]
+        return Sensor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, special_att, image_path)
         
 
     elif kind == 'manufacturer':
         name = myresult[index_manu['name']]
         ID = myresult[index_manu['ID']]
         country = myresult[index_manu['country']]
-        return Manufacturer(name, ID, country)
+        image_path = myresult[index_manu['image_path']]
+        return Manufacturer(name, ID, country, image_path)
     
 
