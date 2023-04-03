@@ -1,6 +1,9 @@
 from models.pushpull.Pushpulltosql import pull, push, update, get_sub_category, get_sensor_types, get_mnf_countries
 from models.db.Utils_database import get_connection
 from models.domains import IC, Capacitor, Inductor, Manufacturer, Resistor, Sensor
+from .utils import file_utils
+import os
+import threading
 
 class AppController:
     def __init__(self):
@@ -161,3 +164,30 @@ class AppController:
              + len(self.__inductors) \
              + len(self.__resistors) \
              + len(self.__sensors)
+    
+    def compress_and_remove_image(self, img):
+        file_utils.compress_file(img)
+        os.remove(img) 
+
+    def compress_all_images(self):
+        manufacturer_imgs = file_utils.get_files_of_type("./images/manufacturers/", ".png")
+        for manufacturer_img in manufacturer_imgs:
+            thread = threading.Thread(
+                target=self.compress_and_remove_image,
+                args=(f"./images/manufacturers/{manufacturer_img}",)
+            )
+            thread.start()
+    
+    def decompress_image(self, img):
+        file = img.replace(".dat", "")
+        file_utils.write_bytes_to_file(file, file_utils.decompress_file_bytes(img))
+        
+
+    def decompress_all_images(self):
+        manufacturer_imgs = file_utils.get_files_of_type("./images/manufacturers/", ".png.dat")
+        for manufacturer_img in manufacturer_imgs:
+            thread = threading.Thread(
+                target=self.decompress_image,
+                args=(f"./images/manufacturers/{manufacturer_img}",)
+            )
+            thread.start()
