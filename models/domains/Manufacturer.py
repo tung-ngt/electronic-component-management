@@ -28,6 +28,9 @@ class Manufacturer:
     def get_all_info(self):
         return [self.__id, self.__name, self.__country]
     
+    def get_image_path(self):
+        return self.__image_path
+    
     # Setters
     def set_id(self, id: str):
         if len(id) > 0:
