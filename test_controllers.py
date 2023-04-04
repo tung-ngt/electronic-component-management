@@ -35,6 +35,11 @@ app_controller = AppController()
 # for component in result:
 #     print(component.get_all_info())
 
-app_controller.compress_all_images()
-sleep(5)
-app_controller.decompress_all_images()
+# app_controller.compress_all_images()
+# sleep(5)
+# app_controller.decompress_all_images()
+
+no_result, result = app_controller.get_list_of_orders({"items": "8"}, sort_options=[("items", "asc")])
+
+for r in result:
+    print(r.get_all_info())
