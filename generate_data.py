@@ -39,20 +39,6 @@ Customer("C008", "Kaylynn Pierce", "484-651-6061"),
 Customer("C009", "Gisselle Carrillo", "817-250-8146"),
 Customer("C010", "Abraham Benson", "615-656-5114"),]
 
-orders = [
-Order("O001", "C001", {"KOA Speer RK73H1JTTD1003F": 3, "Yageo RC0805FR-071K5L": 4, "Bourns CR1206-FX-1000ELF": 2}, "2022-03-05"),
-Order("O003", "C002", {"KEMET T520B476M006ATE070" : 5, 'TE Connectivity 3-1393812-3': 6, "Texas Instruments SN74LS08N": 1}, "2023-01-15"),
-Order("O007", "C006", {"Texas Instruments SN": 1}, "2021-12-30"),
-Order("O002", "C001", {"TDK Corporation VLF3010AT-2R2N1R0" : 2}, "2022-06-19"),
-Order("O004", "C003", {'Microchip Technology ATmega328P-PU': 5, 'Analog Devices ADXL375BCPZ': 4}, "2022-08-25"),
-Order("O006", "C005", {'Sumida CDRH6D28NP-220NC': 10}, "2022-04-14"),
-Order("O008", "C006", {'Murata NCP15WB473D03RC': 6}, "2022-03-05"),
-Order("O005", "C004", {'TE Connectivity 3-1393812-3': 4, 'Bosch BMI088': 5}, "2023-02-01"),
-Order("O012", "C010", {'KEMET LQH32CN2R2M23L': 3}, "2022-01-31"),
-Order("O009", "C009", {'Bourns SDE0805A-2R2M': 3}, "2022-03-18"),
-Order("O010", "C008", {'Panasonic ELLATV2R2N': 2}, "2022-03-05"),
-Order("O011", "C007", {'Vishay Dale IHD1EBR2R2L': 1}, "2021-10-22"),
-]
 
 capacitors_list = ['MLCC', 'Thin Film', 'Tantalum', 'Aluminum Electrolytic', 'Polymer']
 resistors_list = ['Thick Film', 'Fusible', 'Thin Film']
@@ -403,6 +389,21 @@ for i in range(120):
 
 
 
+orders = [
+Order("O001", "C001", {ic_samples[2].get_part_number(): 3, inductor_samples[80].get_part_number(): 4, capacitor_samples[15].get_part_number(): 2}, "2022-03-05"),
+Order("O003", "C002", {resistor_samples[6].get_part_number() : 5, ic_samples[15].get_part_number(): 6, sensor_samples[10].get_part_number(): 1}, "2023-01-15"),
+Order("O007", "C006", {sensor_samples[45].get_part_number(): 1}, "2021-12-30"),
+Order("O002", "C001", {inductor_samples[20].get_part_number() : 2}, "2022-06-19"),
+Order("O004", "C003", {capacitor_samples[62].get_part_number(): 5, sensor_samples[40].get_part_number(): 4}, "2022-08-25"),
+Order("O006", "C005", {sensor_samples[45].get_part_number(): 10}, "2022-04-14"),
+Order("O008", "C006", {sensor_samples[40].get_part_number(): 6}, "2022-03-05"),
+Order("O005", "C004", {sensor_samples[60].get_part_number(): 4, sensor_samples[92].get_part_number(): 5}, "2023-02-01"),
+Order("O012", "C010", {capacitor_samples[40].get_part_number(): 3}, "2022-01-31"),
+Order("O009", "C009", {resistor_samples[40].get_part_number(): 3}, "2022-03-18"),
+Order("O010", "C008", {ic_samples[40].get_part_number(): 2}, "2022-03-05"),
+Order("O011", "C007", {inductor_samples[40].get_part_number(): 1}, "2021-10-22"),
+]
+
 
 
 ## Shuffle the lists
@@ -454,7 +455,5 @@ with open('./generated_data/manufacturers.pickle', 'rb') as f:
     manufacturers = pickle.load(f)
 with open('./generated_data/customers.pickle', 'rb') as f:
     customers = pickle.load(f)
-    print(len(customers))
 with open('./generated_data/orders.pickle', 'rb') as f:
     orders = pickle.load(f)
-    print(len(orders))

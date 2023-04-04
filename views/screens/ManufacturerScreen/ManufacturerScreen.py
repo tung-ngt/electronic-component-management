@@ -10,7 +10,7 @@ class ManufacturerScreen(Screen):
     def __init__(self, master, app_controller):
         """Init screen"""
         super().__init__(master, background="white",
-            title="Manufacturer",
+            title="Manufacturers",
             title_font=FONTS.get_font("heading1", bold=True),
             title_bar_foreground=COLORS.PRIMARY
         )

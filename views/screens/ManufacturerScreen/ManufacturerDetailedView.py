@@ -26,7 +26,7 @@ class ManufacturerDetailedView(SubScreen):
     # Overriding render method
     def render(self, props=None):
         super().render()
-        self.title = "Component Information"
+        self.title = "Manufacturer's information"
 
         # Create layout frame
         self.info_frame = Frame(self)

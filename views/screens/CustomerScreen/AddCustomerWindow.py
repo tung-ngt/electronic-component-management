@@ -102,7 +102,7 @@ class AddCustomerWindow:
             "phone_number": self.phone_number_entry.get()
         }
         try:
-            self.app_controller.add_manufacturer(data)
+            self.app_controller.add_customer(data)
         except Exception as e:
             messagebox.showerror("Error", str(e))
         else:

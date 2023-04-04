@@ -26,7 +26,7 @@ class EComponentStoreManagementGUI(GUI):
                 ("components", "Components"),
                 ("manufacturers", "Manufacturers"),
                 ("customers", "Customers"),
-                # ("orders", "Orders"),
+                ("orders", "Orders"),
             ],
             self.change_screen,
             logo={
@@ -41,7 +41,7 @@ class EComponentStoreManagementGUI(GUI):
         self.add_screen("components", ComponentScreen(self.screens_frame, self.app_controller))
         self.add_screen("manufacturers", ManufacturerScreen(self.screens_frame, self.app_controller))
         self.add_screen("customers", CustomerScreen(self.screens_frame, self.app_controller))
-        # self.add_screen("orders", OrderScreen(self.screens_frame, self.app_controller))
+        self.add_screen("orders", OrderScreen(self.screens_frame, self.app_controller))
 
         self.show_screen("dashboard")
 

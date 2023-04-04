@@ -41,7 +41,7 @@ class ComponentDetailedView(SubScreen):
         self.component_type = props["component_type"]
         values = props["values"]
         super().render()
-        self.title = "Component Information"
+        self.title = "Component's information"
 
         # Create layout frame
         self.info_frame = Frame(self)

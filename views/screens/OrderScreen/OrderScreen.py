@@ -11,7 +11,7 @@ class OrderScreen(Screen):
     def __init__(self, master, app_controller):
         """Init screen"""
         super().__init__(master,
-            title="Components",
+            title="Orders",
             title_font=FONTS.get_font("heading1", bold=True),
             back_font=FONTS.get_font("paragraph", italic=True)
         )

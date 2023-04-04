@@ -39,7 +39,11 @@ app_controller = AppController()
 # sleep(5)
 # app_controller.decompress_all_images()
 
-no_result, result = app_controller.get_list_of_orders({"items": "8"}, sort_options=[("items", "asc")])
+# no_result, result = app_controller.get_list_of_orders({"items": "8"}, sort_options=[("items", "asc")])
 
-for r in result:
-    print(r.get_all_info())
+# for r in result:
+#     print(r.get_all_info())
+
+result = app_controller.get_all_components_prices()
+print(result)
+print('Bosch BMI088' in result.keys())

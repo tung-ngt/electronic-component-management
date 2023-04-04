@@ -13,7 +13,7 @@ class CustomerDetailedView(SubScreen):
     # Overriding render method
     def render(self, props=None):
         super().render()
-        self.title = "Customers"
+        self.title = "Customer's infomation"
 
         # Create layout frame
         self.info_frame = Frame(self)

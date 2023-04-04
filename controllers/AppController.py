@@ -217,3 +217,18 @@ class AppController:
     def get_list_of_orders(self, filters = {}, sort_options = []):
         return pull("orders", filters, sort_options)
     
+    def get_all_components_prices(self):
+        component_types = [
+            "capacitor",
+            "resistor",
+            "ic",
+            "inductor",
+            "sensor",
+        ]
+        components_prices = {}
+        for component_type in component_types:
+            no_result, result = pull(component_type)
+            for r in result:
+                components_prices[r.get_part_number()] = r.get_price()
+        return components_prices
+    

@@ -3,6 +3,7 @@ from tkinter import Entry, StringVar, Menu, Menubutton, BooleanVar, Radiobutton,
 from ...constants import COLORS, FONTS
 from .AddOrderWindow import AddOrderWindow
 from ...components import AccentButton, AccentHorizontalScrollbar, CustomListView
+from math import floor
 
 class OrderListView(SubScreen):
     """This class display a table of component within a category"""
@@ -19,10 +20,19 @@ class OrderListView(SubScreen):
         self.app_controller = app_controller
         
         self.navigate = navigation_function
-        self.sorts = [0, 0, 0, 0]
+        self.sorts = [0, 0, 0, 0, 0]
         self.sort_asc_img = PhotoImage(file="./images/arrow-up.png")
         self.sort_desc_img = PhotoImage(file="./images/arrow-down.png")
         self.no_sort_img = PhotoImage(file="./images/blank.png")
+        self.customers_ids = self.get_customers_ids()
+        self.components_prices = self.app_controller.get_all_components_prices()
+
+    def get_customers_ids(self):
+        customers_ids = {}
+        no_result, result = self.app_controller.get_list_of_customers()
+        for c in result:
+            customers_ids[c.get_id()] = c.get_name()
+        return customers_ids
 
     # Override render method
     def render(self, props=None):
@@ -127,8 +137,8 @@ class OrderListView(SubScreen):
         columns = [
             "order_id", 
             "customer", 
-            "date", 
             "items",
+            "date", 
             "total_price", 
         ]
         tree_view = table_frame.tree_view = CustomListView(
@@ -143,8 +153,8 @@ class OrderListView(SubScreen):
         headings = {
             "order_id": {"text": "Order ID"},
             "customer": {"text": "Customer"},
-            "date": {"text": "Purchase date"},
             "items": {"text": "items"},
+            "date": {"text": "Purchase date"},
             "total_price": {"text": "Total price"},
         }
         tree_view.config_headings(headings)
@@ -183,6 +193,13 @@ class OrderListView(SubScreen):
         self.filters_frame.label.pack(pady=(10, 0))
 
         # date filter
+        filters_frame.customer_label = self.create_filter_label("Customer's id")
+        filters_frame.customer_label.pack(anchor="w", pady=5, padx=14)
+        filters_frame.customer_entry = Entry(filters_frame)
+        filters_frame.customer_entry.pack(fill="x", padx=14)
+
+        
+
         filters_frame.date_label = self.create_filter_label("Purchase date")
         filters_frame.date_label.pack(anchor="w", pady=5, padx=14)
 
@@ -336,15 +353,11 @@ class OrderListView(SubScreen):
 
         The return dict will be of the form
         {
-            "mnf_id": "abcxyz",
-            "part_number" : "132abvc",
-            "inventory_date" : [("<=","2023-12-01"), (">=, 2022-01-01")],
-            "price" : [("<=","3.6"), (">=, 1.4")],
-            "guarantee" : [("<=","10"), (">=, 4")],
-            "sub_category" : ["type a", "type b"],
-            "stock": [("<=","10"), (">=, 4")],
-            "capacitance,clock,..." : [("<=","10.6"), (">=, 7.4")],
-            "sensor_type" : ["sensor 1", "sensor 2"]
+            "order_id": "abcxyz",
+            "customer_id" : "132abvc",
+            "price" : "123",
+            "items": "ABC"
+            "date" : [("<=","10"), (">=, 4")],
         }
         """
         
@@ -353,49 +366,17 @@ class OrderListView(SubScreen):
 
         filters_dict = {}
         # Get search option
-        if search_bar_frame.search_option.get() == "part_number":
-            filters_dict["part_number"] = search_bar_frame.entry.get()
-            filters_dict["mnf_id"] = ""
-        else:
-            filters_dict["part_number"] = ""
-            filters_dict["mnf_id"] = search_bar_frame.entry.get()
+        filters_dict["order_id"] = search_bar_frame.entry.get()
         
+        filters_dict["customer_id"] = filters_frame.customer_entry.get()
+
         # Get inventory date
-        filters_dict["inventory_date"] = [
+        filters_dict["date"] = [
             ("<=", filters_frame.date_to_entry.get()),
             (">=", filters_frame.date_from_entry.get())
         ]
 
-        # Get price
-        filters_dict["price"] = [
-            ("<=", filters_frame.price_to_entry.get()),
-            (">=", filters_frame.price_from_entry.get())
-        ]
-
-        # Get guarantee
-        filters_dict["guarantee"] = [
-            ("<=", filters_frame.guarantee_to_entry.get()),
-            (">=", filters_frame.guarantee_from_entry.get())
-        ]
-
-        # Get stock
-        filters_dict["stock"] = [
-            ("<=", filters_frame.stock_to_entry.get()),
-            (">=", filters_frame.stock_from_entry.get())
-        ]
-        
-        # Get subcategory
-        filters_dict["sub_category"] = self.states["subcategory_options"]
-
-        # Get optional filter
-        if self.optional_type == "sensor_type":
-            filters_dict[self.optional_type] = self.states["sensor type_options"]
-        else:
-            filters_dict[self.optional_type] = [
-                ("<=", filters_frame.optional_to_entry.get()),
-                (">=", filters_frame.optional_from_entry.get())
-            ]
-
+      
         return filters_dict
     
     def clear_all_items(self):
@@ -405,21 +386,14 @@ class OrderListView(SubScreen):
 
     def get_all_sorting(self):
         sort_column = [
-            "part_number", 
-            "price", 
-            "guarantee", 
-            "mnf_id", 
-            "inventory_date",
-            "sub_category", 
-            "stock"
+            "order_id", 
+            "customer_id", 
+            "items", 
+            "date", 
         ]
-        if self.component_type == "ic":
-            sort_column.append("clock")
-        elif self.component_type == "sensor":
-            sort_column.append("sensor_type")
-        else:
-           sort_column.append(self.component_type[:-2] + "ance")
+
         sort_options = []
+    
         for index, op in enumerate(self.sorts):
             if op == 0:
                 continue
@@ -433,12 +407,22 @@ class OrderListView(SubScreen):
     def apply_filters(self):
         """Applying the filters"""
         tree_view :CustomListView = self.tree_view_frame.table_frame.tree_view
+        filters_frame = self.filters_frame
+         # Get price
+        price_from =  filters_frame.price_from_entry.get() 
+        price_to = filters_frame.price_to_entry.get()
+        price_from = 0 if price_from == "" else price_from
+        price_to = 999999999999999 if price_to == "" else price_to
+
         filters = self.get_all_filter()
         sort_options = self.get_all_sorting()
-        no_result, result = self.app_controller.get_list_with_filters(self.component_type, filters, sort_options)
+        no_result, result = self.app_controller.get_list_of_orders(filters, sort_options)
         self.clear_all_items()
-        for component in result:
-            component_info = component.get_all_info()
-            component_info[3] = f"({component_info[3]}) {self.manufacturers_ids[component.get_mnf_id()]}"
-            component_info.append(component.get_image_path())
-            tree_view.add_item(component_info)
+        for order in result:
+            order_info = order.get_all_info()
+            price = sum([no_item*self.components_prices[part_number] for part_number, no_item in list(order.get_items().items())])
+            order_info[1] = f"({order_info[1]}) {self.customers_ids[order.get_customer_id()]}"
+            price = floor(price * 100) / 100
+            order_info.append(price)
+            if order_info[-1] >= float(price_from) and order_info[-1] <= float(price_to):
+                tree_view.add_item(order_info)

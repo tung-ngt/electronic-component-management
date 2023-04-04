@@ -27,78 +27,39 @@ class OrderDetailedView(SubScreen):
 
     # Overriding render method
     def render(self, props=None):
-        self.component_type = props["component_type"]
-        values = props["values"]
         super().render()
-        self.title = "Component Information"
+        self.title = "Order's information"
 
         # Create layout frame
         self.info_frame = Frame(self)
-        self.image_frame = Frame(self)
         self.info_frame.pack(side="left", fill="both", padx=20, pady=(50,50), expand=True)
-        self.image_frame.pack(side="left", fill="both", pady=100, expand=True)
-
-        # Image frame
-        if values[8] == "None" or values[8] == None:
-            self.image_button = Button(
-                self.image_frame,
-                lambda:print("hi"),
-                "Add image",
-                background=COLORS.BACKGROUND_LIGHT,
-                font=FONTS.get_font("heading3", bold=True)
-            )
-            self.image_button.pack(ipady=50, ipadx=50)
-        else:
-            self.man_pill_img = Image.open(f"./images/components/{values[8]}.png")
-            size = self.man_pill_img.size
-            scale = 300/size[0]
-            new_size = [int(size[0]*scale), int(size[1]*scale)]
-            self.man_pill_img = self.man_pill_img.resize(new_size, Image.ANTIALIAS)
-            self.man_img = ImageTk.PhotoImage(self.man_pill_img)
-            self.man_img_label = Label(self.image_frame, image=self.man_img)
-            self.man_img_label.pack()
-
 
         # Info text
-        self.part_number_box = Frame(self.info_frame, highlightbackground="black", highlightthickness=2)
-        self.part_number_label = Label(self.part_number_box,
+        self.order_id_box = Frame(self.info_frame, highlightbackground="black", highlightthickness=2)
+        self.order_id_label = Label(self.order_id_box,
             text="PART NUMBER", 
             font=FONTS.get_font("paragraph"),
             background="transparent"
         )
-        self.part_number_label.pack(anchor="w", padx=20, pady=(20, 0))
+        self.order_id_label.pack(anchor="w", padx=20, pady=(20, 0))
 
-        self.part_number = Label(self.part_number_box,
-            text=values[0], 
+        self.order_id = Label(self.order_id_box,
+            text=props[0], 
             font=FONTS.get_font("heading2", bold=True),
             background="transparent"
         )
-        self.part_number.pack(anchor="w", padx=20, pady=(0, 16))
+        self.order_id.pack(anchor="w", padx=20, pady=(0, 16))
 
-        self.inventory_date = self.create_info_box("Inventory date", values[4], True)
-        self.price = self.create_info_box("Price", values[1])
-        self.guarantee = self.create_info_box("No months guarenteed", values[2],)
-        self.manufacturer = self.create_info_box("Manufacturer", values[3],)
-        self.subcategory = self.create_info_box("Subcategory", values[5],)
-        self.stock = self.create_info_box("Stock", values[6],)
-
-        if self.component_type == "ic":
-            self.optional_info = self.create_info_box("Clock", values[7])
-        if self.component_type == "capacitor":
-            self.optional_info = self.create_info_box("Capacitance", values[7])
-        if self.component_type == "inductor":
-            self.optional_info = self.create_info_box("Inductance", values[7])
-        if self.component_type == "resistor":
-            self.optional_info = self.create_info_box("Resistance", values[7])
-        if self.component_type == "sensor":
-            self.optional_info = self.create_info_box("Sensor type", values[7])
-
+        self.customer = self.create_info_box("Customer", props[1], True)
+        self.date = self.create_info_box("Purchase date", props[3], True)
+        self.price = self.create_info_box("total price", props[4])
+        
         self.update_info_button = AccentButton(
             self.info_frame, 
             command=lambda: UpdateOrderWindow(self,
                 self.component_type,
                 self.app_controller,
-                values,
+                props,
                 on_close_fun=self.render,
             ),
             text="Update information",
@@ -109,20 +70,16 @@ class OrderDetailedView(SubScreen):
         self.info_frame.grid_columnconfigure(1, weight=1)
         self.info_frame.grid_rowconfigure(4, weight=1)
 
-        self.part_number_box.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0,40))
+        self.order_id_box.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0,40))
 
-        self.price.grid(row=1, column=0, sticky="w")
-        self.stock.grid(row=1, column=1, sticky="w")
-        self.optional_info.grid(row=2, column=0, sticky="w")
-        self.guarantee.grid(row=2, column=1, sticky="w")
-        self.subcategory.grid(row=3, column=0, sticky="w")
-        self.manufacturer.grid(row=3, column=1, sticky="w")
-        self.inventory_date.grid(row=4, column=0, sticky="sw")
+        self.customer.grid(row=1, column=0, sticky="w")
+        self.price.grid(row=1, column=1, sticky="w")
+        self.date.grid(row=4, column=0, sticky="sw")
         self.update_info_button.grid(row=4, column=1, pady=10,sticky="sw")
 
         
         # Specify the widgets to destroy
-        self.add_widgets_to_destroy([self.info_frame, self.image_frame])
+        self.add_widgets_to_destroy([self.info_frame])
 
     def create_info_box(self, label:str, value:str, small=False):
         """Create and return a info_box

@@ -10,7 +10,7 @@ class CustomerScreen(Screen):
     def __init__(self, master, app_controller):
         """Init screen"""
         super().__init__(master, background="white",
-            title="Manufacturer",
+            title="Customers",
             title_font=FONTS.get_font("heading1", bold=True),
             title_bar_foreground=COLORS.ACCENT
         )
@@ -201,7 +201,7 @@ class CustomerScreen(Screen):
         tree_view.bind("<Button-1>", lambda e: self.on_sort(subscreen, e))
 
 
-        # self.apply_filters(subscreen)
+        self.apply_filters(subscreen)
 
     def get_all_filter(self, subcreen):
         """Get all filter and search
@@ -251,9 +251,9 @@ class CustomerScreen(Screen):
         tree_view :CustomListView = subscreen.tree_view_frame.table_frame.tree_view
         filters = self.get_all_filter(subscreen)
         sort_options = self.get_all_sorting()
-        no_result, result = self.app_controller.get_list_with_filters("manufacturer", filters, sort_options)
+        no_result, result = self.app_controller.get_list_of_customers(filters, sort_options)
+    
         self.clear_all_items(subscreen)
-        for manufacturer in result:
-            manufacturer_info = manufacturer.get_all_info()
-            manufacturer_info.append(manufacturer.get_image_path())
-            tree_view.add_item(manufacturer_info)
+        for customer in result:
+            customer_info = customer.get_all_info()
+            tree_view.add_item(customer_info)
