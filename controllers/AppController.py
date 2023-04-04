@@ -1,6 +1,6 @@
 from models.db.functions import pull, push, update, get_sub_category, get_sensor_types, get_mnf_countries
 from models.db.utils.connect_to_db import get_connection
-from models.domains import IC, Capacitor, Inductor, Manufacturer, Resistor, Sensor
+from models.domains import IC, Capacitor, Inductor, Manufacturer, Resistor, Sensor, Customer
 from .utils import file_utils
 import os
 import threading
@@ -164,6 +164,10 @@ class AppController:
     def update_manufacturer(self, data, id):
         update("manufacturer", data, id)
 
+    def update_manufacturer(self, data, id):
+        update("customer", data, id)
+
+
     def get_no_of_components(self):
         return len(self.__capacitors) \
              + len(self.__ics) \
@@ -197,3 +201,19 @@ class AppController:
                 args=(f"./images/manufacturers/{manufacturer_img}",)
             )
             thread.start()
+
+    def get_list_of_customers(self, filters = {}, sort_options = []):
+        return pull("customer", filters, sort_options)
+    
+    def add_customer(self, data):
+        new_customer = Customer(
+            data["id"],
+            data["name"],
+            data["phone_number"]
+        )
+
+        push(new_customer)
+
+    def get_list_of_orders(self, filters = {}, sort_options = []):
+        return pull("orders", filters, sort_options)
+    

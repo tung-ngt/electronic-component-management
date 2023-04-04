@@ -68,21 +68,10 @@ def pull(table : str, condition : dict = {}, sort_options = []):
         count, myresult = filter_manufacturer(table, condition, sort_options)
 
     elif table == "orders":
-        conn, c = get_connection('./data/database.db')
-        query = f"""select * from orders"""
-        result = c.execute(query)
-        myresult = result.fetchall()
-        conn.close()
-        count = 0
-
+        count, myresult = filter_component("orders", condition, sort_options)
     
     elif table == "customer":
-        conn, c = get_connection('./data/database.db')
-        query = f"""select * from customer"""
-        result = c.execute(query)
-        myresult = result.fetchall()
-        conn.close()
-        count = 0
+        count, myresult = filter_manufacturer("customer", condition, sort_options)
     
     items = []
     for item in myresult:
@@ -110,8 +99,10 @@ def update(table : str, change : dict, condition : str):
         query = f"UPDATE {table} SET "
         update_list = [f"{k} = '{v}'" for k, v in list(change.items())]
         query += ", ".join(update_list)
-        if table == 'manufacturer':
+        if table in ['manufacturer', "customer"]:
             query += f" WHERE id = '{condition}';"
+        elif table == "orders":
+            query += f"WHERE order_id = '{condition}"
         else:
             query += f" WHERE part_number = '{condition}';"
         mycursor.execute(query)
