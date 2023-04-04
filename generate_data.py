@@ -13,20 +13,6 @@ from models.db.functions import push, pull
 
 
 
-#Manufacturer:
-m1 = Manufacturer("M001", "AVX Corporation", "United States", 'avx.png')
-m2 = Manufacturer("M002", "KEMET Corporation", "United States", 'kemet.png')
-m3 = Manufacturer("M003", "Yageo Corporation", "Taiwan", 'yageo.png')
-m4 = Manufacturer("M004", "TDK Corporation", "Japan", 'tdk.png')
-m5 = Manufacturer("M005", "Panasonic Corporation", "Japan", 'panasonic.png')
-m6 = Manufacturer("M006", "Murata Manufacturing Co., Ltd.", "Japan", 'murata.png')
-m7 = Manufacturer("M007", "Rohm Semiconductor", "Japan", 'rohm.png')
-m8 = Manufacturer("M008", "Vishay Intertechnology, Inc.", "United States", 'vishay.png')
-m9 = Manufacturer("M009", "Infineon Technologies AG", "Germany", 'infineon.png')
-m10 = Manufacturer("M010", "STMicroelectronics", "Switzerland", 'st.png')
-
-manufacturers = [m1, m2, m3, m4, m5, m6, m7, m8, m9, m10]
-
 
 customers = [Customer("C001", "Steven Johnston", "505-261-9544"),
 Customer("C002", "Emmett Rogers", "+1 202-918-2132"),
@@ -316,11 +302,101 @@ inductor_part_numbers = [
     'KEMET LQH32CN2R2M23L'
 ]
 
-sensor_part_numbers = list(set(sensor_part_numbers))
-ic_part_numbers = list(set(ic_part_numbers))
-inductor_part_numbers = list(set(inductor_part_numbers))
-resistor_part_numbers = list(set(resistor_part_numbers))
-capacitor_part_numbers = list(set(capacitor_part_numbers))
+#sensor_part_numbers = list(set(sensor_part_numbers))
+#ic_part_numbers = list(set(ic_part_numbers))
+#inductor_part_numbers = list(set(inductor_part_numbers))
+#resistor_part_numbers = list(set(resistor_part_numbers))
+#capacitor_part_numbers = list(set(capacitor_part_numbers))
+
+#manu_cap = []
+#for i in capacitor_part_numbers:
+#    manu_cap.append(i.split(' ', 1)[0])
+
+#manu_res = []
+#for i in resistor_part_numbers:
+#    manu_res.append(i.split(' ', 1)[0])
+
+#manu_ind = []
+#for i in inductor_part_numbers:
+#    manu_ind.append(i.split(' ', 1)[0])
+
+#manu_ic = []
+#for i in ic_part_numbers:
+#    manu_ic.append(i.split(' ', 1)[0])
+
+#manu_sen = []   
+#for i in sensor_part_numbers:
+#    manu_sen.append(i.split(' ', 1)[0])
+
+#manufacturers = manu_cap + manu_res + manu_ind + manu_ic + manu_sen
+#manufacturers = list(set(manufacturers))
+#manufacturers.sort()
+#print(manufacturers)
+#print(len(manufacturers))
+
+#Manufacturer:
+m1 = Manufacturer("M001", "API Technologies Corp", "United States", "api.png")
+m2 = Manufacturer("M002", "AVX Corporation", "United States", 'avx.png')
+m3 = Manufacturer("M003", "Allegro MicroSystems", "United States", "allegro.png")
+m4 = Manufacturer("M004", "Amphenol", "United States", "amphenol.png")
+m5 = Manufacturer("M005", "Analog", "United States", "analog.png")
+m6 = Manufacturer("M006", "Bosch", "Germany", "bosch.png")
+m7 = Manufacturer("M007", "Bourns", "United States", 'bourns.png')
+m8 = Manufacturer("M008", "Caddock", "United States", 'caddock.png')
+m9 = Manufacturer("M009", "Coilcraft", "United States", 'coilcraft.png')
+m10 = Manufacturer("M010", "Cypress", "United States", "cypress.png")
+m11 = Manufacturer("M011", "Honeywell", "United State", "honeywell.png")
+m12 = Manufacturer("M012", "IRC", "United Kingdom", "irc.png")
+m13 = Manufacturer("M013", "Infineon", "Germany", "infineon.png")
+m14 = Manufacturer("M014", "IsabellenhUtte", "United States", 'isabellenhutte.png')
+m15 = Manufacturer("M015", "Iskra", "Slovenia", "iskra.png")
+m16 = Manufacturer("M016", "Johanson Technology", "United States", "johanson.png")
+m17 = Manufacturer("M017", "KEMET Corporation", "United States", 'kemet.png')
+m18 = Manufacturer("M018", "KOA Speer", "Japan", "koa.png")
+m19 = Manufacturer("M019", "Linear Electric Inc", "United States", "linear.png")
+m20 = Manufacturer("M020", "Maxim Integrated", "United States", "maxim.png")
+m21 = Manufacturer("M021", "Microchip Technology", "United States", "microchip.png")
+m22 = Manufacturer("M022", "Microsemi", "United States", 'microsemi.png')
+m23 = Manufacturer("M023", "Murata Manufacturing Co., Ltd.", "Japan", 'murata.png')
+m24 = Manufacturer("M024", "NIC Components Corp", "United States", "nic.png")
+m25 = Manufacturer("M025", "NTE Electronics Inc", "United States", "nte.png")
+m26 = Manufacturer("M026", "NXP Semiconductors", "Netherlands", "nxp.png")
+m27 = Manufacturer("M027", "Nichicon", "Japan", 'nichicon.png')
+m28 = Manufacturer("M028", "ON Semiconductor", "United States", "on.png")
+m29 = Manufacturer("M029", "Ohmite", "United States", 'ohmite.png')
+m30 = Manufacturer("M030", "Omron", "Japan", 'omron.png')
+m31 = Manufacturer("M031", "Panasonic Corporation", "Japan", 'panasonic.png')
+m32 = Manufacturer("M032", "RCD Components", "United States", 'rcd.png')
+m33 = Manufacturer("M033", "Rohm Semiconductor", "Japan", 'rohm.png')
+m34 = Manufacturer("M034", "Renesas Electronics", "Japan", 'renesas.png')
+m35 = Manufacturer("M035", "ROYALOHM", "Thailand", 'royalohm.png')
+m36 = Manufacturer("M036", "Rubycon", "Japan", 'rubycon.png')
+m37 = Manufacturer("M037", "STMicroelectronics", "Switzerland", 'st.png')
+m38 = Manufacturer("M038", "Samsung Electronics", "South Korea", "samsung.png")
+m39 = Manufacturer("M039", "Sensirion", "Switzerland", "sensirion.png")
+m40 = Manufacturer("M040", "Simpson", "United States", "simpson.png")
+m41 = Manufacturer("M041", "Stackpole International Inc", "Hong Konh", "stackpole.png")
+m42 = Manufacturer("M042", "Sumida Corporation", "Japan", 'sumida.png')
+m43 = Manufacturer("M043", "Susumu Co., Ltd.", "Japan", 'susumu.png')
+m44 = Manufacturer("M044", "TDK Corporation", "Japan", 'tdk.png')
+m45 = Manufacturer("M045", "TE Connectivity", "Switzerland", 'te.png')
+m46 = Manufacturer("M046", "TT Electronics", "United Kingdom", "tt.png")
+m47 = Manufacturer("M047", "Taiyo Yuden", "Japan", 'taiyo.png')
+m48 = Manufacturer("M048", "Texas Instruments", "United States", "ti.png")
+m49 = Manufacturer("M049", "Viking Tech Corporation", "China", 'viking.png')
+m50 = Manufacturer("M050", "Vishay Intertechnology, Inc.", "United States", 'vishay.png')
+m51 = Manufacturer("M051", "Walsin Technology Corp", "Taiwan", 'walsin.png')
+m52 = Manufacturer("M052", "Wurth Elektronik", "Germany", 'wurth.png')
+m53 = Manufacturer("M053", "Yageo Corporation", "Taiwan", 'yageo.png')
+
+manufacturers = [m1, m2, m3, m4, m5, m6, m7, m8, m9, m10,
+                 m11, m12, m13, m14, m15, m16, m17, m18, m19, m20, 
+                 m21, m22, m23, m24, m25, m26, m27, m28, m29, m30,
+                 m31, m32, m33, m34, m35, m36, m37, m38, m39, m40,
+                 m41, m42, m43, m44, m45, m46, m47, m48, m49, m50,
+                 m51, m52, m53]
+
+
 
 capacitor_images = [f"C{n}.png" for n in range(1, 11)]
 resistor_images = [f"R{n}.png" for n in range(1, 11)]
@@ -328,13 +404,23 @@ inductor_images = [f"I{n}.png" for n in range(1, 11)]
 sensor_images = [f"S{n}.png" for n in range(1, 11)]
 ic_images = [f"IC{n}.png" for n in range(1, 11)]
 
+
+
 capacitor_samples = []
 for i in range(100):
-    mnf_id = random.choice(manufacturers).get_id()
     price = round(random.uniform(0.1, 10), 2)
     inventory_date = f"{random.randint(2020, 2023)}-{random.randint(1, 12):02d}-{random.randint(1, 28):02d}"
     guarantee = random.randint(6, 24)
+
     part_number = random.choice(capacitor_part_numbers) + str(i)
+    mnf = part_number.split(' ', 1)[0]
+
+    mnf_id = None
+    for m in manufacturers:
+        if m.get_name().split(' ', 1)[0] == mnf:
+            mnf_id = m.get_id()
+            break
+
     sub_category = random.choice(capacitors_list)
     stock = random.randint(100, 1000)
     capacitance = round(random.uniform(0.1, 100), 2)
@@ -343,42 +429,72 @@ for i in range(100):
     capacitor_samples.append(Capacitor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, capacitance, image_path))
 
 
+
 resistor_samples = []
 for i in range(120):
-    mnf_id = random.choice(manufacturers).get_id()
+
     price = round(random.uniform(0.1, 10), 2)
     inventory_date = f"{random.randint(2020, 2023)}-{random.randint(1, 12):02d}-{random.randint(1, 28):02d}"
     guarantee = random.randint(6, 24)
-    part_number = random.choice(resistor_part_numbers) + str(i)
+
+    part_number = random.choice(capacitor_part_numbers) + str(i)
+    mnf = part_number.split(' ', 1)[0]
+
+    mnf_id = None
+    for m in manufacturers:
+        if m.get_name().split(' ', 1)[0] == mnf:
+            mnf_id = m.get_id()
+            break
+
     sub_category = random.choice(resistors_list)
     stock = random.randint(100, 1000)
     resistance = round(random.uniform(0.1, 100), 2)
     image_path = random.choice(resistor_images)
+
     
     resistor_samples.append(Resistor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, resistance, image_path))
 
 inductor_samples = []
 for i in range(120):
-    mnf_id = random.choice(manufacturers).get_id()
+
     price = round(random.uniform(0.1, 10), 2)
     inventory_date = f"{random.randint(2020, 2023)}-{random.randint(1, 12):02d}-{random.randint(1, 28):02d}"
     guarantee = random.randint(6, 24)
-    part_number = random.choice(inductor_part_numbers) + str(i)
+
+    part_number = random.choice(capacitor_part_numbers) + str(i)
+    mnf = part_number.split(' ', 1)[0]
+
+    mnf_id = None
+    for m in manufacturers:
+        if m.get_name().split(' ', 1)[0] == mnf:
+            mnf_id = m.get_id()
+            break
+
     sub_category = random.choice(inductors_list)
     stock = random.randint(100, 1000)
     inductance = round(random.uniform(0.1, 100), 2)
     image_path = random.choice(inductor_images)
+
     
     inductor_samples.append(Inductor(mnf_id, price, inventory_date, guarantee, part_number, sub_category, stock, inductance, image_path))
 
 
 sensor_samples = []
 for i in range(120):
-    mnf_id = random.choice(manufacturers).get_id()
+
     price = round(random.uniform(0.1, 10), 2)
     inventory_date = f"{random.randint(2020, 2023)}-{random.randint(1, 12):02d}-{random.randint(1, 28):02d}"
     guarantee = random.randint(6, 24)
-    part_number = random.choice(sensor_part_numbers) + str(i)
+
+    part_number = random.choice(capacitor_part_numbers) + str(i)
+    mnf = part_number.split(' ', 1)[0]
+
+    mnf_id = None
+    for m in manufacturers:
+        if m.get_name().split(' ', 1)[0] == mnf:
+            mnf_id = m.get_id()
+            break
+
     sub_category = random.choice(sensors_list)
     stock = random.randint(100, 1000)
     sensor_type = random.choice(sensor_types_list)
@@ -389,11 +505,20 @@ for i in range(120):
 
 ic_samples = []
 for i in range(120):
-    mnf_id = random.choice(manufacturers).get_id()
+
     price = round(random.uniform(0.1, 10), 2)
     inventory_date = f"{random.randint(2020, 2023)}-{random.randint(1, 12):02d}-{random.randint(1, 28):02d}"
     guarantee = random.randint(6, 24)
-    part_number = random.choice(ic_part_numbers) + str(i)
+
+    part_number = random.choice(capacitor_part_numbers) + str(i)
+    mnf = part_number.split(' ', 1)[0]
+
+    mnf_id = None
+    for m in manufacturers:
+        if m.get_name().split(' ', 1)[0] == mnf:
+            mnf_id = m.get_id()
+            break
+
     sub_category = random.choice(ics_list)
     stock = random.randint(100, 1000)
     clock = round(random.uniform(0.1, 100), 2)
