@@ -1,6 +1,6 @@
 from .utils import get_connection
 from ..domains import Component
-from ..serializers.serializer import serialize, deserialize
+from ..serializers.Serializer import serialize, deserialize
 from controllers.item_controller import filter_component, filter_manufacturer
 
 '''
