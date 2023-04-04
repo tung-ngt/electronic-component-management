@@ -12,7 +12,11 @@ category_search = {"mnf_id": "search",
                    "clock": "range",
                    "inductance": "range",
                    "resistance": "range",
-                   "sensor_type": "val_list"
+                   "sensor_type": "val_list",
+                   "order_id": "search",
+                   "date": "range",
+                   "customer_id": "search",
+                   "items": "search"
                    }
 
 
