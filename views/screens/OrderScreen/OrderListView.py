@@ -4,6 +4,7 @@ from ...constants import COLORS, FONTS
 from .AddOrderWindow import AddOrderWindow
 from ...components import AccentButton, AccentHorizontalScrollbar, CustomListView
 from math import floor
+import json
 
 class OrderListView(SubScreen):
     """This class display a table of component within a category"""
@@ -93,7 +94,7 @@ class OrderListView(SubScreen):
         selected_iid = tree_view.focus()
         values = tree_view.item(selected_iid)["values"]
 
-        self.navigate(subscreen_name="detailed_view", props=values)
+        self.navigate(subscreen_name="detailed_view", props={"values": values, "components_prices": self.components_prices})
 
     def build_tree_view(self):
         """Build the component tree view table"""
@@ -423,6 +424,7 @@ class OrderListView(SubScreen):
             price = sum([no_item*self.components_prices[part_number] for part_number, no_item in list(order.get_items().items())])
             order_info[1] = f"({order_info[1]}) {self.customers_ids[order.get_customer_id()]}"
             price = floor(price * 100) / 100
+            order_info[2] = json.dumps(order_info[2])
             order_info.append(price)
             if order_info[-1] >= float(price_from) and order_info[-1] <= float(price_to):
                 tree_view.add_item(order_info)
