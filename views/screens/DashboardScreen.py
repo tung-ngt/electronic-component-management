@@ -47,7 +47,7 @@ class DashboardScreen(Screen):
         subscreen.box4.pack_propagate(False)
         subscreen.box4.manufacturer_count_label = Label(
             subscreen.box4,
-            f"{len(self.app_controller.get_manufacturers())} manufacturers",
+            f"{len(self.app_controller.get_list('manufacturer'))} manufacturers",
             background="transparent",
             foreground=COLORS.PRIMARY,
             font=FONTS.get_font("heading3", bold=True)

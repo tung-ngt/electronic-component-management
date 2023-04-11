@@ -9,7 +9,7 @@ def validate_date(d: str):
         return True
 
 def validate_guarantee(g):
-    if isinstance(g, int) and g>0:
+    if isinstance(g, int) and g>=0:
         return True
     else:
         raise Exception("Invalid type of guarantee")

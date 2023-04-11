@@ -11,7 +11,7 @@ from controllers.item_controller import filter_component, filter_manufacturer
 # Push and pull from database
 def push(thing):
     '''
-        Push thing to database                 
+        Push thing to databases
     '''
     # Connect to database
     conn, mycursor  = get_connection('./data/database.db')

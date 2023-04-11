@@ -20,7 +20,7 @@ class ComponentDetailedView(SubScreen):
         self.get_all_manufacturers_ids()
 
     def get_all_manufacturers_ids(self):
-        manufacturers = self.app_controller.get_manufacturers()
+        manufacturers = self.app_controller.get_list("manufacturer")
         self.manufacturers_ids = {}
         for manufacturer in manufacturers:
             self.manufacturers_ids[manufacturer.get_id()] = manufacturer.get_name()
@@ -32,7 +32,7 @@ class ComponentDetailedView(SubScreen):
             filetypes=(("PNG files", "*.png"),)
         )
         filename = filename.split("/images/components/")[1]
-        self.app_controller.update_component_image(filename, props["component_type"], props["values"][0])
+        self.app_controller.update_component(props["component_type"], {"image_path": filename}, props["values"][0])
         props["values"][8] = filename
         self.render(props)
 

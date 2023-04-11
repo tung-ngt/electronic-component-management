@@ -1,18 +1,6 @@
 import random
 import pickle
-from os import listdir
-from os.path import isfile, join
-
-# abspath to models
-import os, sys
-sys.path.append(os.path.abspath(r'C:\Users\ciltr\Desktop\USTH\Semester 2\Python\Python project\electronic-store'))
-
 from models.domains import Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer, Customer, Order
-from models.db.utils.connect_to_db import get_connection
-from models.db.functions import push, pull
-
-
-
 
 customers = [Customer("C001", "Steven Johnston", "505-261-9544"),
 Customer("C002", "Emmett Rogers", "+1 202-918-2132"),
@@ -532,11 +520,14 @@ Order("O011", "C007", {inductor_samples[40].get_part_number(): 1}, "2021-10-22")
 
 
 ## Shuffle the lists
-#random.shuffle(sensor_samples)
-#random.shuffle(ic_samples)
-#random.shuffle(inductor_samples)
-#random.shuffle(resistor_samples)         
-#random.shuffle(capacitor_samples)
+random.shuffle(sensor_samples)
+random.shuffle(ic_samples)
+random.shuffle(inductor_samples)
+random.shuffle(resistor_samples)         
+random.shuffle(capacitor_samples)
+random.shuffle(orders)
+random.shuffle(customers)
+random.shuffle(manufacturers)
 
 
 # Pickle all lists
@@ -565,20 +556,3 @@ with open('./generated_data/orders.pickle', 'wb') as f:
     pickle.dump(orders, f)
 
 
-# Load the data from pickle
-with open('./generated_data/sensors.pickle', 'rb') as f:
-    sensors = pickle.load(f)
-with open('./generated_data/ics.pickle', 'rb') as f:
-    ics = pickle.load(f)
-with open('./generated_data/inductors.pickle', 'rb') as f:
-    inductors = pickle.load(f)
-with open('./generated_data/resistors.pickle', 'rb') as f:
-    resistors = pickle.load(f)
-with open('./generated_data/capacitors.pickle', 'rb') as f:
-    capacitors = pickle.load(f)
-with open('./generated_data/manufacturers.pickle', 'rb') as f:
-    manufacturers = pickle.load(f)
-with open('./generated_data/customers.pickle', 'rb') as f:
-    customers = pickle.load(f)
-with open('./generated_data/orders.pickle', 'rb') as f:
-    orders = pickle.load(f)

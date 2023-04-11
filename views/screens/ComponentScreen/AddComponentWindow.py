@@ -36,11 +36,11 @@ class AddComponentWindow:
 
         self.app_controller = app_controller
         self.manufacturer_options = self.get_all_manufacturers_ids()
-        self.subcategory_options = self.app_controller.get_sub_categories(self.component_type)
+        self.subcategory_options = self.app_controller.get_distinct_column(self.component_type, "sub_category")
         self.create_form()
 
     def get_all_manufacturers_ids(self):
-        manufacturers = self.app_controller.get_manufacturers()
+        manufacturers = self.app_controller.get_list("manufacturer")
         manufacturers_ids = {}
         for manufacturer in manufacturers:
             manufacturers_ids[manufacturer.get_id()] = manufacturer.get_name()
@@ -191,7 +191,7 @@ class AddComponentWindow:
             )
             self.sensor_type = StringVar()
             self.sensor_type.set("None")
-            sensor_types = self.app_controller.get_sensor_types()
+            sensor_types = self.app_controller.get_distinct_column("sensor", "sensor_type")
             sensor_type_button = Menubutton(
                 sensor_type_frame,
                 textvariable=self.sensor_type,
@@ -270,7 +270,7 @@ class AddComponentWindow:
             data["sensor_type"] = self.sensor_type.get()
         
         try:
-            self.app_controller.add_component(self.component_type, data)
+            self.app_controller.add(self.component_type, data)
         except Exception as e:
             messagebox.showerror("Error", str(e))
         else:

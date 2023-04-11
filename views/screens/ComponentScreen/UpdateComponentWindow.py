@@ -36,12 +36,12 @@ class UpdateComponentWindow:
 
         self.app_controller = app_controller
         self.manufacturer_options = self.get_all_manufacturers_ids()
-        self.subcategory_options = self.app_controller.get_sub_categories(self.component_type)
+        self.subcategory_options = self.app_controller.get_subcategories(self.component_type)
         self.initial_values = initial_values
         self.create_form()
 
     def get_all_manufacturers_ids(self):
-        manufacturers = self.app_controller.get_manufacturers()
+        manufacturers = self.app_controller.get_list("manufacturer")
         manufacturers_ids = {}
         for manufacturer in manufacturers:
             manufacturers_ids[manufacturer.get_id()] = manufacturer.get_name()
@@ -186,7 +186,7 @@ class UpdateComponentWindow:
             )
             self.sensor_type = StringVar()
             self.sensor_type.set(self.initial_values[7])
-            sensor_types = self.app_controller.get_sensor_types()
+            sensor_types = self.app_controller.get_distinct_column("sensor", "sensor_type")
             sensor_type_button = Menubutton(
                 sensor_type_frame,
                 textvariable=self.sensor_type,
@@ -246,7 +246,6 @@ class UpdateComponentWindow:
     def submit(self):
         """Submit the form"""
         data = {
-            "part_number": self.part_number_entry.get(),
             "price": self.price_entry.get(),
             "guarantee": self.guarantee_entry.get(),
             "mnf_id": self.man_option.get(),
@@ -266,14 +265,14 @@ class UpdateComponentWindow:
             data["sensor_type"] = self.sensor_type.get()
         
         try:
-            self.app_controller.update_component(self.component_type, data, data["part_number"])
+            self.app_controller.update_component(self.component_type, data, self.part_number_entry.get())
 
         except Exception as e:
             messagebox.showerror("Error", str(e))
         else:
             messagebox.showinfo("Successfull", "Update component was suscessfull")
-            data["mnf_id"] = self.man_label_option.get()
             updated_values = list(data.values())
+            updated_values.insert(0, self.initial_values[0])
             updated_values.append(self.initial_values[8])
             self.screen.destroy()
             self.on_close_fun({"component_type": self.component_type, "values": updated_values})

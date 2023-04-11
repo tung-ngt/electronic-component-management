@@ -1,0 +1,3 @@
+from .ManufacturerSerializer import ManufacturerSerializer
+from .OrderSerializer import OrderSerializer
+from .CustomerSerializer import CustomerSerializer

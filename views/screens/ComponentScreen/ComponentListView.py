@@ -20,13 +20,22 @@ class ComponentListView(SubScreen):
         
         self.navigate = navigation_function
         self.get_all_manufacturers_ids()
-        self.sorts = [0, 0, 0, 0, 0, 0, 0, 0]
+        self.sort_options = {
+            "part_number": 0, 
+            "price": 0, 
+            "guarantee": 0, 
+            "mnf_id": 0, 
+            "inventory_date": 0,
+            "sub_category": 0, 
+            "stock": 0,
+            "special_attr": 0
+        }
         self.sort_asc_img = PhotoImage(file="./images/arrow-up.png")
         self.sort_desc_img = PhotoImage(file="./images/arrow-down.png")
         self.no_sort_img = PhotoImage(file="./images/blank.png")
 
     def get_all_manufacturers_ids(self):
-        manufacturers = self.app_controller.get_manufacturers()
+        manufacturers = self.app_controller.get_list("manufacturer")
         self.manufacturers_ids = {}
         for manufacturer in manufacturers:
             self.manufacturers_ids[manufacturer.get_id()] = manufacturer.get_name()
@@ -71,10 +80,22 @@ class ComponentListView(SubScreen):
         
         column_id = tree_view.identify_column(event.x)
         column_index = int(column_id[1]) -1
-        self.sorts[column_index] = (self.sorts[column_index] + 1) % 3
-        if self.sorts[column_index] == 0:
+
+        sort_column = [
+            "part_number", 
+            "price", 
+            "guarantee", 
+            "mnf_id", 
+            "inventory_date",
+            "sub_category", 
+            "stock",
+            "special_attr"
+        ]
+
+        self.sort_options[sort_column[column_index]] = (self.sort_options[sort_column[column_index]] + 1) % 3
+        if self.sort_options[sort_column[column_index]] == 0:
             tree_view.heading(column_id, image=self.no_sort_img)
-        elif self.sorts[column_index] == 1:
+        elif self.sort_options[sort_column[column_index]] == 1:
             tree_view.heading(column_id, image=self.sort_asc_img)
         else:
             tree_view.heading(column_id, image=self.sort_desc_img)
@@ -156,7 +177,8 @@ class ComponentListView(SubScreen):
             "manufacturer", 
             "inventory_date",
             "sub_category", 
-            "stock"
+            "stock",
+            
         ]
         if self.component_type == "ic":
             columns.append("clock")
@@ -209,8 +231,8 @@ class ComponentListView(SubScreen):
             headings[self.component_type[:-2] + "ance"] = {"anchor": "center", "width": 70, "stretch": False}
         tree_view.config_columns(columns_setting)
 
+        scroll_bar.pack(side="right", fill="y")
         tree_view.pack(side="left", fill="both", expand=True)
-        scroll_bar.pack(side="left", fill="y")
 
         # Bind double click envent
         tree_view.bind("<Double-1>", self.on_double_click)
@@ -269,12 +291,12 @@ class ComponentListView(SubScreen):
         filters_frame.stock_frame.pack(fill="x")
 
         # Subcategory filter
-        filters_frame.subcategory_menu_frame = self.create_options_menu_filter("Subcategory", self.app_controller.get_sub_categories(self.component_type))
+        filters_frame.subcategory_menu_frame = self.create_options_menu_filter("Subcategory", self.app_controller.get_distinct_column(self.component_type, "sub_category"))
         filters_frame.subcategory_menu_frame.pack(fill="x")
 
         # Optional filter
         if self.component_type == "sensor":
-            filters_frame.sensor_menu_frame = self.create_options_menu_filter("Sensor type", self.app_controller.get_sensor_types())
+            filters_frame.sensor_menu_frame = self.create_options_menu_filter("Sensor type", self.app_controller.get_distinct_column("sensor", "sensor_type"))
             filters_frame.sensor_menu_frame.pack(fill="x")
             self.optional_type = "sensor_type"
         else:
@@ -449,28 +471,28 @@ class ComponentListView(SubScreen):
             filters_dict["mnf_id"] = search_bar_frame.entry.get()
         
         # Get inventory date
-        filters_dict["inventory_date"] = [
-            ("<=", filters_frame.date_to_entry.get()),
-            (">=", filters_frame.date_from_entry.get())
-        ]
+        filters_dict["inventory_date"] = {
+            "from": filters_frame.date_from_entry.get(),
+            "to": filters_frame.date_to_entry.get(),
+        }
 
         # Get price
-        filters_dict["price"] = [
-            ("<=", filters_frame.price_to_entry.get()),
-            (">=", filters_frame.price_from_entry.get())
-        ]
+        filters_dict["price"] = {
+            "from": filters_frame.price_from_entry.get(),
+            "to": filters_frame.price_to_entry.get(),
+        }
 
         # Get guarantee
-        filters_dict["guarantee"] = [
-            ("<=", filters_frame.guarantee_to_entry.get()),
-            (">=", filters_frame.guarantee_from_entry.get())
-        ]
+        filters_dict["guarantee"] = {
+            "from": filters_frame.guarantee_from_entry.get(),
+            "to": filters_frame.guarantee_to_entry.get(),
+        }
 
         # Get stock
-        filters_dict["stock"] = [
-            ("<=", filters_frame.stock_to_entry.get()),
-            (">=", filters_frame.stock_from_entry.get())
-        ]
+        filters_dict["stock"] = {
+            "from": filters_frame.stock_from_entry.get(),
+            "to": filters_frame.stock_to_entry.get(),
+        }
         
         # Get subcategory
         filters_dict["sub_category"] = self.states["subcategory_options"]
@@ -479,10 +501,10 @@ class ComponentListView(SubScreen):
         if self.optional_type == "sensor_type":
             filters_dict[self.optional_type] = self.states["sensor type_options"]
         else:
-            filters_dict[self.optional_type] = [
-                ("<=", filters_frame.optional_to_entry.get()),
-                (">=", filters_frame.optional_from_entry.get())
-            ]
+            filters_dict[self.optional_type] = {
+                "from": filters_frame.optional_from_entry.get(),
+                "to": filters_frame.optional_to_entry.get(),
+            }
 
         return filters_dict
     
@@ -492,29 +514,27 @@ class ComponentListView(SubScreen):
             tree_view.delete(item)
 
     def get_all_sorting(self):
-        sort_column = [
-            "part_number", 
-            "price", 
-            "guarantee", 
-            "mnf_id", 
-            "inventory_date",
-            "sub_category", 
-            "stock"
-        ]
+        special_attr = ""
         if self.component_type == "ic":
-            sort_column.append("clock")
+            special_attr = "clock"
         elif self.component_type == "sensor":
-            sort_column.append("sensor_type")
+            special_attr = "sensor_type"
         else:
-           sort_column.append(self.component_type[:-2] + "ance")
-        sort_options = []
-        for index, op in enumerate(self.sorts):
-            if op == 0:
+           special_attr = self.component_type[:-2] + "ance"
+
+        sort_options = {}
+        for key, value in list(self.sort_options.items()):
+            if key == "special_attr":
+                column = special_attr
+            else:
+                column = key
+
+            if value == 0:
                 continue
-            if op == 1:
-                sort_options.append((sort_column[index], "asc")) 
-            if op == 2:
-                sort_options.append((sort_column[index], "desc")) 
+            if value == 1:
+                sort_options[column] = "asc"
+            if value == 2:
+                sort_options[column] = "desc"
 
         return sort_options
 
@@ -523,7 +543,7 @@ class ComponentListView(SubScreen):
         tree_view :CustomListView = self.tree_view_frame.table_frame.tree_view
         filters = self.get_all_filter()
         sort_options = self.get_all_sorting()
-        no_result, result = self.app_controller.get_list_with_filters(self.component_type, filters, sort_options)
+        result = self.app_controller.get_filtered_list(self.component_type, filters, sort_options)
         self.clear_all_items()
         for component in result:
             component_info = component.get_all_info()

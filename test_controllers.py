@@ -1,7 +1,6 @@
 from controllers.AppController import AppController
 from time import sleep
 app_controller = AppController()
-# app_controller.load_data_from_db()
 # filters = {
 #     "mnf_id": "",
 #     "part_number": "MAX232CPE",
@@ -13,14 +12,12 @@ app_controller = AppController()
 #     "clock" : [("<=",""), (">=", "")],
 # }
 
-# no_result, result = app_controller.get_list_with_filters("ic", filters)
-# print(no_result)
-# for component in result:
-#     print(component.get_all_info())
+# result = app_controller.get_list("ic")
+# print(len(result))
 
-# update_data = {
+# data = {
 #     "mnf_id": "M006",
-#     "part_number": "MAX232CPE",
+#     "part_number": "MAX232CPEa",
 #     "inventory_date" : "2022-03-05",
 #     "price" : "2.15",
 #     "guarantee" : "1",
@@ -28,7 +25,17 @@ app_controller = AppController()
 #     "stock": "20",
 #     "clock" : "5",
 # }
-# app_controller.update_component("ic", update_data, "MAX232CPE")
+# app_controller.add("ic", data)
+
+# result = app_controller.get_list("ic")
+# print(len(result))
+# print(result[-1].get_all_info())
+
+results = app_controller.get_filtered_list("ic", sort_options={"mnf_id": "desc", "price": "asc"})
+
+for r in results:
+    print(f"{r.get_mnf_id()} {r.get_price()}")
+
 
 # no_result, result = app_controller.get_list_with_filters("ic", filters)
 # print(no_result)
@@ -44,6 +51,6 @@ app_controller = AppController()
 # for r in result:
 #     print(r.get_all_info())
 
-result = app_controller.get_all_components_prices()
-print(result)
-print('Bosch BMI088' in result.keys())
+# result = app_controller.get_all_components_prices()
+# print(result)
+# print('Bosch BMI088' in result.keys())
