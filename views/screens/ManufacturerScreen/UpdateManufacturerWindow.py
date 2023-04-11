@@ -124,17 +124,17 @@ class UpdateManufacturerWindow:
     def submit(self):
         """Submit the form"""
         data = {
-            "id": self.man_id_entry.get(),
             "name": self.name_entry.get(),
             "country": self.country.get()
         }
         try:
-            self.app_controller.update_manufacturer(data, data["id"])
+            self.app_controller.update_manufacturer(data, self.man_id_entry.get())
         except Exception as e:
             messagebox.showerror("Error", str(e))
         else:
             messagebox.showinfo("Successfull", "Update Manufacturer was suscessfull")
             updated_values = list(data.values())
+            updated_values.insert(0, self.initial_values[0])
             updated_values.append(self.initial_values[3])
             self.screen.destroy()
             self.on_close_fun(updated_values)
