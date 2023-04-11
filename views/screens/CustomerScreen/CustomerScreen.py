@@ -15,7 +15,11 @@ class CustomerScreen(Screen):
             title_bar_foreground=COLORS.ACCENT
         )
         self.app_controller = app_controller
-        self.sorts = [0, 0, 0]
+        self.sort_options = {
+            "id": 0,
+            "name": 0,
+            "phone_number": 0
+        }
         self.sort_asc_img = PhotoImage(file="./images/arrow-up.png")
         self.sort_desc_img = PhotoImage(file="./images/arrow-down.png")
         self.no_sort_img = PhotoImage(file="./images/blank.png")
@@ -35,10 +39,17 @@ class CustomerScreen(Screen):
         
         column_id = tree_view.identify_column(event.x)
         column_index = int(column_id[1]) -1
-        self.sorts[column_index] = (self.sorts[column_index] + 1) % 3
-        if self.sorts[column_index] == 0:
+
+        sort_column = [
+            "id", 
+            "name", 
+            "phone_number", 
+        ]
+
+        self.sort_options[sort_column[column_index]] = (self.sort_options[sort_column[column_index]] + 1) % 3
+        if self.sort_options[sort_column[column_index]] == 0:
             tree_view.heading(column_id, image=self.no_sort_img)
-        elif self.sorts[column_index] == 1:
+        elif self.sort_options[sort_column[column_index]] == 1:
             tree_view.heading(column_id, image=self.sort_asc_img)
         else:
             tree_view.heading(column_id, image=self.sort_desc_img)
@@ -230,19 +241,15 @@ class CustomerScreen(Screen):
             tree_view.delete(item)
 
     def get_all_sorting(self):
-        sort_column = [
-            "id", 
-            "name", 
-            "phone_number", 
-        ]
-        sort_options = []
-        for index, op in enumerate(self.sorts):
-            if op == 0:
+        sort_options = {}
+
+        for key, value in list(self.sort_options.items()):
+            if value == 0:
                 continue
-            if op == 1:
-                sort_options.append((sort_column[index], "asc")) 
-            if op == 2:
-                sort_options.append((sort_column[index], "desc")) 
+            if value == 1:
+                sort_options[key] = "asc"
+            if value == 2:
+                sort_options[key] = "desc"
 
         return sort_options
 
@@ -251,7 +258,7 @@ class CustomerScreen(Screen):
         tree_view :CustomListView = subscreen.tree_view_frame.table_frame.tree_view
         filters = self.get_all_filter(subscreen)
         sort_options = self.get_all_sorting()
-        no_result, result = self.app_controller.get_list_of_customers(filters, sort_options)
+        result = self.app_controller.get_filtered_list("customer", filters, sort_options)
     
         self.clear_all_items(subscreen)
         for customer in result:
