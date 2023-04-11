@@ -21,7 +21,13 @@ class OrderListView(SubScreen):
         self.app_controller = app_controller
         
         self.navigate = navigation_function
-        self.sorts = [0, 0, 0, 0, 0]
+        self.sort_options = {
+            "order_id": 0,
+            "customer_id": 0,
+            "items": 0,
+            "date": 0,
+            "price": 0,
+        }
         self.sort_asc_img = PhotoImage(file="./images/arrow-up.png")
         self.sort_desc_img = PhotoImage(file="./images/arrow-down.png")
         self.no_sort_img = PhotoImage(file="./images/blank.png")
@@ -30,7 +36,7 @@ class OrderListView(SubScreen):
 
     def get_customers_ids(self):
         customers_ids = {}
-        no_result, result = self.app_controller.get_list_of_customers()
+        result = self.app_controller.get_list("customer")
         for c in result:
             customers_ids[c.get_id()] = c.get_name()
         return customers_ids
@@ -73,13 +79,24 @@ class OrderListView(SubScreen):
         
         column_id = tree_view.identify_column(event.x)
         column_index = int(column_id[1]) -1
-        self.sorts[column_index] = (self.sorts[column_index] + 1) % 3
-        if self.sorts[column_index] == 0:
+
+        sort_column = [
+            "order_id",
+            "customer_id",
+            "items",
+            "date",
+            "price"
+        ]
+
+
+        self.sort_options[sort_column[column_index]] = (self.sort_options[sort_column[column_index]] + 1) % 3
+        if self.sort_options[sort_column[column_index]] == 0:
             tree_view.heading(column_id, image=self.no_sort_img)
-        elif self.sorts[column_index] == 1:
+        elif self.sort_options[sort_column[column_index]] == 1:
             tree_view.heading(column_id, image=self.sort_asc_img)
         else:
             tree_view.heading(column_id, image=self.sort_desc_img)
+
         self.apply_filters()
 
 
@@ -372,10 +389,10 @@ class OrderListView(SubScreen):
         filters_dict["customer_id"] = filters_frame.customer_entry.get()
 
         # Get inventory date
-        filters_dict["date"] = [
-            ("<=", filters_frame.date_to_entry.get()),
-            (">=", filters_frame.date_from_entry.get())
-        ]
+        filters_dict["date"] = {
+            "to": filters_frame.date_to_entry.get(),
+            "from": filters_frame.date_from_entry.get()
+        }
 
       
         return filters_dict
@@ -386,23 +403,16 @@ class OrderListView(SubScreen):
             tree_view.delete(item)
 
     def get_all_sorting(self):
-        sort_column = [
-            "order_id", 
-            "customer_id", 
-            "items", 
-            "date", 
-        ]
-
-        sort_options = []
-    
-        for index, op in enumerate(self.sorts):
-            if op == 0:
+        sort_options = {}
+        for key, value in list(self.sort_options.items()):
+            if key == "price":
                 continue
-            if op == 1:
-                sort_options.append((sort_column[index], "asc")) 
-            if op == 2:
-                sort_options.append((sort_column[index], "desc")) 
-
+            if value == 0:
+                continue
+            if value == 1:
+                sort_options[key] = "asc"
+            if value == 2:
+                sort_options[key] = "desc"
         return sort_options
 
     def apply_filters(self):
@@ -410,15 +420,15 @@ class OrderListView(SubScreen):
         tree_view :CustomListView = self.tree_view_frame.table_frame.tree_view
         filters_frame = self.filters_frame
          # Get price
-        price_from =  filters_frame.price_from_entry.get() 
+        price_from =  filters_frame.price_from_entry.get()
         price_to = filters_frame.price_to_entry.get()
-        price_from = 0 if price_from == "" else price_from
-        price_to = 999999999999999 if price_to == "" else price_to
+        price_from = 0 if price_from == "" else float(price_from)
+        price_to = 999999999999999 if price_to == "" else float(price_to)
 
         filters = self.get_all_filter()
         sort_options = self.get_all_sorting()
-        no_result, result = self.app_controller.get_list_of_orders(filters, sort_options)
-        self.clear_all_items()
+        result = self.app_controller.get_filtered_list("order", filters, sort_options)
+        rows = []
         for order in result:
             order_info = order.get_all_info()
             price = sum([no_item*self.components_prices[part_number] for part_number, no_item in list(order.get_items().items())])
@@ -426,5 +436,13 @@ class OrderListView(SubScreen):
             price = floor(price * 100) / 100
             order_info[2] = json.dumps(order_info[2])
             order_info.append(price)
-            if order_info[-1] >= float(price_from) and order_info[-1] <= float(price_to):
-                tree_view.add_item(order_info)
+            rows.append(order_info)
+
+        if self.sort_options["price"] != 0:
+            rows = sorted(rows, key=lambda r: r[-1], reverse=self.sort_options["price"] == 2)
+        rows = list(filter(lambda r: r[-1] >= price_from and r[-1] <= price_to, rows))
+        self.clear_all_items()
+        for r in rows:
+            tree_view.add_item(r)
+
+        

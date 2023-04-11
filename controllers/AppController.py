@@ -140,18 +140,16 @@ class AppController:
     #         )
     #         thread.start()
     
-    # def get_all_components_prices(self):
-    #     component_types = [
-    #         "capacitor",
-    #         "resistor",
-    #         "ic",
-    #         "inductor",
-    #         "sensor",
-    #     ]
-    #     components_prices = {}
-    #     for component_type in component_types:
-    #         no_result, result = get_rows(component_type)
-    #         for r in result:
-    #             components_prices[r.get_part_number()] = r.get_price()
-    #     return components_prices
+    def get_all_components_prices(self):
+        components = []
+        components.extend(self.capacitor_controller.get_list())
+        components.extend(self.resistor_controller.get_list())
+        components.extend(self.ic_controller.get_list())
+        components.extend(self.inductor_controller.get_list())
+        components.extend(self.sensor_controller.get_list())
+
+        components_prices = {}
+        for r in components:
+            components_prices[r.get_part_number()] = r.get_price()
+        return components_prices
     
