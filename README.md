@@ -12,3 +12,11 @@ System for managing electronic components
 - Nguyễn Phan Gia Bảo - BI12-048 (controllers)
 - Chu Bảo Minh - BI12-281 (models serializer and connector)
 - Cấn Trung Hiếu - BI12-160 (connector and database)
+
+
+## Manual
+
+### Initialize database steps
+
+- Run generate_data.py to generate mock data
+- Run generate_database.py to create the database
