@@ -44,7 +44,7 @@ class ComponentController(ModelController):
     def update(self, data: dict[str, str], key: str) -> Component:
         component_to_update = self.item_exists(key)
         if component_to_update == None:
-            raise Exception("Part not found")
+            raise Exception("Part number not found")
 
         if "price" in data.keys() and data["price"] != "":
             component_to_update.set_price(float(data["price"]))

@@ -36,6 +36,19 @@ class ManufacturerController(ModelController):
             if key == manufacturer.get_id():
                 return manufacturer
         return None
+    
+    def update(self, data: dict, key: str) -> Manufacturer:
+        manufacturer_to_update = self.item_exists(key)
+        if manufacturer_to_update == None:
+            raise Exception("Manufacturer's id not found")
+        
+        if "name" in data.keys() and data["name"] != "":
+            manufacturer_to_update.set_name(data["name"])
+        if "country" in data.keys() and data["country"] != "":
+            manufacturer_to_update.set_country(data["country"])
+
+        self.update_db_row(data, key)
+        return manufacturer_to_update
 
     def get_filtered_list(
             self,

@@ -28,7 +28,7 @@ class ManufacturerScreen(Screen):
         self.add_subscreen("manufacturer_main", SubScreen(self.main_frame,
             render_function=self.render_manufacturer,
         ))
-        # self.add_subscreen("detailed_view", ManufacturerDetailedView(self.main_frame, self.app_controller))
+        self.add_subscreen("detailed_view", ManufacturerDetailedView(self.main_frame, self.app_controller))
         self.navigate_subscreen("manufacturer_main")
 
     def get_man_countries(self):

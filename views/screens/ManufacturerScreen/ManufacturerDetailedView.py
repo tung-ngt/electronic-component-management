@@ -18,7 +18,7 @@ class ManufacturerDetailedView(SubScreen):
             filetypes=(("PNG files", "*.png"),)
         )
         filename = filename.split("/images/manufacturers/")[1]
-        self.app_controller.update_mnf_image(filename, props[0])
+        self.app_controller.update_manufacturer({"image_path": filename}, props[0])
         a = props.copy()
         a[3] = filename
         self.render(a)
