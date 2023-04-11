@@ -1,5 +1,6 @@
 import random
 import pickle
+import os
 from models.domains import Capacitor, Resistor, Inductor, Sensor, IC, Manufacturer, Customer, Order
 
 customers = [Customer("C001", "Steven Johnston", "505-261-9544"),
@@ -529,6 +530,9 @@ random.shuffle(orders)
 random.shuffle(customers)
 random.shuffle(manufacturers)
 
+
+if not os.path.isdir("./generated_data"):
+    os.makedirs("./generated_data")
 
 # Pickle all lists
 with open('./generated_data/sensors.pickle', 'wb') as f:
