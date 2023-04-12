@@ -39,6 +39,21 @@ class OrderController(ModelController):
                 return order
         return None
 
+    def update(self, data: dict, key: str) -> Order:
+        order_to_update = self.item_exists(key)
+        if order_to_update == None:
+            raise Exception("Order id not found")
+
+        if "customer_id" in data.keys() and data["customer_id"] != "":
+            order_to_update.set_customer_id(data["customer_id"])
+        if "items" in data.keys() and data["items"] != "":
+            order_to_update.set_items(data["items"])
+        if "date" in data.keys() and data["date"] != "":
+            order_to_update.set_date(data["date"])
+
+        self.update_db_row(data, key)
+        return order_to_update
+    
     def get_filtered_list(
             self, 
             filters: dict[str, str] = ..., 
