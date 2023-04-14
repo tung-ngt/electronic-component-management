@@ -104,7 +104,7 @@ class UpdateCustomerWindow:
             "phone_number": self.phone_number_entry.get()
         }
         try:
-            self.app_controller.update_manufacturer(data, data["id"])
+            self.app_controller.update_customer(data, data["id"])
         except Exception as e:
             messagebox.showerror("Error", str(e))
         else:
