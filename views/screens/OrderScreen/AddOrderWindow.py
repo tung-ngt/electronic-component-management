@@ -1,14 +1,13 @@
 from tkinter import Toplevel, Entry, StringVar, Menubutton, Menu, messagebox
 from ...constants import COLORS, FONTS
 from ...gui import Label, Frame
-from ...components import AccentButton
-from re import match
-
+from ...components import AccentButton, CustomListView, AccentHorizontalScrollbar
+from .AddItemWindow import AddItemWindow
+from math import floor
 class AddOrderWindow:
     """This is a pop up window to add a student"""
     def __init__(self,
             master,
-            component_type: str,
             app_controller, 
             on_close_fun = None,
         ):
@@ -22,12 +21,10 @@ class AddOrderWindow:
         on_close_fun : function to run when closing window
         """
         # Window settings
-        self.component_type = component_type
         self.screen = Toplevel(master)
-        self.screen.title("Add a component")
+        self.screen.title("Add a order")
         self.screen.grab_set()
-        self.screen.geometry("1200x800+0+0")
-        self.screen.minsize(1000, 700)
+        self.screen.state("zoomed")
         self.screen["background"] = COLORS.WHITE
 
         self.on_close_fun = self.get_on_close_fun(on_close_fun)
@@ -35,9 +32,17 @@ class AddOrderWindow:
             self.screen.protocol("WM_DELETE_WINDOW", self.on_close_fun)
 
         self.app_controller = app_controller
-        self.manufacturer_options = self.get_all_manufacturers_ids()
-        self.subcategory_options = self.app_controller.get_sub_categories(self.component_type)
+
+        self.add_item_window = AddItemWindow(
+            self.screen, 
+            self.app_controller, 
+            self.add_item
+        )
         self.create_form()
+
+    def add_item(self, item):
+        self.screen.grab_set()
+        self.items_list.add_item((item["part_number"], 0, item["price"], 0))
 
     def get_all_manufacturers_ids(self):
         manufacturers = self.app_controller.get_manufacturers()
@@ -45,7 +50,6 @@ class AddOrderWindow:
         for manufacturer in manufacturers:
             manufacturers_ids[manufacturer.get_id()] = manufacturer.get_name()
         return manufacturers_ids
-
 
     def get_on_close_fun(self, on_close_fun):
         def close():
@@ -55,176 +59,146 @@ class AddOrderWindow:
 
     def create_form(self):
         """Create component information form"""
-        component_label = Label(
-            self.screen,
-            self.component_type.capitalize(),
-            background=COLORS.WHITE,
-            font=FONTS.get_font("heading1", bold=True),
-            image=f"./images/{self.component_type}.png",
-            compound="right"
-        )
-        component_label.pack(pady=30)
+        # self.screen.grid_columnconfigure(0, weight=1)
+        # self.screen.grid_rowconfigure(0, weight=1)
+        # self.screen.grid_rowconfigure(1, weight=4)
 
+        self.items_frame = Frame(self.screen, background=COLORS.WHITE)
         self.form_frame = Frame(self.screen, background=COLORS.PRIMARY)
-        self.form_frame.pack(fill="both", expand=True, padx=20, pady=(0, 20))
+        self.form_frame.pack(fill="x")
+        self.items_frame.pack(fill="both", expand=True)
+        self.form_frame.grid_columnconfigure(0, weight=1)
+        self.form_frame.grid_columnconfigure(1, weight=2)
+        self.form_frame.grid_columnconfigure(2, weight=1)
+        self.form_frame.grid_rowconfigure(0, weight=1)
+        self.form_frame.grid_rowconfigure(1, weight=1)
+        self.form_frame.grid_rowconfigure(2, weight=1)
 
-        # Config the grid
-        self.form_frame.columnconfigure(0, weight=1)
-        self.form_frame.columnconfigure(1, weight=1)
-        self.form_frame.columnconfigure(2, weight=1)
-        self.form_frame.rowconfigure(3, weight=1)
-
-        part_number_frame, self.part_number_entry = self.create_input_label("Part number")
-        part_number_frame.grid(row=0, column=0, sticky="ew")
-        
-        price_frame, self.price_entry = self.create_input_label("Price")
-        price_frame.grid(row=1, column=0, sticky="ew")
-        
-        guarantee_frame, self.guarantee_entry = self.create_input_label("Guarantee (months)")
-        guarantee_frame.grid(row=2, column=0, sticky="ew")
-        
-        stock_frame, self.stock_entry = self.create_input_label("Stock")
-        stock_frame.grid(row=0, column=1, sticky="ew")
-
-        # Create manufacturers option menu
-        manu_frame = Frame(self.form_frame, background="transparent")
-        manu_label = Label(
-            manu_frame,
-            "Manufacturer",
+        label = Label(
+            self.form_frame,
+            "Add order",
+            foreground=COLORS.WHITE,
             background="transparent",
-            foreground="white",
+            font=FONTS.get_font("heading1", bold=True),
+        )
+        label.grid(row=0, column=0, rowspan=2)
+
+        self.total_price = Label(
+            self.form_frame,
+            "Total: 0",
+            foreground=COLORS.WHITE,
+            background="transparent",
             font=FONTS.get_font("paragraph", bold=True)
         )
-        self.man_option = StringVar()
-        self.man_option.set("None")
-        self.man_label_option = StringVar()
-        self.man_label_option.set("None")
-        man_button = Menubutton(
-            manu_frame,
-            textvariable=self.man_label_option,
-            background="white", 
-            relief="flat", 
-            borderwidth=0, 
-            highlightthickness=0,
-            font=FONTS.get_font("paragraph"),
-        )
-        man_menu = Menu(
-            man_button,
-            tearoff=False,
-            background=COLORS.ACCENT,
-            foreground="white",
-            font=FONTS.get_font("paragraph")
-        )
-        man_button.config(menu=man_menu)
-        for man_id, man_name in list(self.manufacturer_options.items()):
-            def get_option(id, name):
-                local_id = id
-                local_name = name
-                def callback():
-                    self.man_option.set(local_id)
-                    self.man_label_option.set(local_name)
-                return callback
-            man_menu.add_command(label=man_name, command=get_option(man_id, man_name))
-        manu_label.pack(anchor="w", padx=24, pady=(24,5))
-        man_button.pack(fill="x", padx=24, ipady=2)
-        manu_frame.grid(row=1, column=1, sticky="ew")
+        self.total_price.grid(row=2, column=0)
+
+
+        self.order_id_frame, self.order_id_entry = self.create_input_label("Order id")
+        self.order_id_frame.grid(row=0, column=1, sticky="sew", pady=(20, 0))
         
-        # Create subcategories option menu
-        subcategory_frame = Frame(self.form_frame, background="transparent")
-        subcategory_label = Label(
-            subcategory_frame,
-            "Subcategory",
-            background="transparent",
-            foreground="white",
-            font=FONTS.get_font("paragraph", bold=True)
-        )
-        self.subcategory_option = StringVar()
-        self.subcategory_option.set("None")
-        subcategory_button = Menubutton(
-            subcategory_frame,
-            textvariable=self.subcategory_option,
-            background="white", 
-            relief="flat", 
-            borderwidth=0, 
-            highlightthickness=0,
-            font=FONTS.get_font("paragraph"),
-        )
-        subcategory_menu = Menu(
-            subcategory_button,
-            tearoff=False,
-            background=COLORS.ACCENT,
-            foreground="white",
-            font=FONTS.get_font("paragraph")
-        )
-        subcategory_button.config(menu=subcategory_menu)
-        for option in self.subcategory_options:
-            def get_option(op):
-                return lambda: self.subcategory_option.set(op)
-            subcategory_menu.add_command(label=option, command=get_option(option))
-        subcategory_label.pack(anchor="w", padx=24, pady=(24,5))
-        subcategory_button.pack(fill="x", padx=24, ipady=2)
-        subcategory_frame.grid(row=2, column=1, sticky="ew")
+        self.customer_id_frame, self.customer_id_entry = self.create_input_label("Customer id")
+        self.customer_id_frame.grid(row=1, column=1, sticky="sew")
 
-        date_frame, self.date_entry = self.create_input_label("Inventory date")    
-        date_frame.grid(row=0, column=2, sticky="ew")
+        self.date_frame, self.date_entry = self.create_input_label("Purchase date")
+        self.date_frame.grid(row=2, column=1, sticky="sew", pady=(0, 20))
 
-        if self.component_type == "ic":
-            clock_frame, self.clock_entry = self.create_input_label("Clock")
-            clock_frame.grid(row=1, column=2, sticky="ew")
-        if self.component_type == "capacitor":
-            capacitance_frame, self.capacitance_entry = self.create_input_label("Capacitance")
-            capacitance_frame.grid(row=1, column=2, sticky="ew")
-        if self.component_type == "inductor":
-            inductance_frame, self.inductance_entry = self.create_input_label("Inductance")
-            inductance_frame.grid(row=1, column=2, sticky="ew")
-        if self.component_type == "resistor":
-            resitance_frame, self.resitance_entry = self.create_input_label("Resistance")
-            resitance_frame.grid(row=1, column=2, sticky="ew")
-        if self.component_type == "sensor":
-            sensor_type_frame = Frame(self.form_frame, background="transparent")
-            sensor_type_label = Label(
-                sensor_type_frame,
-                "Sensor type",
-                background="transparent",
-                foreground="white",
-                font=FONTS.get_font("paragraph", bold=True)
-            )
-            self.sensor_type = StringVar()
-            self.sensor_type.set("None")
-            sensor_types = self.app_controller.get_sensor_types()
-            sensor_type_button = Menubutton(
-                sensor_type_frame,
-                textvariable=self.sensor_type,
-                background="white", 
-                relief="flat", 
-                borderwidth=0, 
-                highlightthickness=0,
-                font=FONTS.get_font("paragraph"),
-            )
-            sensor_type_menu = Menu(
-                sensor_type_button,
-                tearoff=False,
-                background=COLORS.ACCENT,
-                foreground="white",
-                font=FONTS.get_font("paragraph")
-            )
-            sensor_type_button.config(menu=sensor_type_menu)
-            for option in sensor_types:
-                def get_option(op):
-                    return lambda: self.sensor_type.set(op)
-                sensor_type_menu.add_command(label=option, command=get_option(option))
-            sensor_type_label.pack(anchor="w", padx=24, pady=(24,5))
-            sensor_type_button.pack(fill="x", padx=24, ipady=2)
-            sensor_type_frame.grid(row=1, column=2, sticky="ew")
-
-        add_button = AccentButton(
+        self.add_item_button = AccentButton(
             self.form_frame, 
-            command=self.submit, 
-            text="Add",
+            self.add_item_window.show_popup, 
+            "Add item"
         )
+        self.add_item_button.grid(row=0, column=2, sticky="sew", padx=(0, 20))
 
-        add_button.grid(row=3, column=0, sticky="w", padx=24, pady=24, ipadx=20)
+        self.remove_item_button = AccentButton(self.form_frame, self.delete_item, "Remove item")
+        self.remove_item_button.grid(row=1, column=2, sticky="sew", padx=(0, 20))
+
+        self.create_order_button = AccentButton(self.form_frame, self.submit, "Create order")
+        self.create_order_button.grid(row=2, column=2, sticky="sew", padx=(0, 20), pady=(0,20))
+
+        self.scroll_bar = AccentHorizontalScrollbar(self.items_frame)
+        self.items_list = CustomListView(
+            self.items_frame,
+            (
+                "part_number",
+                "amount",
+                "price",
+                "total",
+            ),
+            self.scroll_bar.set
+        )
+        self.scroll_bar.add_command(self.items_list.yview)
+    
+        self.scroll_bar.pack(side="right", fill="y")
+        self.items_list.pack(side="left", fill="both", expand=True)
+
+        self.items_list.config_headings({
+            "part_number": {"text": "Part number"},
+            "amount": {"text": "Amount"},
+            "price": {"text": "Price"},
+            "total": {"text": "Total"}
+        })
+
+        self.items_list.bind("<Double-1>", self.change_amount)
+
+    def change_amount(self, event):
+        region = self.items_list.identify_region(event.x, event.y)
+            
+        if region != "cell":
+            return
         
+        column = self.items_list.identify_column(event.x)
+        column_index = int(column[1]) - 1
+
+        if column_index != 1:
+            return
+
+        selected_iid = self.items_list.focus()
+        selected_amount = self.items_list.item(selected_iid)["values"][1]
+
+        column_box = self.items_list.bbox(selected_iid, column)
+
+
+        entry = Entry(self.items_frame, width=column_box[2])
+
+        entry.edditting_column_index = column_index
+        entry.edditting_item_iid = selected_iid
+        entry.insert(0, selected_amount)
+        entry.select_range(0, "end")
+        entry.focus()
+        def on_enter(e):
+            entry_selected_iid = entry.edditting_item_iid
+            new_amount = int(e.widget.get())
+            current_value = self.items_list.item(entry_selected_iid)["values"]
+            current_value[1] = new_amount
+            current_value[-1] = floor(new_amount * float(current_value[2]) * 100) / 100
+            self.items_list.item(entry_selected_iid, values=current_value)
+            e.widget.destroy()
+            self.update_price()
+
+        entry.bind("<FocusOut>", on_enter)
+        entry.bind("<Return>", on_enter)
+
+        entry.place(x=column_box[0], y=column_box[1], w=column_box[2], h=column_box[3])
+
+    def delete_item(self):
+        selected_iid = self.items_list.focus()
+        print(selected_iid)
+        if selected_iid == "":
+            messagebox.showerror("Can not delete", "A item must be seleted to delete")
+            return
+        
+        self.items_list.delete(selected_iid)
+        self.update_price()
+    
+    def update_price(self):
+        total = 0
+        for item in self.items_list.get_children():
+            info = self.items_list.item(item)["values"]
+            total += float(info[-1])
+
+        total = floor(total * 100) / 100
+        self.total_price.config(text=f"Total: {total}")
+
     def create_input_label(self, label):
         """Create a input label and entry in a frame and return it
         
@@ -243,37 +217,35 @@ class AddOrderWindow:
             font=FONTS.get_font("paragraph", bold=True)
         )
         e = Entry(input_frame, font=FONTS.get_font("paragraph"))
-        l.pack(anchor="w", padx=24, pady=(24,5))
+        l.pack(anchor="w", padx=24)
         e.pack(fill="x", padx=24, ipady=4)
         return input_frame, e
 
     def submit(self):
         """Submit the form"""
+        price = float(self.total_price["text"].split(": ")[-1])
+
+        if price <= 0:
+            messagebox.showwarning("Can not create order", "Can not create an order with no items")
+            return
+
         data = {
-            "mnf_id": self.man_option.get(),
-            "price": self.price_entry.get(),
-            "inventory_date": self.date_entry.get(),
-            "guarantee": self.guarantee_entry.get(),
-            "part_number": self.part_number_entry.get(),
-            "sub_category": self.subcategory_option.get(),
-            "stock": self.stock_entry.get(),
+            "order_id": self.order_id_entry.get(),
+            "customer_id": self.customer_id_entry.get(),
+            "date": self.date_entry.get(),
+            "items": {}
         }
-        if self.component_type == "ic":
-            data["clock"] = self.clock_entry.get()
-        if self.component_type == "capacitor":
-            data["capacitance"] = self.capacitance_entry.get()
-        if self.component_type == "inductor":
-            data["inductance"] = self.inductance_entry.get()
-        if self.component_type == "resistor":
-            data["resistance"] = self.resitance_entry.get()
-        if self.component_type == "sensor":
-            data["sensor_type"] = self.sensor_type.get()
-        
+
+        for item in self.items_list.get_children():
+            value = self.items_list.item(item)["values"]
+            if int(value[1]) > 0:
+                data["items"][value[0]] = int(value[1])
+
         try:
-            self.app_controller.add_component(self.component_type, data)
+            self.app_controller.add_order(data)
         except Exception as e:
             messagebox.showerror("Error", str(e))
         else:
-            messagebox.showinfo("Successfull", "Add component was suscessfull")
+            messagebox.showinfo("Successfull", "Add order was suscessfull")
 
         

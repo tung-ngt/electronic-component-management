@@ -46,7 +46,7 @@ class OrderController(ModelController):
 
         if "customer_id" in data.keys() and data["customer_id"] != "":
             order_to_update.set_customer_id(data["customer_id"])
-        if "items" in data.keys() and data["items"] != "":
+        if "items" in data.keys() and len(data["items"].keys()) > 0:
             order_to_update.set_items(data["items"])
         if "date" in data.keys() and data["date"] != "":
             order_to_update.set_date(data["date"])
