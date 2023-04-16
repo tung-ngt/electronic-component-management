@@ -33,6 +33,10 @@ class AddOrderWindow:
 
         self.app_controller = app_controller
 
+        self.customer_option = StringVar()
+        self.customer_option.set("")
+        self.customers_ids = self.get_all_customers_ids()
+
         self.add_item_window = AddItemWindow(
             self.screen, 
             self.app_controller, 
@@ -44,12 +48,12 @@ class AddOrderWindow:
         self.screen.grab_set()
         self.items_list.add_item((item["part_number"], 0, item["price"], 0))
 
-    def get_all_manufacturers_ids(self):
-        manufacturers = self.app_controller.get_manufacturers()
-        manufacturers_ids = {}
-        for manufacturer in manufacturers:
-            manufacturers_ids[manufacturer.get_id()] = manufacturer.get_name()
-        return manufacturers_ids
+    def get_all_customers_ids(self):
+        customers = self.app_controller.get_list("customer")
+        customers_ids = {}
+        for customer in customers:
+            customers_ids[customer.get_id()] = customer.get_name()
+        return customers_ids
 
     def get_on_close_fun(self, on_close_fun):
         def close():
@@ -96,8 +100,42 @@ class AddOrderWindow:
         self.order_id_frame, self.order_id_entry = self.create_input_label("Order id")
         self.order_id_frame.grid(row=0, column=1, sticky="sew", pady=(20, 0))
         
-        self.customer_id_frame, self.customer_id_entry = self.create_input_label("Customer id")
-        self.customer_id_frame.grid(row=1, column=1, sticky="sew")
+
+        customer_frame = Frame(self.form_frame, background="transparent")
+        customer_frame.grid(row=1, column=1, sticky="sew")
+
+        customer_label = Label(
+            customer_frame,
+            "Customer",
+            background="transparent",
+            foreground=COLORS.WHITE,
+            font=FONTS.get_font("paragraph", bold=True)
+        )
+        
+        customer_button = Menubutton(
+            customer_frame,
+            textvariable=self.customer_option,
+            background="white", 
+            foreground="black",
+            relief="flat", 
+            borderwidth=0, 
+            highlightthickness=0,
+            font=FONTS.get_font("paragraph"),
+        )
+        customer_menu = Menu(
+            customer_button,
+            tearoff=False,
+            background=COLORS.ACCENT,
+            foreground="white",
+            font=FONTS.get_font("paragraph")
+        )
+        customer_button.config(menu=customer_menu)
+        for id, name in list(self.customers_ids.items()):
+            def get_option(op):
+                return lambda: self.customer_option.set(op)
+            customer_menu.add_command(label=f"({id}) {name}", command=get_option(f"({id}) {name}"))
+        customer_label.pack(anchor="w",padx=24)
+        customer_button.pack(fill="x", ipady=4, padx=24)
 
         self.date_frame, self.date_entry = self.create_input_label("Purchase date")
         self.date_frame.grid(row=2, column=1, sticky="sew", pady=(0, 20))
@@ -142,7 +180,7 @@ class AddOrderWindow:
 
     def change_amount(self, event):
         region = self.items_list.identify_region(event.x, event.y)
-            
+             
         if region != "cell":
             return
         
@@ -231,7 +269,7 @@ class AddOrderWindow:
 
         data = {
             "order_id": self.order_id_entry.get(),
-            "customer_id": self.customer_id_entry.get(),
+            "customer_id": self.customer_option.get().split(")")[0][1:],
             "date": self.date_entry.get(),
             "items": {}
         }

@@ -60,16 +60,16 @@ class OrderDetailedView(SubScreen):
         self.date = self.create_info_box("Purchase date", values[3], True)
         self.price = self.create_info_box("total price", values[4])
         
-        self.update_info_button = AccentButton(
-            self.info_frame, 
-            command=lambda: UpdateOrderWindow(self,
-                self.component_type,
-                self.app_controller,
-                values,
-                on_close_fun=self.render,
-            ),
-            text="Update information",
-        )
+        # self.update_info_button = AccentButton(
+        #     self.info_frame, 
+        #     command=lambda: UpdateOrderWindow(self,
+        #         self.component_type,
+        #         self.app_controller,
+        #         values,
+        #         on_close_fun=self.render,
+        #     ),
+        #     text="Update information",
+        # )
 
         # Placing box
         self.info_frame.grid_columnconfigure(0, weight=1)
@@ -83,7 +83,7 @@ class OrderDetailedView(SubScreen):
         self.customer.grid(row=0, column=1, pady=(20, 0), sticky="w")
         self.price.grid(row=1, column=1, pady=(0, 20), sticky="w")
         self.date.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="sw")
-        self.update_info_button.grid(row=0, column=2)
+        # self.update_info_button.grid(row=0, column=2)
         
         items = json.loads(values[2])
 
