@@ -1,7 +1,7 @@
 from ...gui import Screen, SubScreen, Frame, Label
 from ...constants import COLORS, FONTS
 from .CustomerDetailedView import CustomerDetailedView
-from tkinter import Entry, Menubutton, Menu, BooleanVar, PhotoImage
+from tkinter import Entry, PhotoImage
 from .AddCustomerWindow import AddCustomerWindow
 from ...components import AccentButton, AccentHorizontalScrollbar, CustomListView
 

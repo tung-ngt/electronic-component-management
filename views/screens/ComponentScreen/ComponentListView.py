@@ -403,7 +403,8 @@ class ComponentListView(SubScreen):
         
         options_menu.option_variables: dict[str, BooleanVar] = {}
         for index, option in enumerate(options):
-            options_menu.option_variables[option] = BooleanVar(False)
+            options_menu.option_variables[option] = BooleanVar()
+            options_menu.option_variables[option].set(False)
             options_menu.add_checkbutton(
                 label=f"{index}. {option}", 
                 onvalue=True, 
