@@ -1,25 +1,4 @@
-import pickle
 from .utils.connect_to_db import get_connection
-
-
-def load_data():
-    # Load the data from pickle
-    with open('./generated_data/manufacturers.pickle', 'rb') as f:
-        manufacturers = pickle.load(f)
-    with open('./generated_data/sensors.pickle', 'rb') as f:
-        sensors = pickle.load(f)
-    with open('./generated_data/ics.pickle', 'rb') as f:
-        ics = pickle.load(f)
-    with open('./generated_data/inductors.pickle', 'rb') as f:
-        inductors = pickle.load(f)
-    with open('./generated_data/resistors.pickle', 'rb') as f:
-        resistors = pickle.load(f)
-    with open('./generated_data/capacitors.pickle', 'rb') as f:
-        capacitors = pickle.load(f)
-    with open('./generated_data/customers.pickle', 'rb') as f:
-        customers = pickle.load(f)
-    with open('./generated_data/orders.pickle', 'rb') as f:
-        orders = pickle.load(f)
 
 def create_tables():
     # Create a connection to the database
