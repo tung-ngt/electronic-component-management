@@ -2,6 +2,7 @@ from db.utils import create_query
 from db.pull_from_db import get_rows
 from db.push_to_db import update_row, create_row
 from models.serializers.Serializer import Serializer
+from threading import Thread
 
 class ModelController:
     def __init__(self, table, key, search_type, serializer) -> None:
@@ -26,13 +27,13 @@ class ModelController:
 
     def create_db_row(self, obj: object):
         values = self.serializer.dump(obj)
-        create_row(self._TABLE, values)
+        Thread(target=create_row, args=(self._TABLE, values)).start()
 
     def update(self, data: dict, key: str) -> object:
         pass
 
     def update_db_row(self, data: dict[str, str], key: str):
-        update_row(self._TABLE, data, (self._KEY, key))
+        Thread(target=update_row, args=(self._TABLE, data, (self._KEY, key))).start()
 
     def item_exists(self, key: str) -> object:
         pass
