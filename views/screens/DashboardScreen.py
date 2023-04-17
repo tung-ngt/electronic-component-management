@@ -125,8 +125,8 @@ class DashboardScreen(Screen):
         # box3 box4 box2
         subscreen.box1.grid(row=0, column=0, columnspan=2, sticky="nsew", padx=(30, 10), pady=(30, 15))
         subscreen.box2.grid(row=0, column=2, rowspan=2, sticky="nsew", padx=(15, 30), pady=(30, 50))
-        subscreen.box3.grid(row=1, column=0, sticky="nsew", padx=(30,15), pady=(30, 50))
-        subscreen.box4.grid(row=1, column=1, sticky="nsew", padx=(15,15), pady=(20, 50))
+        subscreen.box3.grid(row=1, column=0, sticky="nsew", padx=(30,15), pady=(15, 50))
+        subscreen.box4.grid(row=1, column=1, sticky="nsew", padx=(15,15), pady=(15, 50))
         
         # Force scale
         subscreen.box3.pack_propagate(False)
