@@ -1,5 +1,4 @@
-from db.push_to_db import create_row, update_row
-from db.pull_from_db import get_rows,  get_distinct_column
+from db.pull_from_db import get_distinct_column
 
 from .model_controllers import ManufacturerController, CustomerController, OrderController
 from .model_controllers.component_controllers import \
@@ -10,8 +9,7 @@ SensorController, \
 InductorController
 
 from .utils import file_utils
-import os
-import threading
+from threading import Thread
 
 class AppController:
     def __init__(self):
@@ -32,8 +30,6 @@ class AppController:
         self.update_manufacturer = self.manufacturer_controller.update
         self.update_customer = self.customer_controller.update
         self.update_order = self.order_controller.update
-
-        self.load_data_from_db()
 
     def load_data_from_db(self):
         self.ic_controller.load_data_from_db()
@@ -84,61 +80,12 @@ class AppController:
         controller = self.__controller_switcher(table)
         return controller.get_filtered_list(filters, sort_options)
     
-    # def update_mnf_image(self, image, man_id):
-    #     update("manufacturer", {"image_path" : image}, man_id)
-    
-    # def update_component_image(self, image, component_type, part_number):
-    #     update(component_type, {"image_path" : image}, part_number)
-    
     def get_subcategories(self, component_type):
         controller = self.__controller_switcher(component_type)
         return controller.get_subcategories()
     
-    
-    # def get_sensor_types(self):
-    #     return get_sensor_types()
-    
     def get_mnf_countries(self):
         return self.get_distinct_column("manufacturer", "country")
-    
-
-    def get_no_of_components(self):
-        return len(self.capacitor_controller.get_list()) \
-             + len(self.ic_controller.get_list()) \
-             + len(self.inductor_controller.get_list()) \
-             + len(self.resistor_controller.get_list()) \
-             + len(self.sensor_controller.get_list())
-
-    def get_distinct_column(sef, table, column):
-        if table == "order":
-            table = "orders"
-        return get_distinct_column(table, column)
-    # def compress_and_remove_image(self, img):
-    #     file_utils.compress_file(img)
-    #     os.remove(img) 
-
-    # def compress_all_images(self):
-    #     manufacturer_imgs = file_utils.get_files_of_type("./images/manufacturers/", ".png")
-    #     for manufacturer_img in manufacturer_imgs:
-    #         thread = threading.Thread(
-    #             target=self.compress_and_remove_image,
-    #             args=(f"./images/manufacturers/{manufacturer_img}",)
-    #         )
-    #         thread.start()
-    
-    # def decompress_image(self, img):
-    #     file = img.replace(".dat", "")
-    #     file_utils.write_bytes_to_file(file, file_utils.decompress_file_bytes(img))
-        
-
-    # def decompress_all_images(self):
-    #     manufacturer_imgs = file_utils.get_files_of_type("./images/manufacturers/", ".png.dat")
-    #     for manufacturer_img in manufacturer_imgs:
-    #         thread = threading.Thread(
-    #             target=self.decompress_image,
-    #             args=(f"./images/manufacturers/{manufacturer_img}",)
-    #         )
-    #         thread.start()
     
     def get_all_components_prices(self):
         components = []
@@ -152,4 +99,60 @@ class AppController:
         for r in components:
             components_prices[r.get_part_number()] = r.get_price()
         return components_prices
-    
+
+    def get_no_of_components(self):
+        return len(self.capacitor_controller.get_list()) \
+             + len(self.ic_controller.get_list()) \
+             + len(self.inductor_controller.get_list()) \
+             + len(self.resistor_controller.get_list()) \
+             + len(self.sensor_controller.get_list())
+
+    def get_distinct_column(sef, table, column):
+        if table == "order":
+            table = "orders"
+        return get_distinct_column(table, column)
+
+    def zip_images(self):
+        compressed_components_imgs = file_utils.get_files_of_type("./images/components/", ".png", with_path=True)
+
+        components_zip_thread = Thread(
+            target=file_utils.zip_files,
+            args=(compressed_components_imgs, "./images/components/components.zip")
+        )
+        components_zip_thread.start()
+
+        compressed_manufacturers_imgs = file_utils.get_files_of_type("./images/manufacturers/", ".png", with_path=True)
+        manufacturers_zip_thread = Thread(
+            target=file_utils.zip_files,
+            args=(compressed_manufacturers_imgs, "./images/manufacturers/manufacturers.zip")
+        )
+        manufacturers_zip_thread.start()
+
+        components_zip_thread.join()
+        Thread(
+            target=file_utils.remove_files,
+            args=(compressed_components_imgs,)
+        ).start()
+
+        manufacturers_zip_thread.join()
+        Thread(
+            target=file_utils.remove_files,
+            args=(compressed_manufacturers_imgs,)
+        ).start()
+
+    def unzip_images(self):
+        component_thread = Thread(
+            target=file_utils.unzip_file,
+            args=("./images/components/components.zip")
+        )
+        component_thread.start()
+
+
+        manufacturer_thead = Thread(
+            target=file_utils.unzip_file,
+            args=("./images/manufacturers/manufacturers.zip")
+        )
+        manufacturer_thead.start()
+
+        component_thread.join()
+        manufacturer_thead.join()
