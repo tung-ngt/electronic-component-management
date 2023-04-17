@@ -14,12 +14,18 @@ class ComponentListView(SubScreen):
         master : master widget
         navigation_function : function use to navigate
         """
+
+        # Initialize the subscreen
         super().__init__(master, background=COLORS.WHITE)
 
+        # Set app_controller and navigate_function
         self.app_controller = app_controller
-        
         self.navigate = navigation_function
+
+        # Get manufacturers id from app_controller
         self.get_all_manufacturers_ids()
+
+        # Initalize sort options to no sort
         self.sort_options = {
             "part_number": 0, 
             "price": 0, 
@@ -30,11 +36,15 @@ class ComponentListView(SubScreen):
             "stock": 0,
             "special_attr": 0
         }
+
+        # Load sort images
         self.sort_asc_img = PhotoImage(file="./images/arrow-up.png")
         self.sort_desc_img = PhotoImage(file="./images/arrow-down.png")
         self.no_sort_img = PhotoImage(file="./images/blank.png")
 
     def get_all_manufacturers_ids(self):
+        """Get all the manufacturers id and name"""
+        # Get list of manufacturers
         manufacturers = self.app_controller.get_list("manufacturer")
         self.manufacturers_ids = {}
         for manufacturer in manufacturers:
@@ -72,12 +82,15 @@ class ComponentListView(SubScreen):
         self.add_widgets_to_destroy([self.tree_view_frame, self.filters_frame])
 
     def on_sort(self, event):
+        """Run when the heading is clicked"""
         tree_view: CustomListView = self.tree_view_frame.table_frame.tree_view
-        region = tree_view.identify_region(event.x, event.y)
 
+        # Check if the region is the heading
+        region = tree_view.identify_region(event.x, event.y)
         if region != "heading":
             return
         
+        # Get the column that the user clicked on
         column_id = tree_view.identify_column(event.x)
         column_index = int(column_id[1]) -1
 
@@ -92,27 +105,37 @@ class ComponentListView(SubScreen):
             "special_attr"
         ]
 
+        # Update sort_options
         self.sort_options[sort_column[column_index]] = (self.sort_options[sort_column[column_index]] + 1) % 3
+
+        # Update sort indicator
         if self.sort_options[sort_column[column_index]] == 0:
             tree_view.heading(column_id, image=self.no_sort_img)
         elif self.sort_options[sort_column[column_index]] == 1:
             tree_view.heading(column_id, image=self.sort_asc_img)
         else:
             tree_view.heading(column_id, image=self.sort_desc_img)
+
+        # Get new list
         self.apply_filters()
 
-
     def on_double_click(self, event):
-        """Handle double click event"""
+        """Handle double click event
+        
+        Navigate to detailed view of a row
+        """
         tree_view: CustomListView = self.tree_view_frame.table_frame.tree_view
-        region = tree_view.identify_region(event.x, event.y)
 
+        # Check if the user click on a row
+        region = tree_view.identify_region(event.x, event.y)
         if region != "cell":
             return
-
+        
+        # Get the row
         selected_iid = tree_view.focus()
         values = tree_view.item(selected_iid)["values"]
 
+        # Navigate to detail view
         self.navigate(subscreen_name="detailed_view", props={"component_type": self.component_type, "values": values})
 
     def build_tree_view(self):
@@ -234,7 +257,7 @@ class ComponentListView(SubScreen):
         scroll_bar.pack(side="right", fill="y")
         tree_view.pack(side="left", fill="both", expand=True)
 
-        # Bind double click envent
+        # Bind click envent
         tree_view.bind("<Double-1>", self.on_double_click)
         tree_view.bind("<Button-1>", self.on_sort)
 
@@ -393,12 +416,14 @@ class ComponentListView(SubScreen):
 
         return options_menu_frame
 
-    def create_filter_label(self, label: str):
+    def create_filter_label(self, label: str) -> Label:
         """Create a filter label
         
         Parameters
         ----------
         label : name of the filter
+
+        Return a Label
         """
         filters_frame = self.filters_frame
         l = Label(
@@ -448,12 +473,7 @@ class ComponentListView(SubScreen):
         {
             "mnf_id": "abcxyz",
             "part_number" : "132abvc",
-            "inventory_date" : [("<=","2023-12-01"), (">=, 2022-01-01")],
-            "price" : [("<=","3.6"), (">=, 1.4")],
-            "guarantee" : [("<=","10"), (">=, 4")],
-            "sub_category" : ["type a", "type b"],
-            "stock": [("<=","10"), (">=, 4")],
-            "capacitance,clock,..." : [("<=","10.6"), (">=, 7.4")],
+            "inventory_date" : {"from":"2023-12-01"), "to": "2022-01-01"},
             "sensor_type" : ["sensor 1", "sensor 2"]
         }
         """
@@ -509,11 +529,20 @@ class ComponentListView(SubScreen):
         return filters_dict
     
     def clear_all_items(self):
+        """Clear all items in the list view"""
         tree_view :CustomListView = self.tree_view_frame.table_frame.tree_view
         for item in tree_view.get_children():
             tree_view.delete(item)
 
     def get_all_sorting(self):
+        """Convert the sort option
+    
+        The sort option will be of the form
+        {
+            "part_number: "asc",
+            "date": "desc" 
+        }
+        """
         special_attr = ""
         if self.component_type == "ic":
             special_attr = "clock"
@@ -540,10 +569,16 @@ class ComponentListView(SubScreen):
 
     def apply_filters(self):
         """Applying the filters"""
+        
         tree_view :CustomListView = self.tree_view_frame.table_frame.tree_view
+
+        # Get the filters and sort_options in the correct form
         filters = self.get_all_filter()
         sort_options = self.get_all_sorting()
+
+        # Get the filtered list
         result = self.app_controller.get_filtered_list(self.component_type, filters, sort_options)
+        
         self.clear_all_items()
         for component in result:
             component_info = component.get_all_info()

@@ -9,13 +9,21 @@ class ComponentScreen(Screen):
     Display information about the electric components
     """
     def __init__(self, master, app_controller):
-        """Init screen"""
+        """Initialize screen
+        
+        Paramters
+        master : the master widget
+        app_controller : the app controller
+        """
+
+        # Initialize the screen
         super().__init__(master,
             title="Components",
             title_font=FONTS.get_font("heading1", bold=True),
             back_font=FONTS.get_font("paragraph", italic=True)
         )
 
+        # Specify the subscreen
         self.add_subscreen("component_main", SubScreen(self.main_frame, render_function=self.render_main))
         self.add_subscreen("list_view", 
             ComponentListView(self.main_frame,
@@ -25,10 +33,11 @@ class ComponentScreen(Screen):
         )
         self.add_subscreen("detailed_view", ComponentDetailedView(self.main_frame, app_controller))
         
+        # Navigate to main screen
         self.navigate_subscreen("component_main")
 
     def render_main(self, subscreen: SubScreen, props=None):
-
+        """Render the main component screen"""
         # Create component frame
         subscreen.content_frame = Frame(subscreen, background="transparent")
         subscreen.content_frame.pack(anchor="center", fill="both", expand=True)
@@ -122,4 +131,5 @@ class ComponentScreen(Screen):
         )
         subscreen.sensor_img.pack(fill="both", expand=True, anchor="s")
 
-        subscreen.widgets_to_destroy.append(subscreen.content_frame)
+        # specify which widget to destroy when rerender
+        subscreen.add_widgets_to_destroy([subscreen.content_frame])

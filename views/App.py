@@ -6,6 +6,13 @@ from .components import Navbar
 class EComponentStoreManagementGUI(GUI):
     """Electronic Componnet Store Infomation Mangament GUI APP"""
     def __init__(self, app_controller):
+        """Initialize the GUI
+        
+        Parameters
+        ----------
+        app_controller : the app controller
+        """
+        # Initialize the super GUI class
         super().__init__(
             "Electronic Component Store Infomation Mangament", 
             fullscreen=True, 
@@ -14,6 +21,7 @@ class EComponentStoreManagementGUI(GUI):
             on_close_fun=self.on_close
         )
         
+        # Set app controller
         self.app_controller = app_controller
 
         # Init fonts
@@ -37,15 +45,16 @@ class EComponentStoreManagementGUI(GUI):
             }
         ))
 
+        # Initialize screens and navigate to dashboard
         self.add_screen("dashboard", DashboardScreen(self.screens_frame, self.app_controller))
         self.add_screen("components", ComponentScreen(self.screens_frame, self.app_controller))
         self.add_screen("manufacturers", ManufacturerScreen(self.screens_frame, self.app_controller))
         self.add_screen("customers", CustomerScreen(self.screens_frame, self.app_controller))
         self.add_screen("orders", OrderScreen(self.screens_frame, self.app_controller))
-
         self.show_screen("dashboard")
 
     def on_close(self):
+        """Run on closing the app"""
         print("Closed")
         print("Thank you for using the system")
         self.destroy()
