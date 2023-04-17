@@ -117,14 +117,14 @@ class AppController:
 
         components_zip_thread = Thread(
             target=file_utils.zip_files,
-            args=(compressed_components_imgs, "./images/components/components.zip")
+            args=(compressed_components_imgs, "./images/components/components.zip",)
         )
         components_zip_thread.start()
 
         compressed_manufacturers_imgs = file_utils.get_files_of_type("./images/manufacturers/", ".png", with_path=True)
         manufacturers_zip_thread = Thread(
             target=file_utils.zip_files,
-            args=(compressed_manufacturers_imgs, "./images/manufacturers/manufacturers.zip")
+            args=(compressed_manufacturers_imgs, "./images/manufacturers/manufacturers.zip",)
         )
         manufacturers_zip_thread.start()
 
@@ -143,14 +143,14 @@ class AppController:
     def unzip_images(self):
         component_thread = Thread(
             target=file_utils.unzip_file,
-            args=("./images/components/components.zip")
+            args=("./images/components/components.zip",)
         )
         component_thread.start()
 
 
         manufacturer_thead = Thread(
             target=file_utils.unzip_file,
-            args=("./images/manufacturers/manufacturers.zip")
+            args=("./images/manufacturers/manufacturers.zip",)
         )
         manufacturer_thead.start()
 
