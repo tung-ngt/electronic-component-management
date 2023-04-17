@@ -160,7 +160,7 @@ class DashboardScreen(Screen):
         # Create recent customers box
         subscreen.box2.label = Label(
             subscreen.box2,
-            "Recent cutomers",
+            "Recent customers",
             foreground="white",
             background="transparent",
             font=FONTS.get_font("heading2", bold=True)
