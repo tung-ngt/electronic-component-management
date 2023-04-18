@@ -25,11 +25,40 @@ class AppController:
 
         self.add_manufacturer = self.manufacturer_controller.add
         self.add_customer = self.customer_controller.add
-        self.add_order = self.order_controller.add
 
         self.update_manufacturer = self.manufacturer_controller.update
         self.update_customer = self.customer_controller.update
         self.update_order = self.order_controller.update
+
+    def add_order(self, data):
+        items = data["items"]
+        for part_number, amount in list(items.items()):
+            print(part_number)
+            print(amount)
+            component_type, c = self.get_component(part_number)
+            print(component_type)
+            print(c.get_all_info())
+            controller = self.__controller_switcher(component_type)
+            print(controller)
+            controller.update({"stock": c.get_stock() - amount}, part_number)
+        self.order_controller.add(data)
+
+    def get_component(self, part_number):   
+        for c in self.get_list("ic"):
+            if c.get_part_number() == part_number:
+                return "ic", c
+        for c in self.get_list("inductor"):
+            if c.get_part_number() == part_number:
+                return "inductor", c
+        for c in self.get_list("capacitor"):
+            if c.get_part_number() == part_number:
+                return "capacitor", c
+        for c in self.get_list("resistor"):
+            if c.get_part_number() == part_number:
+                return "resistor", c
+        for c in self.get_list("sensor"):
+            if c.get_part_number() == part_number:
+                return "sensor", c
 
     def load_data_from_db(self):
         self.ic_controller.load_data_from_db()
