@@ -47,3 +47,14 @@ A feature of the GUI is state retention. State retention is the ability to hold 
 
 - Run generate_data.py to generate mock data
 - Run generate_database.py to create the database
+
+
+## Screenshots
+
+![image](https://github.com/tung-ngt/electronic-component-management/assets/71141898/3823f5d9-0953-4940-ac28-6335acd72d59)
+![image](https://github.com/tung-ngt/electronic-component-management/assets/71141898/c441e372-9318-4d47-86b8-bd02589c7077)
+![image](https://github.com/tung-ngt/electronic-component-management/assets/71141898/a4650749-99dc-42d7-b02a-ed14e84bde1e)
+![image](https://github.com/tung-ngt/electronic-component-management/assets/71141898/66146638-e65c-4148-82a4-a90b2a1f6830)
+![image](https://github.com/tung-ngt/electronic-component-management/assets/71141898/4d3a75d6-850d-4c48-a521-37b4b92437de)
+
+
